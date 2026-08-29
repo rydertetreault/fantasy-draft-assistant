@@ -253,8 +253,25 @@ def run_preflight(
                 )
             )
 
-    # 7. Replay smoke (3 rounds) + timing budget.
-    if config is not None and board_rows and identity is not None:
+    # 7. Replay smoke (3 rounds) + timing budget. The script's pick order is
+    # derived from config['league']['teams'] so it always agrees with
+    # ReplayRunner's draft sizing (a 10-team default order against a 12-team
+    # league used to degrade into a silent confirmed=0 no-op).
+    league_teams = int(((config or {}).get("league") or {}).get("teams") or 0)
+    pick_order = list(range(1, league_teams + 1))
+    if config is not None and board_rows and identity is not None and (
+        identity.team_id not in pick_order
+    ):
+        checks.append(
+            Check(
+                "replay-smoke",
+                "fail",
+                f"team_id {identity.team_id} is not in 1..{league_teams} "
+                f"(league.teams={league_teams}) — cannot generate a valid "
+                "replay script",
+            )
+        )
+    elif config is not None and board_rows and identity is not None:
         try:
             with tempfile.TemporaryDirectory() as tmp:
                 script = generate_script(
@@ -262,6 +279,7 @@ def run_preflight(
                     Path(tmp) / "smoke.jsonl",
                     rounds=3,
                     our_team_id=identity.team_id,
+                    pick_order=pick_order,
                     league_id=identity.league_id,
                     season=identity.season,
                     alias=identity.normalized_alias,

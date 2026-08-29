@@ -187,6 +187,13 @@ class ReplayRunner:
         league = event.get("league") or {}
         self.observed_session_id = derive_session_id(league)
         order = list(event.get("pick_order") or DEFAULT_PICK_ORDER)
+        configured_teams = int(self.config["league"]["teams"])
+        if len(order) != configured_teams:
+            raise ValueError(
+                f"script pick_order has {len(order)} teams but config "
+                f"league.teams={configured_teams} — refusing to run a replay "
+                "whose schedule disagrees with the league (silent no-op)"
+            )
         self.teams = len(order)
         self.rounds = int(event.get("rounds", self.rounds))
         for overall in range(1, self.teams * self.rounds + 1):

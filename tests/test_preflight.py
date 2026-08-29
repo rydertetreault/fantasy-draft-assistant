@@ -159,6 +159,104 @@ class TestHardFailures:
         assert check_map(report)["draft-session"]["status"] == "fail"
 
 
+class TestReplaySmokeTeamCount:
+    """Regression: replay-smoke must honor the config team count.
+
+    Bug: preflight generated its smoke script with the 10-team
+    DEFAULT_PICK_ORDER while ReplayRunner sized the draft from
+    config['league']['teams'] — for a 12-team league the smoke degraded to a
+    silent no-op (confirmed=0 blocked=0 halts=0).
+    """
+
+    TWELVE_LEAGUE = 2144943745
+
+    def run_for(self, tmp_path, *, teams, team_id, alias="synaps2"):
+        config = {
+            "espn": {
+                "league_id": self.TWELVE_LEAGUE,
+                "team_id": team_id,
+                "season_id": SEASON,
+                "authorized_team": alias.capitalize(),
+            },
+            "league": {
+                "teams": teams,
+                "roster_slots": {
+                    "QB": 1, "RB": 2, "WR": 2, "TE": 1,
+                    "FLEX": 1, "DST": 1, "K": 1,
+                },
+            },
+            "strategy": {"wait_until_round": {"DST": 14, "K": 15}},
+        }
+        config_path = tmp_path / f"config.{alias}.yaml"
+        config_path.write_text(yaml.safe_dump(config))
+        team_dir = tmp_path / "data" / alias
+        team_dir.mkdir(parents=True)
+        (team_dir / "board.csv").write_text(BOARD_CSV)
+        raw_dir = tmp_path / "data" / "raw"
+        raw_dir.mkdir()
+        (raw_dir / "players.json").write_text("{}")
+        (raw_dir / "league_settings.json").write_text(
+            json.dumps(
+                {
+                    "id": self.TWELVE_LEAGUE,
+                    "seasonId": SEASON,
+                    "settings": {"draftSettings": {"date": DRAFT_DATE_MS}},
+                    "draftDetail": {"drafted": False, "inProgress": False},
+                }
+            )
+        )
+        return run_preflight(
+            alias, config_path=config_path, data_dir=tmp_path / "data"
+        )
+
+    def test_twelve_team_league_passes_replay_smoke(self, tmp_path):
+        report = self.run_for(tmp_path, teams=12, team_id=4)
+        checks = check_map(report)
+        assert checks["replay-smoke"]["status"] == "pass", checks["replay-smoke"]
+        assert "3/3 picks confirmed" in checks["replay-smoke"]["detail"]
+        assert report["ok"] is True
+
+    def test_team_id_outside_league_size_fails_loudly(self, tmp_path):
+        report = self.run_for(tmp_path, teams=12, team_id=13)
+        checks = check_map(report)
+        assert checks["replay-smoke"]["status"] == "fail"
+        # Explicit reason, not the silent-no-op "confirmed=0" symptom.
+        assert "team_id 13" in checks["replay-smoke"]["detail"]
+        assert "confirmed=0" not in checks["replay-smoke"]["detail"]
+        assert report["ok"] is False
+
+
+class TestReplayRunnerTeamCountMismatch:
+    """A script whose pick_order disagrees with config team count must raise."""
+
+    def test_mismatched_script_raises_instead_of_silent_noop(self, tmp_path):
+        import io
+
+        from fantasy_draft_assistant.pipeline import load_board
+        from fantasy_draft_assistant.replay import ReplayRunner, generate_script
+
+        board_path = tmp_path / "board.csv"
+        board_path.write_text(BOARD_CSV)
+        board_rows = load_board(board_path)
+        config = {
+            **CONFIG,
+            "league": {**CONFIG["league"], "teams": 12},
+        }
+        # Default pick_order is 10 teams — disagrees with the 12-team config.
+        script = generate_script(
+            board_rows,
+            tmp_path / "smoke.jsonl",
+            rounds=3,
+            our_team_id=2,
+            league_id=LEAGUE,
+            season=SEASON,
+            alias="synaps1",
+            include_faults=False,
+        )
+        with pytest.raises(ValueError, match="team"):
+            ReplayRunner(config, board_rows).run(script)
+
+
 class TestGrantValidation:
     def write_grant(self, workspace, **overrides):
         now_ms = int(time.time() * 1000)
