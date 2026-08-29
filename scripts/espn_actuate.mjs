@@ -65,16 +65,25 @@ try {
   if (live && allowFileFixture) die(2, "--live cannot be combined with --allow-file-fixture");
 
   // ---- locate the player row and its draft button, defensively ----------
-  const row = page
-    .locator(
-      `[data-player-id="${playerId}"], [data-playerid="${playerId}"], ` +
-      `tr:has-text(${JSON.stringify(playerName)}), li:has-text(${JSON.stringify(playerName)})`
-    )
-    .first();
-  if ((await row.count()) === 0) die(6, `no row found for ${playerName} (${playerId})`);
+  // Selector candidates tried IN ORDER (Playwright comma-lists return DOM
+  // order, not preference order, so we iterate explicitly). The FixedDataTable
+  // row class is ESPN's live draft-room DOM as of 2026-08-29; tr/li kept for
+  // fixtures and DOM drift.
+  const rowSelectors = [
+    `div.public_fixedDataTableRow_main:has-text(${JSON.stringify(playerName)})`,
+    `tr:has-text(${JSON.stringify(playerName)})`,
+    `li:has-text(${JSON.stringify(playerName)})`,
+    `[data-player-id="${playerId}"], [data-playerid="${playerId}"]`,
+  ];
+  let row = null;
+  for (const sel of rowSelectors) {
+    const cand = page.locator(sel).first();
+    if ((await cand.count()) === 0) continue;
+    const t = (await cand.innerText().catch(() => "")).replace(/\s+/g, " ").trim();
+    if (t.toLowerCase().includes(playerName.toLowerCase())) { row = cand; break; }
+  }
+  if (!row) die(6, `no row whose text mentions ${playerName} (${playerId})`);
   const rowText = (await row.innerText().catch(() => "")).replace(/\s+/g, " ").trim();
-  if (!rowText.toLowerCase().includes(playerName.toLowerCase()))
-    die(6, `row text does not mention ${playerName}: ${rowText.slice(0, 120)}`);
 
   const button = row
     .locator('button:has-text("Draft"), button[aria-label*="Draft" i], [class*="draft" i] button')
@@ -83,6 +92,9 @@ try {
   if (!(await button.isEnabled().catch(() => false))) die(6, "draft button is not enabled");
 
   const label = (await button.innerText().catch(() => "")).trim() || "<no label>";
+  // Never mistake the QUEUE button (or anything unlabeled) for the DRAFT
+  // button: the label itself must say "draft".
+  if (!/draft/i.test(label)) die(6, `button label ${JSON.stringify(label)} does not say Draft — refusing`);
   console.log(`target: ${playerName} (${playerId}) | row: "${rowText.slice(0, 80)}" | button: "${label}"`);
 
   if (!live) {
