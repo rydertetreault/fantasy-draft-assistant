@@ -94,31 +94,33 @@ def cmd_build_board(args: argparse.Namespace) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="fantasy-draft")
-    parser.add_argument("--players", default=None, help="Path to players CSV")
-    parser.add_argument("--state", default=None, help="Path to draft_state.json")
-    parser.add_argument("--config", default=None, help="Path to config YAML")
+    shared = argparse.ArgumentParser(add_help=False)
+    shared.add_argument("--players", default=None, help="Path to players CSV")
+    shared.add_argument("--state", default=None, help="Path to draft_state.json")
+    shared.add_argument("--config", default=None, help="Path to config YAML")
+
+    parser = argparse.ArgumentParser(prog="fantasy-draft", parents=[shared])
     sub = parser.add_subparsers(required=True)
 
-    rec = sub.add_parser("recommend", help="Show best available players")
+    rec = sub.add_parser("recommend", help="Show best available players", parents=[shared])
     rec.add_argument("--round", type=int, required=True)
     rec.add_argument("--pick", type=int, required=True, help="Pick number within the round")
     rec.add_argument("--limit", type=int, default=15)
     rec.set_defaults(func=cmd_recommend)
 
-    draft = sub.add_parser("draft", help="Mark a player drafted")
+    draft = sub.add_parser("draft", help="Mark a player drafted", parents=[shared])
     draft.add_argument("player")
     draft.add_argument("--mine", action="store_true", help="Add to my roster")
     draft.set_defaults(func=cmd_draft)
 
-    undo = sub.add_parser("undo", help="Remove a player from draft state")
+    undo = sub.add_parser("undo", help="Remove a player from draft state", parents=[shared])
     undo.add_argument("player")
     undo.set_defaults(func=cmd_undo)
 
-    roster = sub.add_parser("roster", help="Show my roster")
+    roster = sub.add_parser("roster", help="Show my roster", parents=[shared])
     roster.set_defaults(func=cmd_roster)
 
-    reset = sub.add_parser("reset", help="Clear draft state")
+    reset = sub.add_parser("reset", help="Clear draft state", parents=[shared])
     reset.set_defaults(func=cmd_reset)
 
     board = sub.add_parser(
