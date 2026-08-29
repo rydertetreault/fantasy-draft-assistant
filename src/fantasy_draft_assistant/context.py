@@ -18,6 +18,21 @@ CORE_POSITIONS = ("QB", "RB", "WR", "TE")
 RUN_WINDOW = 8  # recent picks considered for run detection
 RUN_THRESHOLD = 4  # >= this many same-pos picks in the window is a run
 
+# replacement-level rank per position (starters x teams + typical bench carry)
+REPLACEMENT_MULT = {"QB": 1.2, "RB": 2.6, "WR": 2.6, "TE": 1.2, "K": 1.0, "DST": 1.0}
+
+
+def replacement_levels(players: pd.DataFrame, teams: int) -> dict[str, float]:
+    """Projection of the replacement-level player at each position: the value
+    freely available at the draft's end. VORP = projection - replacement."""
+    levels: dict[str, float] = {}
+    for pos, group in players.groupby("pos"):
+        rank = max(1, int(teams * REPLACEMENT_MULT.get(str(pos), 1.0)))
+        ordered = group.sort_values("projection", ascending=False)
+        idx = min(rank, len(ordered)) - 1
+        levels[str(pos)] = float(ordered["projection"].iloc[idx])
+    return levels
+
 
 @dataclass(frozen=True)
 class TeamPick:
@@ -154,8 +169,9 @@ def contextual_recommend(
     ]
 
     runs = detect_runs(all_picks)
+    replacement = replacement_levels(players, teams)
     out = base_recommendations.copy()
-    urgency_col, cliff_col, run_col, surv_col, ctx_col = [], [], [], [], []
+    urgency_col, cliff_col, run_col, surv_col, vorp_col, ctx_col = [], [], [], [], [], []
 
     for _, row in out.iterrows():
         pos = str(row["pos"])
@@ -178,12 +194,21 @@ def contextual_recommend(
             # holds; if the run already emptied the tier, pivot away instead.
             run_adj = 8.0 * need if survivors >= 1.0 else -6.0
 
+        # VORP base: value over what's freely available at draft's end.
+        # Keep the engine's contextual adjustments (need/scarcity/bye/value)
+        # by carrying (score - projection), but replace the raw-projection
+        # base that made high-scoring QBs/Ks outrank scarce RBs.
+        vorp = float(row["projection"]) - replacement.get(pos, 0.0)
+        engine_adj = float(row["score"]) - float(row["projection"])
+
         urgency_col.append(round(urgency, 2))
         cliff_col.append(round(cliff, 2))
         run_col.append(round(run_adj, 2))
         surv_col.append(round(surv, 3))
-        ctx_col.append(round(float(row["score"]) + urgency + cliff + run_adj, 2))
+        vorp_col.append(round(vorp, 2))
+        ctx_col.append(round(vorp + engine_adj + urgency + cliff + run_adj, 2))
 
+    out["vorp"] = vorp_col
     out["survival"] = surv_col
     out["urgency"] = urgency_col
     out["tier_cliff"] = cliff_col
