@@ -22,3 +22,8 @@ fantasy-draft = "fantasy_draft_assistant.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+markers = [
+  "browser: spawns a local headless Chrome against file:// fixtures (skipped when Chrome/node are missing; never touches live ESPN)",
+]

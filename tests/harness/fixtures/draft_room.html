@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+  Local browser fixture mimicking an ESPN draft room (Checkpoint 3, Task 7).
+  Opened as file://.../draft_room.html?leagueId=305025860 so the actuator's
+  league-id-in-URL check is still exercised even with - -allow-file-fixture.
+  Player ids/names come from tests/fixtures/players_sample.json.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Fantasy Football Draft - League 305025860</title>
+</head>
+<body>
+  <header>
+    <h1>Live Draft — League 305025860 (2026)</h1>
+    <div id="pick-status">On the clock: Synaps1 (Team 2) — Pick 12</div>
+  </header>
+  <main>
+    <table class="playerTable">
+      <thead>
+        <tr><th>Player</th><th>Pos</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr data-player-id="3918298">
+          <td class="playerName">Josh Allen</td>
+          <td>QB</td>
+          <td><button class="draftButton" aria-label="Draft Josh Allen">DRAFT</button></td>
+        </tr>
+        <tr data-player-id="3916387">
+          <td class="playerName">Lamar Jackson</td>
+          <td>QB</td>
+          <td><button class="draftButton" aria-label="Draft Lamar Jackson">DRAFT</button></td>
+        </tr>
+        <tr data-player-id="4429795">
+          <td class="playerName">Jahmyr Gibbs</td>
+          <td>RB</td>
+          <td><button class="draftButton" aria-label="Draft Jahmyr Gibbs">DRAFT</button></td>
+        </tr>
+        <tr data-player-id="4426348">
+          <td class="playerName">Jayden Daniels</td>
+          <td>QB</td>
+          <td><button class="draftButton" aria-label="Draft Jayden Daniels">DRAFT</button></td>
+        </tr>
+        <tr data-player-id="4040715">
+          <td class="playerName">Jalen Hurts</td>
+          <td>QB</td>
+          <td><button class="draftButton" aria-label="Draft Jalen Hurts" disabled>DRAFTED</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    // Fixture only: record clicks so a live-mode test could verify them.
+    document.querySelectorAll("button.draftButton").forEach((b) => {
+      b.addEventListener("click", () => { window.__lastDraftClick = b.ariaLabel; });
+    });
+  </script>
+</body>
+</html>

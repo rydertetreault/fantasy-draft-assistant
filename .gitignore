@@ -7,3 +7,7 @@ __pycache__/
 .DS_Store
 .env
 config.yaml
+data/raw/
+src/*.egg-info/
+data/synaps1/
+data/synaps2/

@@ -6,6 +6,7 @@ Contract (docs/live-draft-operator.spec.md, TEAM_SAFETY.md):
 - Default deny for unknown teams; RoughRydas can NEVER pass or be allowlisted.
 - Partial/ambiguous identities fail closed.
 - Stale state (age > 3000 ms) blocks writes even for allowlisted identities.
+- Negative state age (clock skew) means freshness is UNKNOWN and fails closed.
 
 All functions here are pure decision functions with no side effects.
 """
@@ -21,6 +22,11 @@ FORBIDDEN_ALIASES: frozenset[str] = frozenset({"roughrydas"})
 
 #: Maximum acceptable draft-state age for a write action, in milliseconds.
 MAX_STATE_AGE_MS: int = 3_000
+
+
+def _is_real_int(value: object) -> bool:
+    """True for genuine ints only; bools are rejected (bool subclasses int)."""
+    return isinstance(value, int) and not isinstance(value, bool)
 
 
 def _normalize_alias(alias: object) -> str:
@@ -55,12 +61,16 @@ class TeamIdentity:
 
     @property
     def is_complete(self) -> bool:
-        """True when every identity field is present and unambiguous."""
+        """True when every identity field is present and unambiguous.
+
+        Booleans are *not* valid ids even though ``bool`` subclasses ``int``:
+        ``team_id=True`` is a data bug, never a real ESPN identifier.
+        """
         return (
             bool(self.normalized_alias)
-            and isinstance(self.league_id, int)
-            and isinstance(self.team_id, int)
-            and isinstance(self.season, int)
+            and _is_real_int(self.league_id)
+            and _is_real_int(self.team_id)
+            and _is_real_int(self.season)
         )
 
     def _match_key(self) -> tuple[str, int | None, int | None, int | None]:
@@ -111,5 +121,11 @@ class Allowlist:
 
 
 def can_submit(identity: TeamIdentity, allowlist: Allowlist, state_age_ms: int) -> bool:
-    """Return True only for a fresh, exactly-allowlisted identity."""
-    return identity in allowlist and state_age_ms <= MAX_STATE_AGE_MS
+    """Return True only for a fresh, exactly-allowlisted identity.
+
+    A negative ``state_age_ms`` means the clocks disagree, so freshness is
+    unknown — that fails closed exactly like stale state.
+    """
+    if not _is_real_int(state_age_ms):
+        return False
+    return identity in allowlist and 0 <= state_age_ms <= MAX_STATE_AGE_MS
