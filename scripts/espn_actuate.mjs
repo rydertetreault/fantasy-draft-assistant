@@ -4,19 +4,24 @@
 //   node scripts/espn_actuate.mjs '{"playerId":123,"playerName":"...","leagueId":305025860,"teamId":2}' \
 //        --grant-file /tmp/grant.json [--live]
 //
-// Safety: connects to an EXISTING browser over CDP (localhost:9222) and
-// NEVER navigates. It refuses to act unless the active page URL contains
-// both the exact league id and a draft-room path, and the grant file's
-// alias/league match. Without --live it only logs the target element.
+// Safety: connects to an EXISTING browser over CDP (BROWSER_CDP_URL, default
+// localhost:9222) and NEVER navigates. It refuses to act unless the active
+// page is a real https espn.com draft-room URL containing the exact league
+// id, and the grant file's alias/league match. `--allow-file-fixture` relaxes
+// ONLY the https/host requirement (to file://) for local test fixtures; the
+// league-id-in-URL, draft-path, and grant checks always apply. Without
+// --live it only logs the target element.
 import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
 
 const ALLOWED_ALIASES = new Set(["synaps1", "synaps2"]); // RoughRydas can never appear here
+const CDP_URL = process.env.BROWSER_CDP_URL || "http://localhost:9222";
 const die = (code, msg) => { console.error(`REFUSED: ${msg}`); process.exit(code); };
 
 // ---- arguments ------------------------------------------------------------
 const args = process.argv.slice(2);
 const live = args.includes("--live");
+const allowFileFixture = args.includes("--allow-file-fixture");
 const grantIdx = args.indexOf("--grant-file");
 if (grantIdx === -1 || !args[grantIdx + 1]) die(2, "--grant-file is required");
 const jsonArg = args.find((a) => a.startsWith("{"));
@@ -40,16 +45,24 @@ const now = Date.now();
 if (!(grant.issued_at_ms <= now && now < grant.expires_at_ms)) die(3, "grant is not currently valid");
 
 // ---- attach to the existing browser (read page identity; NEVER navigate) --
-const browser = await chromium.connectOverCDP("http://localhost:9222").catch(() => null);
-if (!browser) die(4, "no CDP browser at localhost:9222");
+const browser = await chromium.connectOverCDP(CDP_URL).catch(() => null);
+if (!browser) die(4, `no CDP browser at ${CDP_URL}`);
 try {
   const pages = browser.contexts().flatMap((c) => c.pages());
   const page = pages.find((p) => {
-    const url = p.url();
-    return url.includes(String(leagueId)) && /\/draft/i.test(new URL(url).pathname);
+    let u;
+    try { u = new URL(p.url()); } catch { return false; }
+    // https/host check: real ESPN over https only. --allow-file-fixture
+    // relaxes ONLY this to local file:// fixtures (never the league-id or
+    // grant checks; live clicking stays disabled for fixtures).
+    const originOk = allowFileFixture
+      ? u.protocol === "file:"
+      : u.protocol === "https:" && /(^|\.)espn\.com$/i.test(u.hostname);
+    return originOk && p.url().includes(String(leagueId)) && /\/draft/i.test(u.pathname);
   });
   if (!page) die(5, `no active page for league ${leagueId} with a draft-room path`);
   console.log(`page: ${page.url()}`);
+  if (live && allowFileFixture) die(2, "--live cannot be combined with --allow-file-fixture");
 
   // ---- locate the player row and its draft button, defensively ----------
   const row = page
