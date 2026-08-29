@@ -21,10 +21,11 @@
 import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
 
-// EMPTY BY DESIGN: populate only after the user supplies exact Yahoo ids and
-// they are recorded in TEAM_SAFETY-style docs + yahoo_safety.py. RoughRydas
-// (or any analog) can never appear here.
-const ALLOWED_ALIASES = new Set([]);
+// ONE confirmed team (owner-confirmed 2026-08-29; mirrored in TEAM_SAFETY.md
+// and yahoo_safety.py): "allidoiswin" = "All I Do Is Win", league 384341
+// ("Old Backs Fresh Minds"), team 6, game_key 470. RoughRydas (or any analog)
+// can never appear here.
+const ALLOWED_ALIASES = new Set(["allidoiswin"]);
 const CDP_URL = process.env.BROWSER_CDP_URL || "http://localhost:9222";
 const die = (code, msg) => { console.error(`REFUSED: ${msg}`); process.exit(code); };
 
@@ -50,8 +51,8 @@ try { grant = JSON.parse(readFileSync(args[grantIdx + 1], "utf8")); }
 catch { die(3, "grant file unreadable or not JSON"); }
 const alias = String(grant.alias || "").trim().toLowerCase();
 if (alias === "roughrydas") die(3, "RoughRydas is forbidden — never act on it");
-// With the empty allowlist above, this check refuses EVERY invocation today.
-if (!ALLOWED_ALIASES.has(alias)) die(3, `grant alias ${JSON.stringify(grant.alias)} is not allowlisted (Yahoo allowlist is empty — no league configured)`);
+// Exact-alias gate: anything not explicitly listed above refuses.
+if (!ALLOWED_ALIASES.has(alias)) die(3, `grant alias ${JSON.stringify(grant.alias)} is not allowlisted`);
 if (grant.league_id !== leagueId) die(3, `grant league ${grant.league_id} != target league ${leagueId}`);
 if (typeof grant.draft_session_id !== "string" || !grant.draft_session_id.trim())
   die(3, "grant must name the exact draft session (draft_session_id)");

@@ -20,7 +20,7 @@ import { readFileSync } from "node:fs";
 // EMPTY BY DESIGN: map of "leagueId:teamId" -> alias, mirroring the ESPN
 // script. Populate only with user-confirmed ids recorded in yahoo_safety.py
 // and the TEAM_SAFETY-style doc. RoughRydas (or any analog) never appears.
-const ALLOWED = new Map([]);
+const ALLOWED = new Map([["384341:6", 'All I Do Is Win ("allidoiswin") — Old Backs Fresh Minds']]);
 
 const args = process.argv.slice(2);
 const file = args[0];
@@ -33,7 +33,7 @@ if (!file || !league || !team) {
 }
 // Refuse-by-default gate: with the empty map this refuses every invocation.
 if (!ALLOWED.has(`${league}:${team}`)) {
-  console.error(`REFUSED: ${league}:${team} is not an allowlisted Yahoo team (allowlist is empty — no league configured)`);
+  console.error(`REFUSED: ${league}:${team} is not an allowlisted Yahoo team`);
   process.exit(3);
 }
 

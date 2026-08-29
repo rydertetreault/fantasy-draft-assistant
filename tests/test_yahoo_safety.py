@@ -7,8 +7,10 @@ docs/yahoo-adapter.research.md):
         YahooTeamIdentity, YahooAllowlist, build_default_allowlist, can_submit_yahoo,
     )
 
-- The DEFAULT allowlist is EMPTY (no Yahoo league exists yet) — every
-  identity, however plausible, must be refused.
+- The DEFAULT allowlist contains EXACTLY ONE owner-confirmed team:
+  "allidoiswin" = All I Do Is Win, team key 470.l.384341.t.6, season 2026
+  (confirmed 2026-08-29). Every OTHER identity, however plausible, must be
+  refused.
 - Exact five-field match (alias, game_key, league_id, team_id, season) is
   required even against a populated allowlist.
 - RoughRydas can NEVER pass or be allowlisted (PermissionError, reusing the
@@ -16,8 +18,8 @@ docs/yahoo-adapter.research.md):
 - Ambiguous/partial identity fails closed; bools are not ids.
 - Stale (>3000 ms) or negative state age blocks even allowlisted identities.
 - The actuation scripts (yahoo_actuate.mjs, yahoo_set_prerank.mjs) refuse at
-  their gates with the empty allowlist — verified via real subprocesses when
-  node is available.
+  their gates for any non-allowlisted team — verified via real subprocesses
+  when node is available.
 """
 
 import json
@@ -38,10 +40,16 @@ from fantasy_draft_assistant.yahoo_safety import (
 REPO_ROOT = Path(__file__).resolve().parents[1]
 FRESH = 0  # ms
 
-# A plausible-looking future Yahoo identity. It must STILL refuse today,
-# because the default allowlist is empty.
+# A plausible-looking Yahoo identity that is NOT the confirmed team. It must
+# refuse against the default allowlist (exact-match only, no partial credit).
 PLAUSIBLE = YahooTeamIdentity(
     alias="yahoo1", game_key="461", league_id=123456, team_id=7, season=2026
+)
+
+# The single owner-confirmed team (2026-08-29): the ONLY identity the default
+# allowlist may ever pass.
+CONFIRMED = YahooTeamIdentity(
+    alias="allidoiswin", game_key="470", league_id=384341, team_id=6, season=2026
 )
 
 
@@ -52,19 +60,38 @@ def _identity(**overrides) -> YahooTeamIdentity:
 
 
 # ---------------------------------------------------------------------------
-# The default allowlist is empty: EVERYTHING refuses
+# The default allowlist: exactly ONE confirmed team; everything else refuses
 # ---------------------------------------------------------------------------
 
-class TestDefaultAllowlistIsEmpty:
-    def test_default_allowlist_has_no_entries(self):
+class TestDefaultAllowlist:
+    def test_default_allowlist_has_exactly_the_confirmed_entry(self):
         allowlist = build_default_allowlist()
-        assert len(allowlist) == 0
-        assert list(allowlist) == []
+        assert len(allowlist) == 1
+        assert list(allowlist) == [CONFIRMED]
+
+    def test_confirmed_identity_is_allowed_when_fresh(self):
+        assert can_submit_yahoo(CONFIRMED, build_default_allowlist(), FRESH) is True
+
+    def test_confirmed_team_key(self):
+        assert CONFIRMED.team_key == "470.l.384341.t.6"
+
+    def test_confirmed_ids_with_wrong_season_refused(self):
+        wrong_season = YahooTeamIdentity(
+            alias="allidoiswin", game_key="470", league_id=384341, team_id=6, season=2025
+        )
+        assert can_submit_yahoo(wrong_season, build_default_allowlist(), FRESH) is False
+
+    def test_confirmed_ids_with_imposter_alias_refused(self):
+        imposter = YahooTeamIdentity(
+            alias="RoughRydas", game_key="470", league_id=384341, team_id=6, season=2026
+        )
+        assert imposter not in build_default_allowlist()
+        assert can_submit_yahoo(imposter, build_default_allowlist(), FRESH) is False
 
     def test_plausible_identity_refused_by_default(self):
         assert can_submit_yahoo(PLAUSIBLE, build_default_allowlist(), FRESH) is False
 
-    def test_membership_operator_refuses_by_default(self):
+    def test_membership_operator_refuses_non_confirmed(self):
         assert PLAUSIBLE not in build_default_allowlist()
 
     @pytest.mark.parametrize(
@@ -75,10 +102,14 @@ class TestDefaultAllowlistIsEmpty:
             _identity(alias="synaps2", league_id=2144943745, team_id=4),
             _identity(game_key="nfl"),
             _identity(league_id=1, team_id=1),
+            _identity(alias="allidoiswin"),  # right alias, wrong ids
         ],
-        ids=["yahoo1", "espn-alias-synaps1", "espn-alias-synaps2", "game-code", "tiny-ids"],
+        ids=[
+            "yahoo1", "espn-alias-synaps1", "espn-alias-synaps2", "game-code",
+            "tiny-ids", "right-alias-wrong-ids",
+        ],
     )
-    def test_every_identity_refused_with_empty_allowlist(self, identity):
+    def test_every_non_confirmed_identity_refused(self, identity):
         assert can_submit_yahoo(identity, build_default_allowlist(), FRESH) is False
 
 
@@ -215,8 +246,8 @@ class TestScriptRefusals:
             ["node", *argv], cwd=REPO_ROOT, capture_output=True, text=True, timeout=60
         )
 
-    def test_yahoo_actuate_refuses_valid_grant_with_empty_allowlist(self, tmp_path):
-        """Even a well-formed, in-window grant refuses: the allowlist is empty."""
+    def test_yahoo_actuate_refuses_valid_grant_for_unlisted_alias(self, tmp_path):
+        """Even a well-formed, in-window grant refuses: alias not allowlisted."""
         grant = {
             "alias": "yahoo1",
             "league_id": 123456,
@@ -271,7 +302,7 @@ class TestScriptRefusals:
         assert "REFUSED" in proc.stderr
         assert "LIVE" not in proc.stdout
 
-    def test_yahoo_set_prerank_refuses_with_empty_allowlist(self, tmp_path):
+    def test_yahoo_set_prerank_refuses_unlisted_team(self, tmp_path):
         prerank = tmp_path / "prerank.json"
         prerank.write_text(json.dumps([101, 102, 103]))
         proc = self._run(

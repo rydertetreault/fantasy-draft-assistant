@@ -15,9 +15,11 @@ Yahoo-specific shape: teams are identified by a *team key*
 identity carries ``game_key`` (per-season integer game id as a string, or the
 code ``"nfl"``) in addition to the numeric league/team ids and season.
 
-THE ALLOWLIST IS EMPTY. No real Yahoo league exists yet. Until the user
-supplies and confirms exact ids, ``build_default_allowlist()`` returns an
-empty allowlist and every guard refuses.
+THE ALLOWLIST CONTAINS EXACTLY ONE CONFIRMED TEAM: "All I Do Is Win"
+(league 384341 "Old Backs Fresh Minds", team 6, game_key "470", season 2026),
+confirmed verbatim by the account owner (relayed by the user) on 2026-08-29
+and mirrored in TEAM_SAFETY.md. Everything else — every other id, every ESPN
+alias, and RoughRydas above all — still refuses.
 
 All functions here are pure decision functions with no side effects.
 """
@@ -67,7 +69,7 @@ class YahooTeamIdentity:
     """
 
     alias: str | None
-    game_key: str | None  # e.g. "461" (2026 NFL game id) — TODO(verify)
+    game_key: str | None  # "470" = 2026 NFL game id (verified 2026-08-29 recon)
     league_id: int | None
     team_id: int | None
     season: int | None
@@ -164,15 +166,26 @@ class YahooAllowlist:
 
 
 def build_default_allowlist() -> YahooAllowlist:
-    """The project's Yahoo allowlist. INTENTIONALLY EMPTY.
+    """The project's Yahoo allowlist: exactly ONE confirmed team.
 
-    No Yahoo league/team ids exist yet. Until the user supplies exact,
-    confirmed ids (league id, team id, season game_key) this returns an empty
-    allowlist, so :func:`can_submit_yahoo` refuses everything. Adding an
-    entry here is a deliberate, reviewed act — mirror TEAM_SAFETY.md when the
-    time comes and NEVER add anything resembling RoughRydas.
+    "All I Do Is Win" — league 384341 ("Old Backs Fresh Minds"), team 6,
+    game_key "470" (verified from league key ``470.l.384341`` in read-only
+    recon), season 2026. Confirmed verbatim by the account owner (relayed by
+    the user) on 2026-08-29; mirrored in TEAM_SAFETY.md. Adding entries here
+    remains a deliberate, reviewed act — and NEVER anything resembling
+    RoughRydas.
     """
-    return YahooAllowlist([])
+    return YahooAllowlist(
+        [
+            YahooTeamIdentity(
+                alias="allidoiswin",
+                game_key="470",
+                league_id=384341,
+                team_id=6,
+                season=2026,
+            )
+        ]
+    )
 
 
 def can_submit_yahoo(

@@ -8,7 +8,9 @@
 
 ## Who / what / when
 
-- **User:** Justin. Authorized Yahoo teams: **NONE YET** — allowlist is empty.
+- **User:** Justin, acting for his dad (the account owner — confirmed
+  2026-08-29). Authorized Yahoo team: **All I Do Is Win** (alias
+  `allidoiswin`) — the ONLY allowlisted Yahoo team.
 - **FORBIDDEN:** the team **RoughRydas** (and any Yahoo analog) — never touch
   it. Code enforces this (`PermissionError` in `yahoo_safety.YahooAllowlist`,
   hard refusals in every `scripts/yahoo_*.mjs`). See `TEAM_SAFETY.md`.
@@ -16,18 +18,19 @@
   Settings page (read-only recon 2026-08-29). NOTE: user initially relayed
   "Aug 30, 6 PM"; the settings page overrides. Dad's verbal confirm pending.
   - League: `384341` **"Old Backs Fresh Minds"** | Team: `6` **"All I Do Is
-    Win"** — CANDIDATE (matches name user supplied; only team on account).
-    Allowlist stays EMPTY until dad confirms verbatim; populating it remains
-    a reviewed, user-approved edit.
-  - Game key (2026 NFL, fetch via `/game/nfl`): `⟨GAME_KEY⟩`  → league key
-    `⟨GAME_KEY⟩.l.⟨YAHOO_LEAGUE_ID⟩`, team key `…​.t.⟨YAHOO_TEAM_ID⟩`
+    Win"** — CONFIRMED verbatim by the owner 2026-08-29. Allowlisted in
+    `yahoo_safety.py` + both actuation scripts (reviewed edit, this commit).
+  - Game key: `470` (2026 NFL — verified: league key `470.l.384341` ×12 in
+    recon HTML) → league key
+    `470.l.384341`, team key `…​.t.⟨YAHOO_TEAM_ID⟩`
   - Settings (recon-verified): 10-team **HALF-PPR (0.5/rec)** H2H snake
     ("Live Standard Draft"), **60s/pick** — faster than ESPN's 90s; retune
     act-by/halt thresholds. Roster QB/2WR/2RB/TE/W-R-T/K/DEF, 6 BN, 2 IR;
     pass TD 4, INT −1, fumble −2. Raw HTML: main `data/yahoo/raw/`.
   - Draft slot: `⟨SLOT⟩` (randomized at `⟨TIME⟩`?)
-  - Draft session id for grants: `⟨GAME_KEY⟩.l.⟨LEAGUE⟩-2026-⟨DRAFT_EPOCH_MS⟩`
-    (convention mirroring ESPN's `league-season-epoch`; confirm derivation)
+  - Draft session id for grants: `470.l.384341-2026-1788703200000`
+    (epoch = Sun Sep 6 2026 10:00:00 EDT; convention mirrors ESPN's
+    `league-season-epoch`)
   - Data root: `data/yahoo/384341/`
 
 ## Current state (scaffold reality check)
@@ -130,7 +133,8 @@ be built from this league's scoring; the Synaps1 board does not transfer.
 - If anything is ambiguous about team identity, do nothing.
 - The pre-rank floor must exist BEFORE any live rung — a failed live run must
   cost nothing.
-- Empty allowlist = total refusal. Populating it is a reviewed, user-approved
+- Empty-by-default refusal stands: the allowlist contains exactly
+  `allidoiswin` and nothing else. Any change is a reviewed, user-approved
   edit, never an inline hack.
 
 ## Key docs
