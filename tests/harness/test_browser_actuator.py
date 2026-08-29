@@ -38,7 +38,9 @@ def test_actuator_against_local_draft_room_fixture():
     # ...and every refusal case must have fired with its distinct exit code.
     for refusal in (
         "file:// page refused without --allow-file-fixture",
-        "wrong league id refused",
+        "unknown league id refused",
+        "known league without open page refused",
+        "mock mode refuses real league",
         "missing grant refused",
         "expired grant refused",
         "player not found refused",

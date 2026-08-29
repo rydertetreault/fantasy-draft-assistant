@@ -15,12 +15,16 @@ import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
 
 const ALLOWED_ALIASES = new Set(["synaps1", "synaps2"]); // RoughRydas can never appear here
+// Real league ids. In --mock mode these are FORBIDDEN everywhere (payload,
+// grant, page URL) — mock rehearsals can never touch a real league room.
+const REAL_LEAGUE_IDS = [305025860, 2144943745];
 const CDP_URL = process.env.BROWSER_CDP_URL || "http://localhost:9222";
 const die = (code, msg) => { console.error(`REFUSED: ${msg}`); process.exit(code); };
 
 // ---- arguments ------------------------------------------------------------
 const args = process.argv.slice(2);
 const live = args.includes("--live");
+const mock = args.includes("--mock");
 const allowFileFixture = args.includes("--allow-file-fixture");
 const grantIdx = args.indexOf("--grant-file");
 if (grantIdx === -1 || !args[grantIdx + 1]) die(2, "--grant-file is required");
@@ -33,13 +37,23 @@ const { playerId, playerName, leagueId, teamId } = target;
 if (!Number.isInteger(playerId) || playerId <= 0) die(2, "playerId must be a positive integer");
 if (typeof playerName !== "string" || !playerName.trim()) die(2, "playerName is required");
 if (!Number.isInteger(leagueId) || !Number.isInteger(teamId)) die(2, "leagueId/teamId must be integers");
+if (mock && REAL_LEAGUE_IDS.includes(leagueId))
+  die(2, `--mock refuses real league ${leagueId} — mock rehearsals never touch real leagues`);
+if (!mock && !REAL_LEAGUE_IDS.includes(leagueId))
+  die(2, `league ${leagueId} is not a known real league (use --mock for mock rooms)`);
 
 // ---- grant file -----------------------------------------------------------
 let grant;
 try { grant = JSON.parse(readFileSync(args[grantIdx + 1], "utf8")); }
 catch { die(3, "grant file unreadable or not JSON"); }
 const alias = String(grant.alias || "").trim().toLowerCase();
-if (!ALLOWED_ALIASES.has(alias)) die(3, `grant alias ${JSON.stringify(grant.alias)} is not allowlisted`);
+if (mock) {
+  // Mock grants use the reserved alias "mock", which is never valid for
+  // real-league actuation (it is not in ALLOWED_ALIASES).
+  if (alias !== "mock") die(3, `--mock requires grant alias "mock", got ${JSON.stringify(grant.alias)}`);
+} else if (!ALLOWED_ALIASES.has(alias)) {
+  die(3, `grant alias ${JSON.stringify(grant.alias)} is not allowlisted`);
+}
 if (grant.league_id !== leagueId) die(3, `grant league ${grant.league_id} != target league ${leagueId}`);
 const now = Date.now();
 if (!(grant.issued_at_ms <= now && now < grant.expires_at_ms)) die(3, "grant is not currently valid");
@@ -63,6 +77,8 @@ try {
   if (!page) die(5, `no active page for league ${leagueId} with a draft-room path`);
   console.log(`page: ${page.url()}`);
   if (live && allowFileFixture) die(2, "--live cannot be combined with --allow-file-fixture");
+  if (mock && REAL_LEAGUE_IDS.some((id) => page.url().includes(String(id))))
+    die(5, "--mock refuses pages mentioning a real league id");
 
   // ---- locate the player row and its draft button, defensively ----------
   // Selector candidates tried IN ORDER (Playwright comma-lists return DOM

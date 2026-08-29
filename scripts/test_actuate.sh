@@ -63,6 +63,10 @@ EOF
 cat > "$GRANT_WRONG_LEAGUE" <<EOF
 {"alias":"synaps1","league_id":999999,"season":2026,"draft_session_id":"999999-2026-fixture","issued_at_ms":$((NOW-60000)),"expires_at_ms":$((NOW+3600000))}
 EOF
+GRANT_SYNAPS2_NOPAGE="$WORK/grant_synaps2_nopage.json"
+cat > "$GRANT_SYNAPS2_NOPAGE" <<EOF
+{"alias":"synaps2","league_id":2144943745,"season":2026,"draft_session_id":"2144943745-2026-fixture","issued_at_ms":$((NOW-60000)),"expires_at_ms":$((NOW+3600000))}
+EOF
 
 FAILURES=0
 LAST_OUT=""
@@ -96,10 +100,21 @@ fi
 #    (proves the https/host check is real and the flag relaxes ONLY it).
 check "file:// page refused without --allow-file-fixture" 5 "$TARGET" --grant-file "$GRANT"
 
-# 3. Wrong league id: grant matches target, but no page for that league.
-check "wrong league id refused" 5 \
+# 3. Unknown league id: refused immediately (not a known real league; mock
+#    rooms must use --mock). Tightened 2026-08-29 post-Synaps1.
+check "unknown league id refused" 2 \
   '{"playerId":3918298,"playerName":"Josh Allen","leagueId":999999,"teamId":2}' \
   --grant-file "$GRANT_WRONG_LEAGUE" --allow-file-fixture
+
+# 3b. Known real league with no open page: refused at page-location stage.
+check "known league without open page refused" 5 \
+  '{"playerId":3918298,"playerName":"Josh Allen","leagueId":2144943745,"teamId":4}' \
+  --grant-file "$GRANT_SYNAPS2_NOPAGE" --allow-file-fixture
+
+# 3c. Mock mode can never target a real league.
+check "mock mode refuses real league" 2 \
+  '{"playerId":3918298,"playerName":"Josh Allen","leagueId":305025860,"teamId":2}' \
+  --grant-file "$GRANT" --mock
 
 # 4. Missing grant file argument.
 check "missing grant refused" 2 "$TARGET" --allow-file-fixture
