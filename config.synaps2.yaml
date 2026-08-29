@@ -1,0 +1,32 @@
+# Synaps2 — ESPN league configuration
+# Source: ESPN mSettings/mTeam API via authenticated read-only fetch, captured 2026-08-28.
+espn:
+  league_id: 2144943745
+  team_id: 4
+  season_id: 2026
+  authorized_team: Synaps2
+  read_only: true
+league:
+  teams: 12
+  scoring: ppr
+  draft_type: snake
+  draft_time: "2026-09-07T18:00:00-04:00"
+  seconds_per_pick: 90
+  roster_slots:
+    QB: 1
+    RB: 2
+    WR: 2
+    TE: 1
+    FLEX: 1
+    DST: 1
+    K: 1
+    BENCH: 7
+    IR: 1
+strategy:
+  roster_need_weight: 8.0
+  scarcity_weight: 6.0
+  value_weight: 4.0
+  bye_penalty_weight: 1.5
+  wait_until_round:
+    DST: 14
+    K: 15
