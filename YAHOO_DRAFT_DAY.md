@@ -12,15 +12,23 @@
 - **FORBIDDEN:** the team **RoughRydas** (and any Yahoo analog) — never touch
   it. Code enforces this (`PermissionError` in `yahoo_safety.YahooAllowlist`,
   hard refusals in every `scripts/yahoo_*.mjs`). See `TEAM_SAFETY.md`.
-- **Yahoo draft: Sun Aug 30, 2026, 6:00 PM EDT (target).**
-  - League ID: `⟨YAHOO_LEAGUE_ID⟩`  |  Team ID: `⟨YAHOO_TEAM_ID⟩`
+- **Yahoo draft: Sun Sep 6, 2026, 10:00 AM EDT** — per the league Scoring &
+  Settings page (read-only recon 2026-08-29). NOTE: user initially relayed
+  "Aug 30, 6 PM"; the settings page overrides. Dad's verbal confirm pending.
+  - League: `384341` **"Old Backs Fresh Minds"** | Team: `6` **"All I Do Is
+    Win"** — CANDIDATE (matches name user supplied; only team on account).
+    Allowlist stays EMPTY until dad confirms verbatim; populating it remains
+    a reviewed, user-approved edit.
   - Game key (2026 NFL, fetch via `/game/nfl`): `⟨GAME_KEY⟩`  → league key
     `⟨GAME_KEY⟩.l.⟨YAHOO_LEAGUE_ID⟩`, team key `…​.t.⟨YAHOO_TEAM_ID⟩`
-  - Settings: `⟨N⟩`-team `⟨PPR?⟩` `⟨snake/auction⟩`, `⟨SECONDS⟩`s/pick
+  - Settings (recon-verified): 10-team **HALF-PPR (0.5/rec)** H2H snake
+    ("Live Standard Draft"), **60s/pick** — faster than ESPN's 90s; retune
+    act-by/halt thresholds. Roster QB/2WR/2RB/TE/W-R-T/K/DEF, 6 BN, 2 IR;
+    pass TD 4, INT −1, fumble −2. Raw HTML: main `data/yahoo/raw/`.
   - Draft slot: `⟨SLOT⟩` (randomized at `⟨TIME⟩`?)
   - Draft session id for grants: `⟨GAME_KEY⟩.l.⟨LEAGUE⟩-2026-⟨DRAFT_EPOCH_MS⟩`
     (convention mirroring ESPN's `league-season-epoch`; confirm derivation)
-  - Data root: `data/yahoo/⟨YAHOO_LEAGUE_ID⟩/`
+  - Data root: `data/yahoo/384341/`
 
 ## Current state (scaffold reality check)
 
@@ -61,7 +69,7 @@
   the flow himself; the agent never initiates login. Scope `fspt-r` only
   unless proven otherwise.
 
-## If the user shows up (~5 PM Sun Aug 30) — target sequence
+## If the user shows up (~9 AM Sun Sep 6) — target sequence
 
 ```bash
 cd "⟨REPO_ROOT⟩"
@@ -96,7 +104,7 @@ TEAM=⟨YAHOO_ALIAS⟩ YAHOO_LEAGUE_KEY=⟨GAME_KEY⟩.l.⟨LEAGUE⟩ node scrip
 #            → verify pick in next snapshot → audit. One click max per turn.
 ```
 
-## Timeline (target: Sun 2026-08-30, 6:00 PM EDT draft)
+## Timeline (target: Sun 2026-09-06, 10:00 AM EDT draft — a MORNING draft)
 
 | When | What |
 | --- | --- |
@@ -106,8 +114,13 @@ TEAM=⟨YAHOO_ALIAS⟩ YAHOO_LEAGUE_KEY=⟨GAME_KEY⟩.l.⟨LEAGUE⟩ node scrip
 | T-60 min | Fresh data, board, pre-rank refresh, preflight |
 | T-30 min | Dry-run gate in the real draft room (rung 3 go/no-go) |
 | T-15 min | Grant issued (session-bound, ≤3h expiry) |
-| 6:00 PM | Draft at the highest rung earned |
+| 10:00 AM | Draft at the highest rung earned |
 | After | Save roster + audit; retro vs ESPN drafts |
+
+Heads-up: **Synaps2 (ESPN) drafts the next evening** — Mon Sep 7, 6:00 PM EDT.
+Half-PPR strategy note: 0.5/rec shifts value toward RBs vs Synaps1's full
+PPR — dad's "RBs touch the ball more" tilt is MORE correct here. Board must
+be built from this league's scoring; the Synaps1 board does not transfer.
 
 ## Rules that must not be relaxed (identical to ESPN)
 
