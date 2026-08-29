@@ -22,7 +22,7 @@ from typing import Any, Callable, Mapping, Protocol, Sequence
 
 from .models import DraftState
 from .observer import SnapshotError, apply_snapshot
-from .operator import Blocked, Operator, SubmitIntent
+from .operator import AuditLogLike, Blocked, Operator, SubmitIntent
 
 
 class SubmitStatus(Enum):
@@ -90,43 +90,77 @@ def verify_and_submit(
     fetch_snapshot: Callable[[], Mapping[str, Any]],
     now_fn: Callable[[], int],
     player_lookup: Mapping[int, Mapping[str, Any]] | None = None,
+    *,
+    audit: "AuditLogLike | None" = None,
 ) -> Outcome:
     """Submit at most one verified pick. Never clicks twice, never retries."""
+
+    def done(outcome: Outcome) -> Outcome:
+        if audit is not None:
+            audit.log(
+                "actuate.result",
+                status=outcome.status.value,
+                reason=outcome.reason,
+                submit_calls=outcome.submit_calls,
+                player=outcome.intent.player_name if outcome.intent else None,
+                expected_overall=(
+                    outcome.intent.expected_overall if outcome.intent else None
+                ),
+            )
+        return outcome
+
     # 1. Initial intent from the caller's state — all guards must pass.
     initial = operator.submit_intent(state, board_rows, round_no, slot, now_fn())
     if isinstance(initial, Blocked):
-        return Outcome(SubmitStatus.BLOCKED, initial.reason)
+        return done(Outcome(SubmitStatus.BLOCKED, initial.reason))
 
     # 2. Refresh from a brand-new snapshot immediately before submitting.
     try:
         fresh_state, _ = apply_snapshot(state, fetch_snapshot(), now_fn(), player_lookup)
     except SnapshotError as exc:
-        return Outcome(SubmitStatus.BLOCKED, f"pre-submit snapshot malformed: {exc}")
+        return done(
+            Outcome(SubmitStatus.BLOCKED, f"pre-submit snapshot malformed: {exc}")
+        )
 
-    # 3. Re-run every check against the fresh state.
-    final = operator.submit_intent(fresh_state, board_rows, round_no, slot, now_fn())
+    # 3. Re-run every check against the fresh state (round/slot re-derived
+    #    from the fresh on-clock overall — never trusted from the caller).
+    final = operator.submit_intent(fresh_state, board_rows, None, None, now_fn())
     if isinstance(final, Blocked):
-        return Outcome(SubmitStatus.BLOCKED, f"pre-submit re-check failed: {final.reason}")
+        return done(
+            Outcome(SubmitStatus.BLOCKED, f"pre-submit re-check failed: {final.reason}")
+        )
 
     if final.player_id != initial.player_id:
         # Fallback path: only legal if the fresh snapshot PROVES the primary
         # is gone. (Safety of clock/state was just re-proven by the re-check.)
         drafted_ids = {p.player_id for p in fresh_state.picks}
         if initial.player_id not in drafted_ids:
-            return Outcome(
-                SubmitStatus.BLOCKED,
-                "candidate changed without snapshot evidence that the primary is gone",
+            return done(
+                Outcome(
+                    SubmitStatus.BLOCKED,
+                    "candidate changed without snapshot evidence that the "
+                    "primary is gone",
+                )
             )
 
     # 4. Exactly one submit call for this intent.
+    if audit is not None:
+        audit.log(
+            "actuate.attempt",
+            player=final.player_name,
+            player_id=final.player_id,
+            expected_overall=final.expected_overall,
+        )
     result = actuator.submit(final)
     if not result.accepted:
-        return Outcome(
-            SubmitStatus.HALT,
-            f"submit not accepted ({result.detail or 'no detail'}); "
-            "manual takeover — no retry",
-            intent=final,
-            submit_calls=1,
+        return done(
+            Outcome(
+                SubmitStatus.HALT,
+                f"submit not accepted ({result.detail or 'no detail'}); "
+                "manual takeover — no retry",
+                intent=final,
+                submit_calls=1,
+            )
         )
 
     # 5. Require a confirming snapshot before continuing. Missing/erroring
@@ -136,23 +170,29 @@ def verify_and_submit(
             fresh_state, fetch_snapshot(), now_fn(), player_lookup
         )
     except SnapshotError as exc:
-        return Outcome(
-            SubmitStatus.HALT,
-            f"confirmation snapshot malformed: {exc}; manual takeover — no retry",
-            intent=final,
-            submit_calls=1,
+        return done(
+            Outcome(
+                SubmitStatus.HALT,
+                f"confirmation snapshot malformed: {exc}; manual takeover — no retry",
+                intent=final,
+                submit_calls=1,
+            )
         )
     if not _pick_confirmed(confirmed_state, final):
-        return Outcome(
-            SubmitStatus.HALT,
-            f"pick {final.player_name!r} not confirmed at overall "
-            f"{final.expected_overall}; manual takeover — no retry",
+        return done(
+            Outcome(
+                SubmitStatus.HALT,
+                f"pick {final.player_name!r} not confirmed at overall "
+                f"{final.expected_overall}; manual takeover — no retry",
+                intent=final,
+                submit_calls=1,
+            )
+        )
+    return done(
+        Outcome(
+            SubmitStatus.SUBMITTED,
+            f"verified {final.player_name!r} at overall {final.expected_overall}",
             intent=final,
             submit_calls=1,
         )
-    return Outcome(
-        SubmitStatus.SUBMITTED,
-        f"verified {final.player_name!r} at overall {final.expected_overall}",
-        intent=final,
-        submit_calls=1,
     )

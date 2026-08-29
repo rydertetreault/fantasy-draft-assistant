@@ -137,6 +137,42 @@ def apply_snapshot(
     return new_state, events
 
 
+def derive_session_id(league: Mapping[str, Any]) -> str | None:
+    """Derive the observed draft-session id from a league snapshot.
+
+    Grants for AUTOPICK are bound to one specific draft session (CP2 verdict,
+    MEDIUM). The id is ``"<league_id>-<season>-<marker>"`` where the marker is
+    the scheduled draft date (``settings.draftSettings.date``, epoch ms) when
+    present, else a coarse ``draftDetail`` phase marker. Returns ``None`` when
+    the payload cannot be identified — callers must then treat the session as
+    unknown (grants cannot be session-checked, but everything else still
+    applies).
+    """
+    if not isinstance(league, Mapping):
+        return None
+    league_id = league.get("id")
+    season = league.get("seasonId")
+    if not isinstance(league_id, int) or isinstance(league_id, bool):
+        return None
+    if not isinstance(season, int) or isinstance(season, bool):
+        return None
+    settings = league.get("settings")
+    if isinstance(settings, Mapping):
+        draft_settings = settings.get("draftSettings")
+        if isinstance(draft_settings, Mapping):
+            date = draft_settings.get("date")
+            if isinstance(date, int) and not isinstance(date, bool):
+                return f"{league_id}-{season}-{date}"
+    detail = league.get("draftDetail")
+    marker = "pending"
+    if isinstance(detail, Mapping):
+        if detail.get("drafted") is True:
+            marker = "drafted"
+        elif detail.get("inProgress") is True:
+            marker = "in-progress"
+    return f"{league_id}-{season}-{marker}"
+
+
 def state_age_ms(state: DraftState, now_ms: int) -> int:
     """Milliseconds since the last successful sync; NEVER negative.
 
