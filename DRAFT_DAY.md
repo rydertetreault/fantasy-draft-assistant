@@ -28,9 +28,19 @@
 
 ## Authorizations & mode policy
 
-- Mode decision was delegated to the agent. Decision: **conditional autopick**
-  — autopick only if the T-30 live dry-run gate passes; otherwise advisory;
-  if nobody present, ESPN pre-rank autodrafts.
+- **PRIMARY MODE (user confirmed on draft eve): AGENT-IN-THE-LOOP LIVE.** The
+  user will be logged in, at the machine, browser open, session active. The
+  agent watches the draft live via the read-only poller snapshots and DECIDES
+  EVERY PICK itself — using the engine's recommendations as decision support
+  plus live judgment the engine lacks: opponents' roster needs (who needs an
+  RB before our next turn?), positional runs in progress, tier-cliff survival
+  odds, and late news. Each pick: decide → submit via
+  `scripts/espn_actuate.mjs --live` (grant required) → verify in next snapshot
+  → log reasoning. Work the clock in-turn: sleep/poll between picks, act by
+  ~45s remaining, halt to the user by ~30s if unconfirmed.
+- Backup if the agent session is interrupted: `fantasy-draft run --mode
+  autopick` (engine drafts alone). Floor: ESPN pre-rank autodraft.
+- Dry-run gate at T-30 still mandatory before any --live submission.
 - Grant: create at T-15, ephemeral file in /tmp (never commit), must name the
   exact session id above, short expiry (draft window only).
 - Browser stays read-only EXCEPT: verified pick submission during the draft
@@ -65,9 +75,14 @@ node scripts/espn_actuate.mjs '{"playerId":4429795,"playerName":"Jahmyr Gibbs","
 #      "draft_session_id":"305025860-2026-1788040800000",
 #      "issued_at_ms":<now>,"expires_at_ms":<now+3h>}  → /tmp/grant.json
 
-# 6. Run (two terminals)
+# 6. Run — AGENT-IN-THE-LOOP (primary): poller feeds snapshots, the AGENT
+#    watches and decides each pick live, submitting via espn_actuate.mjs.
 TEAM=synaps1 node scripts/espn_poll.mjs &            # read-only snapshot poller
-.venv/bin/fantasy-draft run --team synaps1 --mode autopick --grant-file /tmp/grant.json
+#    Agent loop per turn: read newest data/synaps1/snapshots/*.json →
+#    dashboard + engine rec → agent decision (opponent rosters, runs, tiers) →
+#    node scripts/espn_actuate.mjs '<payload>' --grant-file /tmp/grant.json --live
+#    → verify pick in next snapshot → audit. Engine-only backup if needed:
+#    .venv/bin/fantasy-draft run --team synaps1 --mode autopick --grant-file /tmp/grant.json
 #    dashboard anytime: .venv/bin/fantasy-draft dashboard --team synaps1
 ```
 
