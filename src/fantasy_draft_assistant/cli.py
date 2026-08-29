@@ -175,6 +175,20 @@ def cmd_preflight(args: argparse.Namespace) -> int:
     return 0 if report["ok"] else 1
 
 
+def cmd_run(args: argparse.Namespace) -> int:
+    from .runner import run_live
+
+    return run_live(
+        team=args.team,
+        config_path=args.config or f"config.{args.team}.yaml",
+        data_dir=args.data,
+        mode=args.mode,
+        grant_path=args.grant_file,
+        poll_ms=args.poll_ms,
+        snapshot_dir=args.snapshot_dir,
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     shared = argparse.ArgumentParser(add_help=False)
     shared.add_argument("--players", default=None, help="Path to players CSV")
@@ -250,6 +264,32 @@ def build_parser() -> argparse.ArgumentParser:
         help="Staleness threshold for raw source and board.csv (default 12h)",
     )
     pre.set_defaults(func=cmd_preflight)
+
+    run = sub.add_parser(
+        "run",
+        help="Long-running live loop: observe snapshots, advise, or autopick",
+        parents=[shared],
+    )
+    run.add_argument("--team", required=True, help="Team alias (e.g. synaps1)")
+    run.add_argument("--data", default="data", help="Data directory")
+    run.add_argument(
+        "--mode", required=True, choices=["observe", "advisory", "autopick"],
+        help="observe=read-only, advisory=print recommendations, "
+        "autopick=guarded submission (requires --grant-file)",
+    )
+    run.add_argument(
+        "--grant-file", default=None,
+        help="Ephemeral autopick grant JSON (required for --mode autopick)",
+    )
+    run.add_argument(
+        "--poll-ms", type=int, default=2000, help="Snapshot poll interval (ms)"
+    )
+    run.add_argument(
+        "--snapshot-dir", default=None,
+        help="Directory the external poller writes to "
+        "(default data/<team>/snapshots/)",
+    )
+    run.set_defaults(func=cmd_run)
     return parser
 
 
