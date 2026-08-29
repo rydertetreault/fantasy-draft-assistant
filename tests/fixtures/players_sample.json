@@ -1,0 +1,812 @@
+{
+ "players": [
+  {
+   "player": {
+    "defaultPositionId": 1,
+    "fullName": "Josh Allen",
+    "id": 3918298,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 21.56,
+     "percentOwned": 99.88
+    },
+    "proTeamId": 2,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 364.62
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 369.69012399
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 1,
+    "fullName": "Lamar Jackson",
+    "id": 3916387,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 38.07,
+     "percentOwned": 99.7
+    },
+    "proTeamId": 33,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 214.86
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 322.93420992
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 1,
+    "fullName": "Drake Maye",
+    "id": 4431452,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 47.42,
+     "percentOwned": 99.14
+    },
+    "proTeamId": 17,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 351.96
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 319.39446754
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 1,
+    "fullName": "Jayden Daniels",
+    "id": 4426348,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 51.31,
+     "percentOwned": 98.74
+    },
+    "proTeamId": 28,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 114.28
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 318.38275744
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 1,
+    "fullName": "Jalen Hurts",
+    "id": 4040715,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 51.84,
+     "percentOwned": 97.87
+    },
+    "proTeamId": 21,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 299.06
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 320.28782567
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 2,
+    "fullName": "Jahmyr Gibbs",
+    "id": 4429795,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 1.4,
+     "percentOwned": 99.91
+    },
+    "proTeamId": 8,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 366.9
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 364.86283547
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 2,
+    "fullName": "Bijan Robinson",
+    "id": 4430807,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 2.44,
+     "percentOwned": 99.88
+    },
+    "proTeamId": 1,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 370.8
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 352.77372978
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 2,
+    "fullName": "Christian McCaffrey",
+    "id": 3117251,
+    "injuryStatus": "QUESTIONABLE",
+    "ownership": {
+     "averageDraftPosition": 7.39,
+     "percentOwned": 99.87
+    },
+    "proTeamId": 25,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 416.6
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 342.7953256
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 2,
+    "fullName": "Jonathan Taylor",
+    "id": 4242335,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 7.32,
+     "percentOwned": 99.85
+    },
+    "proTeamId": 11,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 362.3
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 316.51492623
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 2,
+    "fullName": "James Cook III",
+    "id": 4379399,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 11.91,
+     "percentOwned": 99.84
+    },
+    "proTeamId": 2,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 302.2
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 279.62304109
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 2,
+    "fullName": "De'Von Achane",
+    "id": 4429160,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 11.97,
+     "percentOwned": 99.81
+    },
+    "proTeamId": 15,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 322.8
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 293.3917087
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 2,
+    "fullName": "Saquon Barkley",
+    "id": 3929630,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 15.14,
+     "percentOwned": 99.8
+    },
+    "proTeamId": 21,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 232.3
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 273.61149748
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 2,
+    "fullName": "Derrick Henry",
+    "id": 3043078,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 18.29,
+     "percentOwned": 99.73
+    },
+    "proTeamId": 33,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 279.5
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 274.74441837
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 3,
+    "fullName": "Amon-Ra St. Brown",
+    "id": 4374302,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 8.23,
+     "percentOwned": 99.89
+    },
+    "proTeamId": 8,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 324.0
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 323.95373858
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 3,
+    "fullName": "Ja'Marr Chase",
+    "id": 4362628,
+    "injuryStatus": "QUESTIONABLE",
+    "ownership": {
+     "averageDraftPosition": 4.04,
+     "percentOwned": 99.89
+    },
+    "proTeamId": 4,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 313.6
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 337.50394359
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 3,
+    "fullName": "Puka Nacua",
+    "id": 4426515,
+    "injuryStatus": "QUESTIONABLE",
+    "ownership": {
+     "averageDraftPosition": 5.22,
+     "percentOwned": 99.89
+    },
+    "proTeamId": 14,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 375.0
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 356.28899385
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 3,
+    "fullName": "Jaxon Smith-Njigba",
+    "id": 4430878,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 5.78,
+     "percentOwned": 99.88
+    },
+    "proTeamId": 26,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 359.9
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 326.73799013
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 3,
+    "fullName": "CeeDee Lamb",
+    "id": 4241389,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 10.85,
+     "percentOwned": 99.87
+    },
+    "proTeamId": 6,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 200.9
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 293.69101609
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 3,
+    "fullName": "Justin Jefferson",
+    "id": 4262921,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 12.17,
+     "percentOwned": 99.84
+    },
+    "proTeamId": 16,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 201.5
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 293.70997865
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 3,
+    "fullName": "Drake London",
+    "id": 4426502,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 18.76,
+     "percentOwned": 99.64
+    },
+    "proTeamId": 1,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 201.9
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 269.75607346
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 3,
+    "fullName": "George Pickens",
+    "id": 4426354,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 30.26,
+     "percentOwned": 99.61
+    },
+    "proTeamId": 6,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 291.9
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 238.61423794
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 4,
+    "fullName": "Trey McBride",
+    "id": 4361307,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 21.05,
+     "percentOwned": 99.84
+    },
+    "proTeamId": 22,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 315.9
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 241.86946795
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 4,
+    "fullName": "Brock Bowers",
+    "id": 4432665,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 24.27,
+     "percentOwned": 99.82
+    },
+    "proTeamId": 13,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 176.2
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 240.93843933
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 4,
+    "fullName": "Colston Loveland",
+    "id": 4723086,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 44.53,
+     "percentOwned": 99.38
+    },
+    "proTeamId": 3,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 165.1
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 205.91730906
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 4,
+    "fullName": "Tyler Warren",
+    "id": 4431459,
+    "injuryStatus": "QUESTIONABLE",
+    "ownership": {
+     "averageDraftPosition": 50.87,
+     "percentOwned": 98.93
+    },
+    "proTeamId": 11,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 188.5
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 210.87187326
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 4,
+    "fullName": "Kyle Pitts Sr.",
+    "id": 4360248,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 65.6,
+     "percentOwned": 95.86
+    },
+    "proTeamId": 1,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 210.8
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 185.1312031
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 5,
+    "fullName": "Brandon Aubrey",
+    "id": 3953687,
+    "injuryStatus": "ACTIVE",
+    "ownership": {
+     "averageDraftPosition": 87.59,
+     "percentOwned": 99.77
+    },
+    "proTeamId": 6,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 184.6
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 171.6620134
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 5,
+    "fullName": "Cameron Dicker",
+    "id": 4362081,
+    "injuryStatus": "QUESTIONABLE",
+    "ownership": {
+     "averageDraftPosition": 107.99,
+     "percentOwned": 99.19
+    },
+    "proTeamId": 24,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 167.0
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 161.89372019
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 16,
+    "fullName": "Texans D/ST",
+    "id": -16034,
+    "ownership": {
+     "averageDraftPosition": 89.49,
+     "percentOwned": 98.79
+    },
+    "proTeamId": 34,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 173.0
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 130.32037212
+     }
+    ]
+   }
+  },
+  {
+   "player": {
+    "defaultPositionId": 16,
+    "fullName": "Broncos D/ST",
+    "id": -16007,
+    "ownership": {
+     "averageDraftPosition": 99.07,
+     "percentOwned": 98.42
+    },
+    "proTeamId": 7,
+    "stats": [
+     {
+      "seasonId": 2025,
+      "statSourceId": 0,
+      "statSplitTypeId": 0,
+      "appliedTotal": 144.0
+     },
+     {
+      "seasonId": 2026,
+      "statSourceId": 1,
+      "statSplitTypeId": 0,
+      "appliedTotal": 130.59132964
+     }
+    ]
+   }
+  }
+ ]
+}

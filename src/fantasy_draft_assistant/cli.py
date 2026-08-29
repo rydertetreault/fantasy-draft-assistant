@@ -86,6 +86,13 @@ def cmd_reset(args: argparse.Namespace) -> None:
     console.print("Draft state reset")
 
 
+def cmd_build_board(args: argparse.Namespace) -> None:
+    from .pipeline import build_board
+
+    board_path = build_board(args.raw, args.team, args.out)
+    console.print(f"Board written: [bold]{board_path}[/bold]")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="fantasy-draft")
     parser.add_argument("--players", default=None, help="Path to players CSV")
@@ -113,6 +120,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     reset = sub.add_parser("reset", help="Clear draft state")
     reset.set_defaults(func=cmd_reset)
+
+    board = sub.add_parser(
+        "build-board", help="Build data/<team>/board.csv from raw ESPN players JSON"
+    )
+    board.add_argument("--team", required=True, help="Team alias (e.g. synaps1)")
+    board.add_argument(
+        "--raw", default="data/raw/players.json", help="Path to raw players.json"
+    )
+    board.add_argument("--out", default="data", help="Output data directory")
+    board.set_defaults(func=cmd_build_board)
     return parser
 
 
