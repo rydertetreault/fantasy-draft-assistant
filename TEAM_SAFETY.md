@@ -6,7 +6,8 @@ Last confirmed: 2026-08-28
 
 - **Synaps1** — authorized for read-only analysis and user-approved draft-assistant work.
   - Current ESPN page identified by the user as Synaps1: league ID `305025860`, team ID `2`, season `2026`.
-- **Synaps2** — authorized for read-only analysis and user-approved draft-assistant work. ESPN IDs not mapped yet.
+- **Synaps2** — authorized for read-only analysis and user-approved draft-assistant work.
+  - Mapped 2026-08-28: league ID `2144943745` ("2026 GTA VI B4 CASH W League"), team ID `4`, season `2026`, 12-team PPR snake, drafts Mon Sep 7 2026 6:00 PM EDT.
 
 ## Protected team
 
