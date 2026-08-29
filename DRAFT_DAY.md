@@ -107,3 +107,13 @@ TEAM=synaps1 node scripts/espn_poll.mjs &            # read-only snapshot poller
 - Save the final roster + audit log; note what worked for the Synaps2 run Sep 7.
 - Synaps2 gets the same treatment: fresh data → board → pre-rank upload
   (`--league 2144943745 --team 4`) → live operator if user is present.
+
+## User strategy preference (draft eve)
+
+User prefers securing two good RBs early ("RBs touch the ball more"). Agreed
+policy — **RB tilt, not RB rule**: in rounds 1-4, when candidates are within
+~6 projected points, break the tie toward RB. Never pass a clearly superior
+elite WR to force RB2 (full PPR: WR5->WR15 drop is 55 pts this year vs RB's
+34; but RB15->RB27 craters 67 pts, so aim to secure 2 startable RBs before
+the round-5 RB cliff). If the room runs on RBs early, pivot to the abandoned
+elite WRs and attack RB again rounds 3-5.
