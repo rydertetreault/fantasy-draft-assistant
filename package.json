@@ -1,0 +1,19 @@
+{
+  "name": "fantasy-draft-assistant",
+  "version": "1.0.0",
+  "description": "A scriptable fantasy football draft assistant for live draft day decisions.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "playwright": "^1.62.1"
+  }
+}

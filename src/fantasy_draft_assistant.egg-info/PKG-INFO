@@ -1,0 +1,64 @@
+Metadata-Version: 2.4
+Name: fantasy-draft-assistant
+Version: 0.1.0
+Summary: Fantasy football live draft recommendation CLI
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pandas>=2.0
+Requires-Dist: rich>=13.0
+Requires-Dist: pyyaml>=6.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+
+# Fantasy Draft Assistant
+
+A scriptable fantasy football draft assistant for live draft day decisions.
+
+It ranks players using projections, ADP/value, roster needs, positional scarcity, bye-week risk, and your league settings. During the draft you can mark picks as taken and get a ranked recommendation for your next pick.
+
+## Quick start
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+
+# Show best available recommendations
+fantasy-draft recommend --round 1 --pick 8
+
+# Mark a player as drafted by someone else
+fantasy-draft draft "Ja'Marr Chase"
+
+# Mark your own pick
+fantasy-draft draft "Bijan Robinson" --mine
+
+# View roster
+fantasy-draft roster
+```
+
+## Files
+
+- `data/players.csv` — editable player projections/rankings.
+- `data/draft_state.json` — current draft state, generated automatically.
+- `config.example.yaml` — league and strategy configuration example.
+- `src/fantasy_draft_assistant/` — package source.
+
+## Draft day workflow
+
+1. Update `data/players.csv` with current projections/ADP before the draft.
+2. Adjust league settings in `config.yaml` copied from `config.example.yaml`.
+3. Run recommendations before each of your picks.
+4. Immediately mark each selected player with `fantasy-draft draft "Player Name"`.
+5. Use `--mine` for your selections so roster needs are included.
+
+## GitHub setup
+
+After creating an empty GitHub repository:
+
+```bash
+git remote add origin git@github.com:YOUR_USER/fantasy-draft-assistant.git
+git add .
+git commit -m "Initial fantasy draft assistant"
+git push -u origin main
+```
+

@@ -1,0 +1,2 @@
+[console_scripts]
+fantasy-draft = fantasy_draft_assistant.cli:main
