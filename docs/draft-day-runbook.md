@@ -96,3 +96,25 @@ observe mode; it may keep recommending, but it must not click again.
 - Exact allowlist match (alias, league, team, season) before any write.
 - Grants are ephemeral, session-bound, and never committed to git.
 - All tests and the full replay must be green **before** enabling autopick.
+
+---
+
+## Addendum (2026-08-28 night): machine-off-primary plan for Synaps1
+
+The user cannot guarantee the machine stays on. Layered plan, best rung wins:
+
+1. **ESPN server-side pre-rank (ACTIVE NOW)** — 250-player VORP list uploaded
+   and verified on ESPN (`draftStrategy.draftList`, first 5: Gibbs, Robinson,
+   Nacua, McCaffrey, Chase; DST/K in the tail). If nothing else runs, ESPN
+   autodrafts from this list. Refresh with:
+   `python scripts/make_draftlist.py data/synaps1/board.csv /tmp/dl.json &&
+    node scripts/espn_set_draftlist.mjs /tmp/dl.json`
+2. **Live operator (IF user is present)** — user logs in ~5 PM, keeps machine
+   awake (`caffeinate -dis`), runs the T-60 sequence below; advisory or
+   autopick per the standing authorization (grant issued at T-15, dry-run gate
+   at T-30 still mandatory before --live).
+3. **Any failure mid-draft** — operator HALT drops to advisory; if nobody is
+   present, ESPN continues from the pre-rank list automatically.
+
+Standing authorization recorded 2026-08-28: autopick for Synaps1 session
+305025860-2026-1788040800000 + the one-time draft-strategy write (done).
