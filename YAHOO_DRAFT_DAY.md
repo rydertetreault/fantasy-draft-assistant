@@ -150,7 +150,31 @@
   (mock #2 tab closed at r2): driver now re-latches to a live
   `draftclient`/`mock_waiting` tab instead of error-spinning.
 
-## Next session — run the validation mock
+## TONIGHT (Sun Aug 30) — real-draft runbook, draft 7:00 PM EDT
+
+Validated in mock #8 (15/15 driver picks, K+DEF landed via endgame gate +
+select-dropdown switch): `scripts/yahoo_live_driver.mjs` = the same loop,
+real-room-only, gated (dry-run default; --live needs a valid grant).
+
+```bash
+cd "/Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant"
+# T-30 (6:30): USER opens the real room (football.fantasysports.yahoo.com
+#   /f1/384341/draft) in the dedicated Chrome. DRY-RUN gate:
+node scripts/yahoo_live_driver.mjs            # logs would-be clicks only
+#   PASS = latches room, reads state, names sane choices. Then Ctrl-C.
+# T-15 (6:45): issue grant (owner authorizes) -> /tmp/yahoo_grant.json:
+#   {"alias":"allidoiswin","league_id":384341,
+#    "draft_session_id":"470.l.384341-2026-1788130800000",
+#    "issued_at_ms":<now>,"expires_at_ms":<now+4h>}
+# T-10: arm live:
+nohup node scripts/yahoo_live_driver.mjs --live --grant-file /tmp/yahoo_grant.json \
+  > data/yahoo/live_driver_stdout.log 2>&1 &
+tail -f data/yahoo/live_driver.log
+# Rules: single-device (room ONLY in dedicated Chrome), one submission max
+# per turn (built in), UNVERIFIED after click => driver holds, human takes over.
+```
+
+## Next session — run the validation mock (SUPERSEDED by mock #8 — kept for reference)
 
 ```bash
 cd "/Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant"
