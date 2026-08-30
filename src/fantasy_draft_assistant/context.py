@@ -179,14 +179,29 @@ def tier_survivors(
 
 
 def expected_position_takes(
-    gap_probs: list[dict[str, float]], runs: dict[str, int]
+    gap_probs: list[dict[str, float]],
+    runs: dict[str, int],
+    all_picks: list[TeamPick] | None = None,
+    teams: int = 12,
 ) -> dict[str, float]:
-    """Expected number of players taken at each position before our next
-    pick, from live opponent-need modeling. An active run at a position is
-    live evidence the drain rate is hotter than the need model says."""
+    """Expected picks at each position before our next turn.
+
+    Blends two LIVE signals: (a) the opponent-need model (who lacks what),
+    and (b) the OBSERVED positional take-rate of this actual room over the
+    last ~2 rounds. Need says "everyone wants a QB eventually"; observation
+    says "nobody in this room is taking QBs yet". Observation dominates once
+    there is enough of it (the r2 Josh Allen bug: predicted 30% QB rate in a
+    room whose measured rate was 0%). A run adds +1 on top."""
+    gap_len = len(gap_probs)
+    window = (all_picks or [])[-2 * teams:]
+    n_obs = len(window)
+    w_obs = min(0.7, n_obs / (2.0 * teams)) if n_obs else 0.0
+    obs_share = Counter(p.pos for p in window)
     takes: dict[str, float] = {}
     for pos in CORE_POSITIONS:
-        takes[pos] = sum(p.get(pos, 0.0) for p in gap_probs)
+        need_based = sum(p.get(pos, 0.0) for p in gap_probs)
+        observed = gap_len * (obs_share.get(pos, 0) / n_obs) if n_obs else 0.0
+        takes[pos] = (1.0 - w_obs) * need_based + w_obs * observed
         if pos in runs:
             takes[pos] += 1.0
     return takes
@@ -258,7 +273,7 @@ def contextual_recommend(
     ]
 
     runs = detect_runs(all_picks)
-    takes = expected_position_takes(gap_probs, runs)
+    takes = expected_position_takes(gap_probs, runs, all_picks, teams)
     next_best_at = {
         pos: expected_next_best(available, pos, takes.get(pos, 0.0))
         for pos in CORE_POSITIONS
