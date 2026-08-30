@@ -18,9 +18,26 @@ strategy:
   scarcity_weight: 6.0
   value_weight: 4.0
   bye_penalty_weight: 1.5
-  # No preset position-round rules — wait-loss math decides (user directive).
-  wait_until_round: {}
-  # REQUIRED with empty wait_until_round: extends wait-loss modeling to
+  # OWNER DIRECTIVE (mock #4, r2 Josh Allen graded B): follow the ESPN
+  # profile formula — position round floors. QB added per owner: QBs are
+  # never worth an early pick in a 10-team 1-QB league. K/DST mirror ESPN.
+  wait_until_round:
+    QB: 5
+    DST: 14
+    K: 15
+  # ESPN's floors are only a -30 base-funnel penalty — enough to bury K/DST
+  # there, but the ctx layer re-sorts by wait-loss and ignores it (exactly
+  # how Allen went r2). This makes floors HARD at the ctx layer. Yahoo-only.
+  hard_wait_floors: true
+  # OWNER DIRECTIVE (mock #4: RB,RB,RB before any WR — bad): dedicated
+  # RB/WR/TE starter slots must be valued ahead of flex-stacking; a 3rd RB
+  # while WR1/WR2 sit empty is bench depth, not a starter.
+  fill_starters_before_flex: true
+  # REQUIRED with hard floors: extends wait-loss modeling to
   # K/DST (else their wait_loss = full projection -> round-1 kicker bug,
   # mock #2). Yahoo-profile only; ESPN relies on its round floors instead.
   wait_loss_all_positions: true
+  # K/DST always fall far past ESPN ADP (Aubrey 86.6 vs r14/15 reality) —
+  # exempt them from the ADP ghost filter or the endgame blocks the best
+  # K/DST at exactly the rounds we must draft them. Yahoo-profile only.
+  adp_ghost_skill_only: true

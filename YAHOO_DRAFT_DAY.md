@@ -22,8 +22,12 @@
 
 - **Decision engine is cross-platform and validated**: `ctx_choose.py` +
   `src/fantasy_draft_assistant/context.py` (wait-loss, slot-adjusted VORP,
-  hard caps QB2/TE2/K1/DEF1, no preset round rules — user directive). Same
-  brain that went 16/16 on the ESPN validation mock.
+  hard caps QB2/TE2/K1/DEF1). **OWNER DIRECTIVE (mock #4, r2 Josh Allen
+  graded B + RB,RB,RB start): follow the ESPN profile formula — the Yahoo
+  profile now has HARD round floors (QB r5, DST r14, K r15) enforced at the
+  ctx layer, starters-before-flex, and a K/DST ADP-ghost exemption. All
+  profile-gated; ESPN path A/B-proven byte-identical.** Same brain that went
+  16/16 on the ESPN validation mock.
 - **Half-PPR board**: `data/yahoo/board.csv` (450 players) via
   `scripts/make_yahoo_board.py` (ESPN projections − 0.5×receptions; rebuild
   after fresh `fetch_espn_data.mjs` on draft day). Config: `config.yahoo.yaml`.
@@ -46,17 +50,16 @@
 | Restart amnesia (wrong overall, lost roster) | Roster-panel `(N/15)` count is the turn index; picks persisted per-room; announcements freshness-gated (15s) |
 
 **Still open:**
-1. **Mock #2 (2026-08-30) was cut short at r2** — 2/2 VERIFIED picks (Josh
-   Allen o7, Derrick Henry o14) but the room tab died; validation bar NOT met.
-   Fixed post-mock: (a) K/DST wait-loss hole — `next_best_at` only covered
-   QB/RB/WR/TE so kicker wait_loss = full projection ⇒ round-1 "want K
-   Brandon Aubrey" filter-clicks. Fix is PROFILE-GATED
-   (`strategy.wait_loss_all_positions: true`, Yahoo config only; ESPN path
-   proven byte-identical via A/B). (b) overall/slot bookkeeping per the
-   banner-ordinal correction above. (c) page re-latch on tab death.
-   **TWO-PROFILE RULE (owner directive): league settings differ (ESPN 12tm
-   full-PPR K/DST floors r14/15 vs Yahoo 10tm half-PPR no floors) — every
-   engine change must be per-profile; ESPN's validated profile stays frozen.**
+1. **Mock #4 (2026-08-30, instant-start room): mechanics 4/4 VERIFIED** —
+   room hop + URL slot + mid-draft restart w/ persisted state + Players-tab
+   remount guard all worked. **Strategy graded B by owner: Josh Allen r2
+   (QBs never that high) and RB,RB,RB before any WR.** Fixes (all
+   profile-gated, offline-replayed against the exact mock-4 turns): hard
+   floors QB5/DST14/K15 at the ctx layer (ESPN's -30 base-funnel penalty
+   never bound there), starters-before-flex bench-weighting, K/DST exempt
+   from the ADP ghost filter (Aubrey adp 86.6 would be "ghost" at r14/15).
+   Replays now go WR/WR at the o15/o26 turns; K/DST land r14/15 only.
+   **Needs a full clean validation mock.**
 2. Filter-click still has zero *correct* live reps. Watch it on TE/K/DEF turns.
 3. Fallback once labeled an empty-TE-slot pick "bench 0.0" — believed to be a
    phantom-roster artifact of the collision bugs; confirm gone.
@@ -134,6 +137,11 @@ while the driver is up. Then: implement the pre-rank floor + wire
 `yahoo_actuate.mjs` for the real room, mirroring the ESPN gate sequence.
 
 ## Rules that must not be relaxed
+
+- **TWO-PROFILE RULE (owner directive): every engine/strategy change must be
+  per-profile (`config.synaps2.yaml` vs `config.yahoo.yaml` + profile-gated
+  code flags). ESPN's validated profile stays frozen — prove byte-identical
+  output via A/B after any shared-code edit.**
 
 - The real room (`/f1/384341/draft`) is untouchable by mock tooling. Real
   actuation only via `yahoo_actuate.mjs` gates + owner-authorized grant.

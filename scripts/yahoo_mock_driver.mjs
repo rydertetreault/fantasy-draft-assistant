@@ -151,6 +151,19 @@ while (ourPicks.length < ROUNDS) {
   }
   const sig = `${s.turnText}|${s.clock}|${s.rows.length}|${s.enabledDraftBtnCount}`;
   if (sig !== lastSig) { log(`state: turn=${JSON.stringify(s.turnText)} clock=${s.clock} rows=${s.rows.length} draftBtns=${s.enabledDraftBtnCount}/${s.draftBtnCount}`); lastSig = sig; }
+  // Panel tabs (Queue|Picks|Players|Board|Results|...): after a pick the
+  // panel can leave "Players", unmounting ALL Draft buttons → rows=0 on our
+  // turn → autopick (mock #4 lost picks 15+26 this way). On the clock with
+  // zero Draft buttons: click the Players tab to remount, then re-read.
+  if (s.titleTurn && s.draftBtnCount === 0) {
+    log("players-tab: on clock with 0 draft buttons — clicking Players tab");
+    await page.evaluate(() => {
+      const b = Array.from(document.querySelectorAll("button, [role=tab], a, li")).find((e) => (e.innerText || "").trim() === "Players");
+      if (b) b.click();
+    }).catch(() => null);
+    await new Promise((r) => setTimeout(r, 400));
+    continue;
+  }
   // lobby shows a persistent "YOUR TURN - 9TH PICK" label => banner alone is
   // NOT proof we are on the clock. Require live rows + enabled Draft buttons.
   const onTurn = s.titleTurn && s.rows.length > 0;

@@ -77,6 +77,14 @@ def slot_adjusted_vorp(
             max(0, counts[p] - int(slots.get(p, 0))) for p in FLEX_POSITIONS
         )
         if flex_used < int(slots.get("FLEX", 0)):
+            # OWNER DIRECTIVE (Yahoo profile, mock #4: RB,RB,RB before any
+            # WR): while a dedicated RB/WR/TE starter slot is still empty,
+            # a flex-stacking candidate is bench depth, not a starter —
+            # profile-gated (strategy.fill_starters_before_flex).
+            if config.get("strategy", {}).get("fill_starters_before_flex") and any(
+                counts[p] < int(slots.get(p, 0)) for p in FLEX_POSITIONS
+            ):
+                return 0.3 * (projection - replacement.get(pos, 0.0)), "bench"
             flex_repl = max(replacement.get(p, 0.0) for p in FLEX_POSITIONS)
             return projection - flex_repl, "flex"
     return 0.3 * (projection - replacement.get(pos, 0.0)), "bench"

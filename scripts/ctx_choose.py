@@ -148,6 +148,17 @@ ctx = contextual_recommend(
     players, base, picks, my_roster, a.slot, config, limit=30,
     current_overall=current_overall,
 )
+# HARD round floors (profile-gated): the shared formula's wait_until_round
+# is only a -30 base-funnel penalty — the ctx re-sort ignores it (r2 Josh
+# Allen, mock #4). Profiles with hard_wait_floors drop floored positions
+# HERE so neither the choice nor the filter-click "wanted" can chase them
+# early. Never filters to an empty board (safety).
+hard_floors = (config["strategy"].get("wait_until_round", {}) or {}) if config["strategy"].get("hard_wait_floors") else {}
+ghost_skill_only = bool(config["strategy"].get("adp_ghost_skill_only"))
+if hard_floors:
+    _mask = ctx["pos"].map(lambda p: round_no >= int(hard_floors.get(str(p).replace("D/ST", "DST"), 0) or 0))
+    if _mask.any():
+        ctx = ctx[_mask]
 
 choice = None
 top_any = None
@@ -157,7 +168,13 @@ for _, r in ctx.iterrows():
         continue
     # ADP sanity: an elite player 30+ picks past ADP is a ghost row collision
     # (Bijan vs Brian Robinson, same team/pos/abbrev), never a real faller.
-    if name2adp.get(nm, 999) + 30 < current_overall:
+    # K/DST are exempt (profile-gated): they ALWAYS fall past ESPN ADP
+    # (Aubrey adp 86.6 vs r14/15 reality) and can't abbrev-collide — the
+    # name+pos+team visibility lock already settles their clicks.
+    if (
+        name2adp.get(nm, 999) + 30 < current_overall
+        and not (ghost_skill_only and str(r["pos"]).replace("D/ST", "DST") in ("K", "DST"))
+    ):
         continue
     if top_any is None:
         top_any = r
@@ -181,20 +198,29 @@ if choice is None:
     repl = replacement_levels(players, a.teams)
     counts = roster_counts(my_roster, players)
     best, best_val, best_slot = None, float("-inf"), ""
-    for _, r in b.iterrows():
-        nm = str(r["player"])
-        if nm in excludes or nm in drafted_names or not is_visible(nm):
-            continue
-        if name2adp.get(nm, 999) + 30 < current_overall:
-            continue
-        pos = str(r["pos"]).replace("D/ST", "DST")
-        if counts[pos] >= position_cap(pos, config):
-            continue  # HARD cap: never a 3rd QB/TE, never a 2nd K/DST
-        val, slot_label = slot_adjusted_vorp(
-            pos, float(r["projection"]), my_roster, players, config, repl
-        )
-        if val > best_val:
-            best, best_val, best_slot = r, val, slot_label
+    # pass 1 respects hard floors; pass 2 (only if pass 1 found nobody)
+    # ignores them — an on-clock emergency pick beats an autopick.
+    for allow_floored in (False, True):
+        for _, r in b.iterrows():
+            nm = str(r["player"])
+            if nm in excludes or nm in drafted_names or not is_visible(nm):
+                continue
+            pos = str(r["pos"]).replace("D/ST", "DST")
+            if name2adp.get(nm, 999) + 30 < current_overall and not (
+                ghost_skill_only and pos in ("K", "DST")
+            ):
+                continue
+            if counts[pos] >= position_cap(pos, config):
+                continue  # HARD cap: never a 3rd QB/TE, never a 2nd K/DST
+            if not allow_floored and hard_floors and round_no < int(hard_floors.get(pos, 0) or 0):
+                continue
+            val, slot_label = slot_adjusted_vorp(
+                pos, float(r["projection"]), my_roster, players, config, repl
+            )
+            if val > best_val:
+                best, best_val, best_slot = r, val, slot_label
+        if best is not None:
+            break
     if best is not None:
         print(json.dumps({"playerId": int(best["espn_player_id"]), "playerName": str(best["player"]),
                           "leagueId": a.league, "teamId": a.teamid, "pos": str(best["pos"]),
