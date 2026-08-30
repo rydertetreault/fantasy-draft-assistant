@@ -50,7 +50,24 @@
 | Restart amnesia (wrong overall, lost roster) | Roster-panel `(N/15)` count is the turn index; picks persisted per-room; announcements freshness-gated (15s) |
 
 **Still open:**
-1. **Mock #4 (2026-08-30, instant-start room): mechanics 4/4 VERIFIED** —
+1. **Mock #5 (2026-08-30, real-users room, FAST ~28s/round): mechanics
+   15/15 VERIFIED** (~530ms; slot from waiting-room label; in-place nav +
+   fast turns handled). Strategy through r7 = the directives working:
+   WR/RB/WR/RB/TE, QB r7. **FAILED the bar: ZERO K + ZERO DEF** — DST gain
+   4.87 missed the 5.0 filter-click gate at r14 AND the fallback path never
+   emitted `wanted`. Fixed (offline-replayed on the captured o134/o147
+   states): endgame required-slot forcing (rounds left <= empty required
+   slots ⇒ candidates restricted to them), fallback emits wanted+tokens,
+   driver trusts the chooser's wanted. Picks-scrape captured the real panel
+   format ("e. mcpherson\n(k · cin)") → parser handles it; Players-first
+   state reset fixes delta-only diffs. **Scrape has zero full-draft live
+   reps; filter-click STILL zero live reps.**
+2. **OWNER GRADING NEEDED: QB2 (Bo Nix r8, ctx 0.71) + TE2 (Kelce r9, ctx
+   0.06)** — in 10-team half-PPR the bench RB/WR pool is below replacement
+   by r8, so capped-position backups outscore them. Caps held, but if
+   backup QB/TE are dead roster spots, the fix is bench scoring
+   (upside-weighted RB/WR bench) or QB2/TE2 floors — awaiting directive.
+3. **Mock #4 (2026-08-30, instant-start room): mechanics 4/4 VERIFIED** —
    room hop + URL slot + mid-draft restart w/ persisted state + Players-tab
    remount guard all worked. **Strategy graded B by owner: Josh Allen r2
    (QBs never that high) and RB,RB,RB before any WR.** Fixes (all
