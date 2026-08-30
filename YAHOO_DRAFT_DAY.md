@@ -1,145 +1,124 @@
-# YAHOO DRAFT DAY — RUNBOOK SKELETON (NOT YET ACTIVE)
+# YAHOO_DRAFT_DAY.md — READ THIS FIRST (dad's league)
 
-> Mirrors `DRAFT_DAY.md` (the ESPN briefing). **This is a SCAFFOLD**: every
-> `⟨PLACEHOLDER⟩` must be filled with user-confirmed values, and the scope
-> ladder below gates what is allowed. Until then, the Yahoo allowlist is
-> EMPTY and every actuation path refuses by design.
-> Written 2026-08-29 alongside the Yahoo adapter scaffold.
+> Point the agent at this file to resume Yahoo draft prep. Written late
+> 2026-08-29 (~10:45 PM EDT) after the first Yahoo mock (bug-harvest run).
+> Companion to `DRAFT_DAY.md` (ESPN) and `docs/postmortem-synaps1-2026.md`.
 
 ## Who / what / when
 
-- **User:** Justin, acting for his dad (the account owner — confirmed
-  2026-08-29). Authorized Yahoo team: **All I Do Is Win** (alias
-  `allidoiswin`) — the ONLY allowlisted Yahoo team.
-- **FORBIDDEN:** the team **RoughRydas** (and any Yahoo analog) — never touch
-  it. Code enforces this (`PermissionError` in `yahoo_safety.YahooAllowlist`,
-  hard refusals in every `scripts/yahoo_*.mjs`). See `TEAM_SAFETY.md`.
-- **Yahoo draft: Sun Sep 6, 2026, 10:00 AM EDT** — per the league Scoring &
-  Settings page (read-only recon 2026-08-29). NOTE: user initially relayed
-  "Aug 30, 6 PM"; the settings page overrides. Dad's verbal confirm pending.
-  - League: `384341` **"Old Backs Fresh Minds"** | Team: `6` **"All I Do Is
-    Win"** — CONFIRMED verbatim by the owner 2026-08-29. Allowlisted in
-    `yahoo_safety.py` + both actuation scripts (reviewed edit, this commit).
-  - Game key: `470` (2026 NFL — verified: league key `470.l.384341` ×12 in
-    recon HTML) → league key
-    `470.l.384341`, team key `…​.t.⟨YAHOO_TEAM_ID⟩`
-  - Settings (recon-verified): 10-team **HALF-PPR (0.5/rec)** H2H snake
-    ("Live Standard Draft"), **60s/pick** — faster than ESPN's 90s; retune
-    act-by/halt thresholds. Roster QB/2WR/2RB/TE/W-R-T/K/DEF, 6 BN, 2 IR;
-    pass TD 4, INT −1, fumble −2. Raw HTML: main `data/yahoo/raw/`.
-  - Draft slot: `⟨SLOT⟩` (randomized at `⟨TIME⟩`?)
-  - Draft session id for grants: `470.l.384341-2026-1788703200000`
-    (epoch = Sun Sep 6 2026 10:00:00 EDT; convention mirrors ESPN's
-    `league-season-epoch`)
-  - Data root: `data/yahoo/384341/`
+- **Team:** "All I Do Is Win" — Justin's DAD's team, owner-confirmed 2026-08-29.
+  League **384341** "Old Backs Fresh Minds", team **6**, key `470.l.384341.t.6`.
+- **Format:** 10-team, HALF-PPR (0.5/rec), H2H **snake** ("Live Standard"),
+  60s/pick. Roster: QB/2RB/2WR/TE/W-R-T flex/K/DEF + 6 BN (+2 IR, not drafted).
+- **DRAFT DATE: UNCERTAIN — CHECK FIRST.** Settings page said Sun **Sep 6,
+  10:00 AM EDT**; Justin believes the league may move it (possibly to Sun Aug
+  31 evening). **First task of any session: read
+  `football.fantasysports.yahoo.com/f1/384341/settings` (read-only, via the
+  user's logged-in session) and confirm.** Draft session id for future grants:
+  `470.l.384341-2026-<start_ms>`.
+- ESPN Synaps2 draft is Mon Sep 7 6 PM — the day after. Don't let prep collide.
 
-## Current state (scaffold reality check)
+## Current state (post mock #1, all pushed @ `489878e`)
 
-- Yahoo adapter is a SKELETON: `scripts/yahoo_fetch.mjs`, `yahoo_poll.mjs`,
-  `yahoo_actuate.mjs`, `yahoo_set_prerank.mjs`, `yahoo_safety.py`. All
-  actuation paths refuse (empty allowlist + missing grant + TODO(verify)
-  endpoints). Research + open questions: `docs/yahoo-adapter.research.md`.
-- **Live pick submission is browser-only on Yahoo** (no public API draft
-  write — VERIFIED absence in official docs). Same CDP click discipline as
-  ESPN applies.
-- **Pre-rank upload is browser-only** (ASSUMED) — mechanism unverified;
-  `yahoo_set_prerank.mjs` exits NOT-IMPLEMENTED even when allowlisted.
-- ESPN path is untouched and remains the live-draft system of record.
+- **Decision engine is cross-platform and validated**: `ctx_choose.py` +
+  `src/fantasy_draft_assistant/context.py` (wait-loss, slot-adjusted VORP,
+  hard caps QB2/TE2/K1/DEF1, no preset round rules — user directive). Same
+  brain that went 16/16 on the ESPN validation mock.
+- **Half-PPR board**: `data/yahoo/board.csv` (450 players) via
+  `scripts/make_yahoo_board.py` (ESPN projections − 0.5×receptions; rebuild
+  after fresh `fetch_espn_data.mjs` on draft day). Config: `config.yahoo.yaml`.
+- **Yahoo mock driver**: `scripts/yahoo_mock_driver.mjs` — self-discovering
+  DOM, MOCK-ONLY (hard-refuses the real room). 8 verified clicks @ ~527ms in
+  mock #1 once row discovery worked.
+- **Mock #1 verdict (user audit):** missed round 1, drafted 3 QBs. All root
+  causes found and fixed (see table below). **NOT yet validated clean.**
 
-## SCOPE LADDER — each rung requires the one below it to be proven
+## Bug harvest from mock #1 — fixed, offline-proven, needs live validation
 
-1. **Pre-rank floor (first and mandatory).** Upload our VORP-ordered list to
-   Yahoo Pre-Draft Ranks and VERIFY by re-read. If nothing else happens,
-   Yahoo autodrafts from our list. Blockers: real ids + verified pre-rank
-   write mechanism. *No live anything until this floor exists.*
-2. **Advisory live.** Read-only: `yahoo_poll.mjs` snapshots + dashboard +
-   engine recommendations spoken to the user, who clicks in the browser
-   himself. Blockers: snapshot latency proven acceptable in a MOCK draft.
-3. **Full agent-in-the-loop** (agent decides and submits via
-   `yahoo_actuate.mjs --live`) **ONLY IF the T-30 dry-run gate passes** in
-   the real draft room (locate row + enabled button, click nothing), AND
-   allowlist entry + session-bound grant exist, AND rungs 1–2 are green.
+| Failure | Fix (in `489878e`) |
+|---|---|
+| Missed pick 9 (round 1) | Row discovery + turn signal now known (see DOM notes) — armed pre-draft it fires from pick 1 |
+| "Javonte Williams" click landed Jameson Williams (WR) | **Position-locked** row matching |
+| "Jeremiyah Love" re-offer clicked Jordan Love → QB3 | Pos lock + roster **no-reoffer** (panel-synced roster added to drafted set) |
+| "Bijan Robinson" at 135 clicked Brian Robinson Jr. (same team+pos+abbrev!) | **ADP-sanity ghost filter**: ADP + 30 < current overall ⇒ not a candidate, ever |
+| DEF slot never filled | **DST bridge**: board "Lions D/ST" ↔ Yahoo "Detroit DEF" (city/nickname/team-token match) |
+| Dart QB2 by forfeit | Funnel widened (base 100 / ctx 30) + **filter-click**: when the engine's best unseen candidate beats best visible by >5, click Yahoo's position filter tab, wait for rows to re-render, re-choose |
+| Restart amnesia (wrong overall, lost roster) | Roster-panel `(N/15)` count is the turn index; picks persisted per-room; announcements freshness-gated (15s) |
 
-## Authorizations & mode policy (mirrors ESPN)
+**Still open:**
+1. Filter-click has zero live reps (code-only). Watch it on TE/K/DEF turns.
+2. Fallback once labeled an empty-TE-slot pick "bench 0.0" — believed to be a
+   phantom-roster artifact of the collision bugs; confirm gone.
+3. **Pre-rank floor: NOT IMPLEMENTED** (`yahoo_set_prerank.mjs` is a refusing
+   skeleton). This is rung #1 — Synaps1 proved floors win drafts alone. Needs
+   DOM recon of Yahoo's pre-rank editor before the real draft.
+4. The mock driver is MOCK-ONLY by design. Real-draft actuation must go
+   through `yahoo_actuate.mjs` gates (allowlist, grant with exact session id,
+   dry-run gate at T-30) — wire it AFTER a clean validation mock.
+5. Yahoo ADP proxy is ESPN ADP — fine for gap modeling, imperfect for their
+   room's sort order.
 
-- Grant: ephemeral file in /tmp (never commit), must name the exact draft
-  session id above, short expiry (draft window only), created at T-15.
-- Dry-run is the DEFAULT for every actuator; `--live` requires the grant AND
-  the (currently empty) allowlist entry.
-- Browser stays read-only EXCEPT: verified pick submission during the draft
-  and the pre-rank upload — both only after explicit user authorization.
-- OAuth (if ever needed for API reads): user registers the app and completes
-  the flow himself; the agent never initiates login. Scope `fspt-r` only
-  unless proven otherwise.
+## Yahoo draft-room DOM cheat sheet (hard-won, mock #1)
 
-## If the user shows up (~9 AM Sun Sep 6) — target sequence
+- Room URL: `football.fantasysports.yahoo.com/draftclient/f1/<mock_id>/<slot>`
+  — mocks are namespaced under `/f1/384341/...` (`mock_waiting`, etc.).
+  **REAL room = exactly `/f1/384341/draft` with no "mock"** — that and only
+  that is refused by the mock driver.
+- **Turn signal = `document.title`**: `"YOUR TURN, DRAFT NOW | ..."` on the
+  clock; `"N picks until your turn | ..."` waiting; `"You are next | ..."`.
+  In-page label `"YOUR TURN - 89TH PICK"` (ordinal) = upcoming pick number —
+  parse ordinals ONLY, never "N picks until".
+- **Atomic/hashed CSS** (`_ys_*`, `D(f)`, `Mstart(a)`) — no semantic classes.
+  Derive player rows FROM the per-row `Draft` buttons (exact text match;
+  "Drafted" is a different, dangerous near-match) → smallest ancestor with a
+  position token.
+- Rows render ONLY on our turn (buttons 0/0 off-turn, ~100 on turn), top-40
+  by Yahoo rank — TE/K/DEF live behind position filter tabs ("Tight Ends",
+  "Kickers", "Defen…"). Names abbreviated: `"J. Love Q RB Ari Bye 14 A-"`
+  (note injury tag between name and pos).
+- **Roster panel** `"YOUR TEAM (N/15) QB J. Allen QB Buf …"` = ground truth
+  incl. autopicks; count `(N/15)` verifies clicks (count-increment, never
+  name matching) and indexes our next turn.
+- 30s clock in mocks (real league: 60s). Bots pick ~1s — our turns arrive in
+  bursts; near-slot pairs (e.g. slot 9 → overalls 9,12 then a 16-pick wait).
+
+## Next session — run the validation mock
 
 ```bash
-cd "⟨REPO_ROOT⟩"
-caffeinate -dis &                        # keep machine awake through the draft
-
-# 0. Browser: bash scripts/browser_start.sh → user logs into Yahoo if needed.
-#    Confirm CDP: curl -s localhost:9222/json/version
-
-# 1. Fresh data + board (T-60)
-YAHOO_LEAGUE_KEY=⟨GAME_KEY⟩.l.⟨LEAGUE⟩ OUT_DIR=data/yahoo/⟨LEAGUE⟩/raw node scripts/yahoo_fetch.mjs
-.venv/bin/fantasy-draft build-board --team ⟨YAHOO_ALIAS⟩          # ⟨config TBD⟩
-
-# 2. Refresh the Yahoo pre-rank safety net (RUNG 1 — currently NOT-IMPLEMENTED)
-.venv/bin/python scripts/make_draftlist.py data/⟨YAHOO_ALIAS⟩/board.csv /tmp/yahoo_dl.json  # ⟨needs yahoo_player_id column⟩
-node scripts/yahoo_set_prerank.mjs /tmp/yahoo_dl.json --league ⟨LEAGUE⟩ --team ⟨TEAM⟩   # verifies after writing
-
-# 3. Go/no-go gate  ⟨preflight --team ⟨YAHOO_ALIAS⟩ once a config exists⟩
-
-# 4. T-30: dry-run gate against the REAL draft room (user opens the room tab)
-node scripts/yahoo_actuate.mjs '{"playerId":⟨ID⟩,"playerName":"⟨NAME⟩","leagueId":⟨LEAGUE⟩,"teamId":⟨TEAM⟩}' --grant-file /tmp/yahoo_grant.json
-#    (dry-run is the default — it locates the row, clicks nothing)
-
-# 5. T-15: issue grant (rung 3 only if step 4 passed; else stay on rung 2)
-#    Grant JSON: {"alias":"⟨YAHOO_ALIAS⟩","league_id":⟨LEAGUE⟩,"season":2026,
-#      "draft_session_id":"⟨SESSION_ID⟩",
-#      "issued_at_ms":<now>,"expires_at_ms":<now+3h>}  → /tmp/yahoo_grant.json
-
-# 6. Run at the highest rung earned:
-TEAM=⟨YAHOO_ALIAS⟩ YAHOO_LEAGUE_KEY=⟨GAME_KEY⟩.l.⟨LEAGUE⟩ node scripts/yahoo_poll.mjs &   # read-only
-#    Rung 2: agent reads snapshots + engine rec, advises; USER clicks.
-#    Rung 3: agent decides → yahoo_actuate.mjs '<payload>' --grant-file /tmp/yahoo_grant.json --live
-#            → verify pick in next snapshot → audit. One click max per turn.
+cd "/Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant"
+# 0. Browser: CDP on :9222; if /json/list shows 0 tabs, open ANY window first
+#    (zero-window Chrome breaks connectOverCDP). User logs into Yahoo.
+# 1. CHECK THE REAL DRAFT DATE (settings page, read-only). This gates everything.
+# 2. Rebuild the board if data is stale (>12h):
+node scripts/fetch_espn_data.mjs && .venv/bin/python scripts/make_yahoo_board.py
+# 3. Arm (SLOT = whatever the lobby assigns; it self-corrects from ordinals):
+SLOT=<slot> TEAMS=10 nohup node scripts/yahoo_mock_driver.mjs > data/yahoo/mock_driver_stdout.log 2>&1 &
+# 4. USER joins a 10-team "Live Standard" mock (NEVER Salary Cap; user loads
+#    all drafts themself). Driver latches automatically.
+# 5. Watch: tail -f data/yahoo/mock_driver.log
 ```
 
-## Timeline (target: Sun 2026-09-06, 10:00 AM EDT draft — a MORNING draft)
+**Validation bar (all must hold):** round 1 fires · every VERIFIED pick is the
+intended player (spot-check panel vs log) · TE/K/DEF filled via filter-clicks
+· ≤2 QB, ≤2 TE, exactly 1 K + 1 DEF · zero ghost candidates · no autopicks
+while the driver is up. Then: implement the pre-rank floor + wire
+`yahoo_actuate.mjs` for the real room, mirroring the ESPN gate sequence.
 
-| When | What |
-| --- | --- |
-| ASAP | User supplies league/team ids → allowlist entry + TEAM_SAFETY update |
-| T-1 day | Yahoo MOCK draft: capture draft-room URL/DOM read-only; measure `draftresults` latency |
-| T-1 day | Verify pre-rank write mechanism; implement + verify rung 1 |
-| T-60 min | Fresh data, board, pre-rank refresh, preflight |
-| T-30 min | Dry-run gate in the real draft room (rung 3 go/no-go) |
-| T-15 min | Grant issued (session-bound, ≤3h expiry) |
-| 10:00 AM | Draft at the highest rung earned |
-| After | Save roster + audit; retro vs ESPN drafts |
+## Rules that must not be relaxed
 
-Heads-up: **Synaps2 (ESPN) drafts the next evening** — Mon Sep 7, 6:00 PM EDT.
-Half-PPR strategy note: 0.5/rec shifts value toward RBs vs Synaps1's full
-PPR — dad's "RBs touch the ball more" tilt is MORE correct here. Board must
-be built from this league's scoring; the Synaps1 board does not transfer.
+- The real room (`/f1/384341/draft`) is untouchable by mock tooling. Real
+  actuation only via `yahoo_actuate.mjs` gates + owner-authorized grant.
+- User loads all drafts; agent never navigates to/joins draft rooms.
+- One submission max per turn; verify by roster count before anything else.
+- Single-device rule during any real draft: the room lives ONLY in the
+  dedicated Chrome. (ESPN postmortem lesson — phones steal room sessions.)
+- RoughRydas remains forbidden everywhere, always.
 
-## Rules that must not be relaxed (identical to ESPN)
+## Key files
 
-- HALT means halt: no blind retry, one click max per turn; on HALT drop to
-  advisory permanently — that is correct behavior, not a bug.
-- Stale state (>3s) blocks submission. Negative/skewed clock = stale.
-- If anything is ambiguous about team identity, do nothing.
-- The pre-rank floor must exist BEFORE any live rung — a failed live run must
-  cost nothing.
-- Empty-by-default refusal stands: the allowlist contains exactly
-  `allidoiswin` and nothing else. Any change is a reviewed, user-approved
-  edit, never an inline hack.
-
-## Key docs
-
-- `docs/yahoo-adapter.research.md` — verified/assumed API findings + open questions
-- `DRAFT_DAY.md`, `docs/draft-day-runbook.md` — the ESPN originals this mirrors
-- `TEAM_SAFETY.md` — forbidden-team policy (extend with Yahoo ids when known)
-- `src/fantasy_draft_assistant/yahoo_safety.py`, `tests/test_yahoo_safety.py`
+`scripts/yahoo_mock_driver.mjs` · `scripts/ctx_choose.py` ·
+`scripts/make_yahoo_board.py` · `config.yahoo.yaml` · `data/yahoo/board.csv` ·
+`scripts/yahoo_room_probe.mjs` (recon) · `scripts/yahoo_{actuate,set_prerank,
+poll,fetch}.mjs` (real-room scaffolds, refuse-by-default) ·
+`src/fantasy_draft_assistant/{context,yahoo_safety}.py` ·
+project memory: search "yahoo" for the full trail.
