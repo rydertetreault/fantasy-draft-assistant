@@ -50,6 +50,15 @@
 | Restart amnesia (wrong overall, lost roster) | Roster-panel `(N/15)` count is the turn index; picks persisted per-room; announcements freshness-gated (15s) |
 
 **Still open:**
+0. **K/DEF strategy per owner (post mock #5), all offline-verified:**
+   bench depth r10-13 stays untouched; r14/15 fill K+DEF ordered by VALUE
+   (elite kicker can precede a flat DST tier — K floor moved to 14);
+   `reactive_floor_unlock` answers early position runs (3+ hist-evidenced
+   takes) — "defense is based on when other teams start taking theirs but
+   can be deferred". K/DST are also excluded from the ADP count-fill (their
+   ESPN ADPs are fiction vs real rooms; Aubrey was being fill-"drafted" at
+   r14). **None of this has live reps yet — next mock must show K+DEF
+   actually landing.**
 1. **Mock #5 (2026-08-30, real-users room, FAST ~28s/round): mechanics
    15/15 VERIFIED** (~530ms; slot from waiting-room label; in-place nav +
    fast turns handled). Strategy through r7 = the directives working:
