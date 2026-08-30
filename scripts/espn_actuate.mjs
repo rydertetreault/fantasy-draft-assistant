@@ -34,7 +34,8 @@ if (!jsonArg) die(2, "missing JSON argument {playerId, playerName, leagueId, tea
 let target;
 try { target = JSON.parse(jsonArg); } catch { die(2, "argument is not valid JSON"); }
 const { playerId, playerName, leagueId, teamId } = target;
-if (!Number.isInteger(playerId) || playerId <= 0) die(2, "playerId must be a positive integer");
+// ESPN D/ST ids are NEGATIVE by convention; only zero is invalid.
+if (!Number.isInteger(playerId) || playerId === 0) die(2, "playerId must be a non-zero integer");
 if (typeof playerName !== "string" || !playerName.trim()) die(2, "playerName is required");
 if (!Number.isInteger(leagueId) || !Number.isInteger(teamId)) die(2, "leagueId/teamId must be integers");
 if (mock && REAL_LEAGUE_IDS.includes(leagueId))
