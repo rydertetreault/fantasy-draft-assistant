@@ -61,6 +61,15 @@
    Replays now go WR/WR at the o15/o26 turns; K/DST land r14/15 only.
    **Needs a full clean validation mock.**
 2. Filter-click still has zero *correct* live reps. Watch it on TE/K/DEF turns.
+3. **Opponent modeling now feeds on REAL picks (owner directive)**: driver
+   scrapes the room's "Picks" panel off-turn (body-text diff → `hist.txt`,
+   restores "Players"); chooser attributes true pick order to snake slots
+   (abbrev+injury-tag matching, same-team twin dedup by ADP with
+   visible-row rescue, newest-first autodetect) → per-team need, run
+   detection, survival math on actuals. Profile-gated
+   (`history_order_attribution`); ESPN legacy path 4/4 byte-identical.
+   **Picks-tab scrape has ZERO live reps — validate the panel format,
+   tab restore, and `picks-scrape: N lines` log next mock.**
 3. Fallback once labeled an empty-TE-slot pick "bench 0.0" — believed to be a
    phantom-roster artifact of the collision bugs; confirm gone.
 4. **Pre-rank floor: NOT IMPLEMENTED** (`yahoo_set_prerank.mjs` is a refusing
