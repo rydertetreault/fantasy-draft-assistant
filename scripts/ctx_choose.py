@@ -132,6 +132,15 @@ if _ordered_mode:
         if is_visible(nm):
             continue
         i = hist.find(nm.lower())
+        if i < 0 and name2pos.get(nm) == "DST":
+            # DSTs render as city/nick + "def" in the picks panel ("lions"
+            # / "(def · det)") — abbrev matching can't reach them.
+            for tok in (name2nick.get(nm, ""), name2city.get(nm, "")):
+                if tok:
+                    j = hist.find(tok)
+                    if j >= 0 and "def" in hist[max(0, j - 40): j + 40]:
+                        i = j
+                        break
         if i < 0:
             ab, pos = _ab_of(nm), name2pos.get(nm, "")
             if ab:
@@ -169,7 +178,12 @@ if _ordered_mode and len(ordered_hist) >= 4:
     if sum(_adps[:_h]) / _h > sum(_adps[_h:]) / (len(_adps) - _h):
         ordered_hist.reverse()
 hist_names = [n for n in ordered_hist if n not in known_gone]
-fill = [n for n in adp_order if n not in known_gone and n not in hist_names and not is_visible(n)]
+# K/DST never follow ESPN ADP in real rooms (Aubrey 86.6 was "drafted" by
+# fill at r14, mock #5 replay) — with the skill-only flag, the count-fill
+# takes deep skill names instead and K/DST leave the pool ONLY via real
+# evidence (history/visibility).
+ghost_skill_only = bool(config["strategy"].get("adp_ghost_skill_only"))
+fill = [n for n in adp_order if n not in known_gone and n not in hist_names and not is_visible(n) and not (ghost_skill_only and name2pos.get(n) in ("K", "DST"))]
 drafted_names = (known_gone + hist_names + fill)[:max(n_drafted, len(known_gone))]
 
 # attribution: REAL history order first (exact per-team snake rosters for
@@ -221,9 +235,25 @@ ctx = contextual_recommend(
 # HERE so neither the choice nor the filter-click "wanted" can chase them
 # early. Never filters to an empty board (safety).
 hard_floors = (config["strategy"].get("wait_until_round", {}) or {}) if config["strategy"].get("hard_wait_floors") else {}
-ghost_skill_only = bool(config["strategy"].get("adp_ghost_skill_only"))
+# REACTIVE UNLOCK (owner directive: "defense is based on when other teams
+# start taking theirs — but it can be deferred"): a floored position
+# unlocks early once the room has HIST-EVIDENCED takes >= threshold.
+# Counted only from real scraped picks (never ADP-fill fiction), so a
+# broken scrape safely defaults to full deferral + endgame forcing.
+_unlock = config["strategy"].get("reactive_floor_unlock", {}) or {}
+_hist_evidence = set(ordered_hist)
+def _floored(pos: str) -> bool:
+    fl = int(hard_floors.get(pos, 0) or 0)
+    if not fl or round_no >= fl:
+        return False
+    th = int(_unlock.get(pos, 0) or 0)
+    if th:
+        taken = sum(1 for p in picks if p.pos == pos and p.player in _hist_evidence and p.team_slot != a.slot)
+        if taken >= th:
+            return False
+    return True
 if hard_floors:
-    _mask = ctx["pos"].map(lambda p: round_no >= int(hard_floors.get(str(p).replace("D/ST", "DST"), 0) or 0))
+    _mask = ctx["pos"].map(lambda p: not _floored(str(p).replace("D/ST", "DST")))
     if _mask.any():
         ctx = ctx[_mask]
 # ENDGAME FEASIBILITY (profile-gated): when rounds left <= empty REQUIRED
@@ -306,7 +336,7 @@ if choice is None:
                 continue
             if counts[pos] >= position_cap(pos, config):
                 continue  # HARD cap: never a 3rd QB/TE, never a 2nd K/DST
-            if not allow_floored and hard_floors and round_no < int(hard_floors.get(pos, 0) or 0):
+            if not allow_floored and _floored(pos):
                 continue
             val, slot_label = slot_adjusted_vorp(
                 pos, float(r["projection"]), my_roster, players, config, repl

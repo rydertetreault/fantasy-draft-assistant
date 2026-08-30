@@ -20,11 +20,21 @@ strategy:
   bye_penalty_weight: 1.5
   # OWNER DIRECTIVE (mock #4, r2 Josh Allen graded B): follow the ESPN
   # profile formula — position round floors. QB added per owner: QBs are
-  # never worth an early pick in a 10-team 1-QB league. K/DST mirror ESPN.
+  # never worth an early pick in a 10-team 1-QB league. K/DST BOTH at 14
+  # (owner, post mock #5): "a really good kicker can help" — in the final
+  # two rounds the engine orders K vs DEF by value (elite K first when the
+  # DST tier is flat); endgame forcing guarantees both get filled.
   wait_until_round:
     QB: 5
     DST: 14
-    K: 15
+    K: 14
+  # OWNER DIRECTIVE: "defense is based on when other teams start taking
+  # theirs (deferrable)" — floors unlock EARLY only when the room has this
+  # many hist-evidenced takes at the position (real scrape only; broken
+  # scrape = safe deferral).
+  reactive_floor_unlock:
+    DST: 3
+    K: 3
   # ESPN's floors are only a -30 base-funnel penalty — enough to bury K/DST
   # there, but the ctx layer re-sorts by wait-loss and ignores it (exactly
   # how Allen went r2). This makes floors HARD at the ctx layer. Yahoo-only.
