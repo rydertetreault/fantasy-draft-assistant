@@ -34,6 +34,21 @@ def replacement_levels(players: pd.DataFrame, teams: int) -> dict[str, float]:
     return levels
 
 
+def position_cap(pos: str, config: dict) -> int:
+    """Hard maximum players we will EVER roster at a position. Derived from
+    the lineup, not hardcoded: single-starter positions get starters + 1
+    (injury cover); K/DST get exactly their starter count (a backup kicker
+    is a wasted roster spot); multi-starter positions (RB/WR) are uncapped —
+    genuine bench depth lives there."""
+    slots = config["league"]["roster_slots"]
+    dedicated = int(slots.get(pos, 0))
+    if pos in ("K", "DST"):
+        return dedicated
+    if pos in FLEX_POSITIONS and dedicated >= 2:
+        return 99  # RB/WR-style depth positions: no cap
+    return dedicated + 1  # QB, TE, any single-starter slot: starters + backup
+
+
 def slot_adjusted_vorp(
     pos: str,
     projection: float,
@@ -249,7 +264,19 @@ def contextual_recommend(
         for pos in CORE_POSITIONS
     }
     replacement = replacement_levels(players, teams)
-    out = base_recommendations.copy()
+
+    # HARD positional caps: a position at cap is dropped from consideration
+    # entirely — not discounted, not bench-valued, GONE. (User rule: there is
+    # never a reason for QB3 or TE3; defense in depth against any future
+    # chooser/fallback bug.)
+    from .ranking import roster_counts
+
+    counts = roster_counts(my_roster, players)
+    out = base_recommendations[
+        base_recommendations["pos"].map(
+            lambda p: counts[str(p)] < position_cap(str(p), config)
+        )
+    ].copy()
     wait_col, run_col, surv_col, vorp_col, slot_col, ctx_col = (
         [], [], [], [], [], []
     )

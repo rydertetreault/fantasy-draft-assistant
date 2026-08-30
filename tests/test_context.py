@@ -227,3 +227,37 @@ def test_qb_waits_from_live_math_not_round_rules(config):
     rb_rows = out[(out["pos"] == "RB") & (out["slot"] == "starter")]
     if len(qb_rows) and len(rb_rows):
         assert qb_rows["wait_loss"].max() <= rb_rows["wait_loss"].max()
+
+
+# ---- hard positional caps (user rule: never QB3/TE3, never K2/DST2) -------
+
+def _cap_config(config):
+    config["league"]["teams"] = 12
+    config["league"]["roster_slots"] = {
+        "QB": 1, "RB": 2, "WR": 2, "TE": 1, "FLEX": 1, "DST": 1, "K": 1, "BENCH": 6,
+    }
+    return config
+
+
+def test_third_qb_is_impossible(config):
+    players = _synthetic_pool()
+    out = _ctx_top(players, _cap_config(config), ["QB1", "QB2", "RB1", "WR1"])
+    assert not (out["pos"] == "QB").any(), "QB3 must never be recommendable"
+
+
+def test_third_te_is_impossible(config):
+    players = _synthetic_pool()
+    out = _ctx_top(players, _cap_config(config), ["TE1", "TE2", "RB1", "WR1"])
+    assert not (out["pos"] == "TE").any(), "TE3 must never be recommendable"
+
+
+def test_second_qb_still_allowed(config):
+    players = _synthetic_pool()
+    out = _ctx_top(players, _cap_config(config), ["QB1", "RB1", "WR1"])
+    # cap is starters+1: a second QB may appear (bench-valued), a third cannot
+    from fantasy_draft_assistant.context import position_cap
+    assert position_cap("QB", config) == 2
+    assert position_cap("TE", config) == 2
+    assert position_cap("K", config) == 1
+    assert position_cap("DST", config) == 1
+    assert position_cap("RB", config) == 99
