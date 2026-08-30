@@ -47,3 +47,7 @@ strategy:
   # opponent need / run / survival modeling on real picks. Yahoo-only;
   # ESPN keeps its validated legacy (full-name bag + ADP-order) path.
   history_order_attribution: true
+  # ENDGAME FEASIBILITY (mock #5: 15 picks, ZERO K, ZERO DEF — DST gain
+  # 4.87 missed the 5.0 filter-click gate): when rounds left <= empty
+  # required lineup slots, candidates are restricted to those positions.
+  force_required_slots_endgame: true

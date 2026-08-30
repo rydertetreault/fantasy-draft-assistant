@@ -111,6 +111,10 @@ adp_order = b.sort_values("adp")["player"].tolist()
 # in TEXT ORDER so real pick order feeds per-team attribution — opponent
 # need/run/survival modeling on actual picks, not an ADP fiction.
 hist = open(a.history, encoding="utf8", errors="replace").read().lower()
+if config["strategy"].get("history_order_attribution"):
+    # Yahoo Picks-panel format: "e. mcpherson\n(k · cin)" — strip parens and
+    # middots 1-char-for-1-char so match indices (= pick order) stay stable.
+    hist = hist.translate({ord(c): " " for c in "()·•"})
 # ORDERED attribution is PROFILE-GATED (owner two-profile rule): Yahoo's
 # Picks-tab scrape is a real ordered pick list; ESPN's ws-frame dumps are
 # not — ESPN keeps the legacy full-name bag + ADP-order attribution.
@@ -222,6 +226,30 @@ if hard_floors:
     _mask = ctx["pos"].map(lambda p: round_no >= int(hard_floors.get(str(p).replace("D/ST", "DST"), 0) or 0))
     if _mask.any():
         ctx = ctx[_mask]
+# ENDGAME FEASIBILITY (profile-gated): when rounds left <= empty REQUIRED
+# lineup slots, every pick must fill one — a K/DST can never out-score even
+# a bad bench RB on gain alone (o134 mock #5: DST gain 4.87 vs gate 5.0 ->
+# 15 picks, no K, no DEF). Restrict candidates to the empty required
+# positions; hard floors still order them (DST r14 before K r15).
+endgame_pos: set[str] = set()
+if config["strategy"].get("force_required_slots_endgame"):
+    from fantasy_draft_assistant.ranking import roster_counts as _rcounts
+
+    _slots = config["league"]["roster_slots"]
+    _cnt = _rcounts(my_roster, players)
+    _total_rounds = sum(int(v) for k, v in _slots.items() if k != "IR")
+    _remaining = _total_rounds - len(my_roster)
+    _empty = {p: int(_slots.get(p, 0)) - _cnt[p] for p in ("QB", "RB", "WR", "TE", "K", "DST") if _cnt[p] < int(_slots.get(p, 0))}
+    _flex_extra = sum(max(0, _cnt[p] - int(_slots.get(p, 0))) for p in ("RB", "WR", "TE"))
+    _flex_empty = max(0, int(_slots.get("FLEX", 0)) - _flex_extra)
+    if _empty and _remaining <= sum(_empty.values()) + _flex_empty:
+        endgame_pos = set(_empty) | ({"RB", "WR", "TE"} if _flex_empty else set())
+if endgame_pos:
+    _m2 = ctx["pos"].map(lambda p: str(p).replace("D/ST", "DST") in endgame_pos)
+    if _m2.any():
+        ctx = ctx[_m2]
+if os.environ.get("CTX_DEBUG"):
+    print("CTX " + json.dumps([[str(r["player"]), str(r["pos"]), round(float(r["ctx_score"]), 2), str(r["slot"])] for _, r in ctx.iterrows()][:18]), file=sys.stderr)
 
 choice = None
 top_any = None
@@ -261,14 +289,17 @@ if choice is None:
     repl = replacement_levels(players, a.teams)
     counts = roster_counts(my_roster, players)
     best, best_val, best_slot = None, float("-inf"), ""
-    # pass 1 respects hard floors; pass 2 (only if pass 1 found nobody)
-    # ignores them — an on-clock emergency pick beats an autopick.
-    for allow_floored in (False, True):
+    # pass order: endgame-restricted + floors -> endgame-restricted, floors
+    # waived -> unrestricted (an on-clock emergency pick beats an autopick).
+    _passes = [(endgame_pos, False), (endgame_pos, True), (set(), True)] if endgame_pos else [(set(), False), (set(), True)]
+    for _restrict, allow_floored in _passes:
         for _, r in b.iterrows():
             nm = str(r["player"])
             if nm in excludes or nm in drafted_names or not is_visible(nm):
                 continue
             pos = str(r["pos"]).replace("D/ST", "DST")
+            if _restrict and pos not in _restrict:
+                continue
             if name2adp.get(nm, 999) + 30 < current_overall and not (
                 ghost_skill_only and pos in ("K", "DST")
             ):
@@ -285,10 +316,20 @@ if choice is None:
         if best is not None:
             break
     if best is not None:
-        print(json.dumps({"playerId": int(best["espn_player_id"]), "playerName": str(best["player"]),
-                          "leagueId": a.league, "teamId": a.teamid, "pos": str(best["pos"]),
-                          "why": {"fallback": f"slot-aware: {best_slot} value {best_val:.1f}"},
-                          "alternatives": []}))
+        _fb = {"playerId": int(best["espn_player_id"]), "playerName": str(best["player"]),
+               "leagueId": a.league, "teamId": a.teamid, "pos": str(best["pos"]),
+               "why": {"fallback": f"slot-aware: {best_slot} value {best_val:.1f}"},
+               "alternatives": []}
+        if config["strategy"].get("force_required_slots_endgame"):
+            # the fallback path must still enable the driver's filter-click
+            # (mock #5: DST wanted was computed but never emitted here) and
+            # DEF clicks need the city/nick tokens.
+            if wanted:
+                _fb["wanted"] = wanted
+            _fb["teamTok"] = name2team.get(str(best["player"]), "")
+            _fb["cityTok"] = name2city.get(str(best["player"]), "")
+            _fb["nickTok"] = name2nick.get(str(best["player"]), "")
+        print(json.dumps(_fb))
         sys.exit(0)
     print(json.dumps({"error": "no visible candidate"})); sys.exit(1)
 

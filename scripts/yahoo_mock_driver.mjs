@@ -178,6 +178,14 @@ while (ourPicks.length < ROUNDS) {
     if (Date.now() - lastHistAt > 12000 && /draftclient/i.test(urlOf(page))) {
       lastHistAt = Date.now();
       try {
+        // force a known panel state FIRST (mock #5: the restore click was
+        // failing silently, panel stayed on Picks, diffs only caught the
+        // newest entries instead of the full list)
+        await page.evaluate(() => {
+          const t = Array.from(document.querySelectorAll("button, [role=tab], a, li")).find((e) => (e.innerText || "").trim() === "Players");
+          if (t) t.click();
+        }).catch(() => null);
+        await new Promise((r) => setTimeout(r, 500));
         const before = await page.evaluate(() => document.body.innerText);
         const clicked = await page.evaluate(() => {
           const t = Array.from(document.querySelectorAll("button, [role=tab], a, li")).find((e) => (e.innerText || "").trim() === "Picks");
@@ -222,7 +230,11 @@ while (ourPicks.length < ROUNDS) {
       { encoding: "utf8", timeout: 10000, env: { ...process.env, BOARD_CSV: join(repo, "data/yahoo/board.csv"), CONFIG_YAML: join(repo, "config.yahoo.yaml") } }).trim().split("\n").pop());
   } catch (e) { log(`chooser err: ${String(e).slice(0, 100)}`); await new Promise((r) => setTimeout(r, 400)); continue; }
   if (choice.error) { log(`chooser: ${choice.error}`); await new Promise((r) => setTimeout(r, 400)); continue; }
-  if (choice.wanted && choice.wanted.gain > 5) {
+  // trust the chooser's wanted signal: it already gates on gain>5 for
+  // value-chasing AND fires gate-free when NOTHING at a required position
+  // is visible (endgame K/DEF — mock #5 lost both to the old >5 re-check:
+  // DST gain 4.87).
+  if (choice.wanted) {
     const FILTER = { QB: "Quarterbacks", RB: "Running Backs", WR: "Wide Receivers", TE: "Tight Ends", K: "Kickers", DST: "Defen", DEF: "Defen" };
     const label = FILTER[choice.wanted.pos] || null;
     if (label) {
