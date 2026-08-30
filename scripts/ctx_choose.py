@@ -306,6 +306,16 @@ for _, r in ctx.iterrows():
 wanted = None
 if top_any is not None and (choice is None or float(top_any["ctx_score"]) > float(choice["ctx_score"]) + 5.0):
     wanted = {"pos": str(top_any["pos"]), "player": str(top_any["player"]), "gain": round(float(top_any["ctx_score"]) - (float(choice["ctx_score"]) if choice is not None else 0.0), 2)}
+if wanted and config["strategy"].get("force_required_slots_endgame"):
+    # click tokens ride along so the driver can DIRECT-CLICK the wanted
+    # player after a verified list switch even if a re-choose goes sideways
+    # (mock #6: filter tab never switched, fallback clicked RB over DST).
+    wanted["teamTok"] = name2team.get(wanted["player"], "")
+    wanted["cityTok"] = name2city.get(wanted["player"], "")
+    wanted["nickTok"] = name2nick.get(wanted["player"], "")
+# endgame_pos is only ever non-empty under force_required_slots_endgame
+# (yahoo profile) — ESPN output stays byte-identical.
+_required_now = sorted(endgame_pos) or None
 
 if choice is None:
     # slot-aware fallback: best visible player at the lineup slot they would
@@ -356,6 +366,10 @@ if choice is None:
             # DEF clicks need the city/nick tokens.
             if wanted:
                 _fb["wanted"] = wanted
+            if _required_now:
+                # HARD driver gate (mock #6): a non-required fallback pick
+                # must never be clicked while required slots >= rounds left.
+                _fb["required_now"] = _required_now
             _fb["teamTok"] = name2team.get(str(best["player"]), "")
             _fb["cityTok"] = name2city.get(str(best["player"]), "")
             _fb["nickTok"] = name2nick.get(str(best["player"]), "")
@@ -364,6 +378,8 @@ if choice is None:
     print(json.dumps({"error": "no visible candidate"})); sys.exit(1)
 
 out_extra = {"wanted": wanted} if wanted else {}
+if _required_now:
+    out_extra["required_now"] = _required_now
 out_extra["teamTok"] = name2team.get(str(choice["player"]), "")
 out_extra["cityTok"] = name2city.get(str(choice["player"]), "")
 out_extra["nickTok"] = name2nick.get(str(choice["player"]), "")

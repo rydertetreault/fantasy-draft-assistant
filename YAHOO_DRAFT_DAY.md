@@ -9,13 +9,14 @@
 - **Team:** "All I Do Is Win" — Justin's DAD's team, owner-confirmed 2026-08-29.
   League **384341** "Old Backs Fresh Minds", team **6**, key `470.l.384341.t.6`.
 - **Format:** 10-team, HALF-PPR (0.5/rec), H2H **snake** ("Live Standard"),
-  60s/pick. Roster: QB/2RB/2WR/TE/W-R-T flex/K/DEF + 6 BN (+2 IR, not drafted).
-- **DRAFT DATE: UNCERTAIN — CHECK FIRST.** Settings page said Sun **Sep 6,
-  10:00 AM EDT**; Justin believes the league may move it (possibly to Sun Aug
-  31 evening). **First task of any session: read
-  `football.fantasysports.yahoo.com/f1/384341/settings` (read-only, via the
-  user's logged-in session) and confirm.** Draft session id for future grants:
+  **45s/pick** (settings-confirmed 2026-08-30; NOT 60s as first assumed).
+  Roster: QB/2RB/2WR/TE/W-R-T flex/K/DEF + 6 BN (+2 IR, not drafted).
+- **DRAFT DATE CONFIRMED: Sun Aug 30, 2026, 7:00 PM EDT** — read from the
+  settings page via the user's logged-in session at 3:46 PM the same day.
+  The league moved it up a week from Sep 6. Draft session id for grants:
   `470.l.384341-2026-<start_ms>`.
+- **QB2/TE2 OWNER VERDICT (2026-08-30): fine as-is.** Bo Nix r8 / Kelce r9
+  approved; no bench-scoring or floor changes needed. Item CLOSED.
 - ESPN Synaps2 draft is Mon Sep 7 6 PM — the day after. Don't let prep collide.
 
 ## Current state (post mock #1, all pushed @ `489878e`)
