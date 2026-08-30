@@ -197,10 +197,14 @@ const switchListTo = async (posUp, strat, w) => {
 while (ourPicks.length < ROUNDS) {
   // room hop: if our handle is stale/non-room and a live draftclient target
   // exists, jump to it NOW (instant-start rooms unhook the old page without
-  // opening a tab — waiting for an eval error costs picks).
-  if (!/draftclient/i.test(urlOf(page))) {
+  // opening a tab — waiting for an eval error costs picks). NOTE (mock #8):
+  // a CLOSED page still reports its last draftclient URL — page.isClosed()
+  // must force the re-scan or the driver error-spins on the dead handle.
+  let pageDead = false;
+  try { pageDead = page.isClosed(); } catch { pageDead = true; }
+  if (pageDead || !/draftclient/i.test(urlOf(page))) {
     const np = findRoom();
-    if (np && np !== page && /draftclient/i.test(urlOf(np))) {
+    if (np && np !== page && (pageDead || /draftclient/i.test(urlOf(np)))) {
       page = np; clickedThisTurn = false;
       log(`room hop: ${urlOf(page).slice(0, 110)}`);
       const uS = slotFromUrl(urlOf(page));
