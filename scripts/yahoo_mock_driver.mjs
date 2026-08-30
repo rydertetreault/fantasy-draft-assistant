@@ -129,16 +129,19 @@ const runChooser = (overall) => {
       { encoding: "utf8", timeout: 10000, env: { ...process.env, BOARD_CSV: join(repo, "data/yahoo/board.csv"), CONFIG_YAML: join(repo, "config.yahoo.yaml") } }).trim().split("\n").pop());
   } catch (e) { return { error: `exec: ${String(e).slice(0, 90)}` }; }
 };
-// List-switch with POSITION-VERIFIED refresh. Mock #6 root cause: the old
-// check only required rows to DIFFER after a filter-tab click — any other
-// team's pick reshuffling the same skill list satisfied it, the switch had
-// silently missed, and the fallback clicked an RB over the wanted DST.
-// Rows must now actually CONTAIN the wanted position token.
-//   strat 0: tab click, clickable-ish elements, first match (original).
-//   strat 1: tab click, any element, innermost match, closest clickable
-//            ancestor, full pointer/mouse event sequence (React-proof).
-//   strat 2: search box — type a distinctive token of the wanted player.
-let usedSearchThisTurn = false;
+// List-switch with POSITION-VERIFIED refresh. Mock #7 DOM recon (live):
+// Yahoo's position filter is a <select name="position-filter"> DROPDOWN
+// (options by VALUE: pos=QB/RB/WR/TE/K/DEF, pos_type=All) — NOT clickable
+// tabs. Every tab-click strategy in mocks #4-#7 silently did nothing.
+// React selects need the native value setter + a bubbling change event.
+// The search box ("Search for a player") filters by NAME and poisons the
+// list for everything else — clear it before every switch, restore
+// All Positions after every verified pick.
+//   strat 0/1: select-dropdown by option VALUE (then by text prefix).
+//   strat 2:   search box — LAST resort (mock #7: typed "broncos", list
+//              went to 0 draft buttons and the turn was lost to autopick).
+let usedListSwitch = false;
+const POSVAL = { QB: "pos=QB", RB: "pos=RB", WR: "pos=WR", TE: "pos=TE", K: "pos=K", DST: "pos=DEF", DEF: "pos=DEF" };
 const clearSearchBox = () => page.evaluate(() => {
   const inp = Array.from(document.querySelectorAll("input")).find((i) =>
     /search/i.test(i.placeholder || "") || /search/i.test(i.getAttribute("aria-label") || "") || /search/i.test(i.name || ""));
@@ -146,15 +149,27 @@ const clearSearchBox = () => page.evaluate(() => {
   const set = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
   set.call(inp, ""); inp.dispatchEvent(new Event("input", { bubbles: true }));
 }).catch(() => null);
+const setPositionFilter = (val, textPrefix) => page.evaluate(([v, pref]) => {
+  const sels = Array.from(document.querySelectorAll("select"));
+  let sel = document.querySelector('select[name="position-filter"]') ||
+    sels.find((s) => Array.from(s.options).some((o) => o.value === v || (pref && o.text.toLowerCase().startsWith(pref.toLowerCase()))));
+  if (!sel) return false;
+  const opt = Array.from(sel.options).find((o) => o.value === v) ||
+    (pref ? Array.from(sel.options).find((o) => o.text.toLowerCase().startsWith(pref.toLowerCase())) : null);
+  if (!opt) return false;
+  const set = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, "value").set;
+  set.call(sel, opt.value); sel.dispatchEvent(new Event("change", { bubbles: true }));
+  return true;
+}, [val, textPrefix || null]).catch(() => null);
+const restoreAllPositions = async () => { await clearSearchBox(); await setPositionFilter("pos_type=All", "All Pos"); usedListSwitch = false; };
 const switchListTo = async (posUp, strat, w) => {
-  const FILTER = { QB: "Quarterbacks", RB: "Running Backs", WR: "Wide Receivers", TE: "Tight Ends", K: "Kickers", DST: "Defen", DEF: "Defen" };
-  const label = FILTER[posUp] || null;
   const tok = " " + posUp.toLowerCase().replace("dst", "def") + " ";
+  await clearSearchBox(); // a poisoned search hides every list (mock #7)
+  usedListSwitch = true;
   if (strat === 2) {
     if (!w || !w.player) return false;
     const text = posUp === "DST" ? (w.nickTok || w.cityTok || String(w.player).split(" ")[0]) : String(w.player).split(" ").pop();
     if (!text) return false;
-    usedSearchThisTurn = true;
     await page.evaluate((txt) => {
       const inp = Array.from(document.querySelectorAll("input")).find((i) =>
         /search/i.test(i.placeholder || "") || /search/i.test(i.getAttribute("aria-label") || "") || /search/i.test(i.name || ""));
@@ -164,18 +179,9 @@ const switchListTo = async (posUp, strat, w) => {
       return true;
     }, text).catch(() => null);
   } else {
-    if (!label) return false;
-    await page.evaluate(([lbl, loose]) => {
-      const cands = Array.from(document.querySelectorAll(loose ? "*" : "button, a, [role=tab], [role=button], li, span")).filter((e) =>
-        (e.innerText || "").trim().toLowerCase().startsWith(lbl.toLowerCase()) && (e.innerText || "").trim().length < 30);
-      if (!cands.length) return false;
-      if (!loose) { cands[0].click(); return true; }
-      const el = cands[cands.length - 1]; // innermost text match
-      const t = el.closest("button, a, [role=tab], [role=button], li") || el;
-      for (const ev of ["pointerdown", "mousedown", "pointerup", "mouseup", "click"])
-        t.dispatchEvent(new MouseEvent(ev, { bubbles: true, cancelable: true, view: window }));
-      return true;
-    }, [label, strat === 1]).catch(() => null);
+    const FILTER = { QB: "Quarterbacks", RB: "Running Backs", WR: "Wide Receivers", TE: "Tight Ends", K: "Kickers", DST: "Team Defen", DEF: "Team Defen" };
+    const ok = await setPositionFilter(POSVAL[posUp] || "", strat === 1 ? (FILTER[posUp] || null) : null);
+    if (!ok) { log(`list-switch: no position-filter select found for ${posUp}`); return false; }
   }
   const min = strat === 2 ? 1 : 2;
   for (let i = 0; i < 8; i++) {
@@ -227,11 +233,14 @@ while (ourPicks.length < ROUNDS) {
   // turn → autopick (mock #4 lost picks 15+26 this way). On the clock with
   // zero Draft buttons: click the Players tab to remount, then re-read.
   if (s.titleTurn && s.draftBtnCount === 0) {
-    log("players-tab: on clock with 0 draft buttons — clicking Players tab");
+    log("players-tab: on clock with 0 draft buttons — clicking Players tab + list reset");
     await page.evaluate(() => {
       const b = Array.from(document.querySelectorAll("button, [role=tab], a, li")).find((e) => (e.innerText || "").trim() === "Players");
       if (b) b.click();
     }).catch(() => null);
+    // mock #7: a poisoned search box ("broncos") also yields 0 buttons and
+    // the tab remount can't fix it — clear search + All Positions too.
+    await restoreAllPositions();
     await new Promise((r) => setTimeout(r, 400));
     continue;
   }
@@ -292,7 +301,6 @@ while (ourPicks.length < ROUNDS) {
   // hist.txt NOT blanked here — it holds the last off-turn Picks scrape
   writeFileSync(D("roster.txt"), s.rosterText || "");
   let choice = runChooser(overall);
-  usedSearchThisTurn = false;
   if (choice.error) { log(`chooser: ${choice.error}`); await new Promise((r) => setTimeout(r, 400)); continue; }
   // trust the chooser's wanted signal: it already gates on gain>5 for
   // value-chasing AND fires gate-free when NOTHING at a required position
@@ -321,10 +329,12 @@ while (ourPicks.length < ROUNDS) {
     const targetPos = w ? normPos(w.pos) : required[0];
     log(`ENDGAME GATE: refusing ${choice.pos} (required: ${required.join("/")}) — forcing ${targetPos}`);
     let fixed = false;
-    for (const strat of (w ? [2, 1, 0, 2, 1, 0] : [1, 0, 1, 0])) {
+    for (let att = 0; att < 12 && !fixed; att++) {
       const sNow = await page.evaluate(STATE).catch(() => null);
       const secs = clockSecs(sNow ? sNow.clock : null);
       if (secs >= 0 && secs <= 8) { log(`ENDGAME GATE EMERGENCY: ${secs}s left — taking ${choice.playerName} over autopick`); break; }
+      const strat = [0, 1, 2][att % 3];
+      if (strat === 2 && !w) continue;
       if (!(await switchListTo(targetPos, strat, w))) continue;
       const c3 = runChooser(overall);
       if (!c3.error && required.includes(normPos(c3.pos))) { choice = c3; fixed = true; break; }
@@ -393,7 +403,7 @@ while (ourPicks.length < ROUNDS) {
         ourPicks.push(choice.playerName);
         writeFileSync(D("our_picks.json"), JSON.stringify({ room: page.url(), picks: ourPicks, slot }));
         log(`VERIFIED pick #${ourPicks.length}: ${choice.playerName} (${choice.pos}) via ${res.how} | ${Date.now() - t0}ms`);
-        if (usedSearchThisTurn) { usedSearchThisTurn = false; await clearSearchBox(); }
+        if (usedListSwitch) await restoreAllPositions();
       }
       else log(`UNVERIFIED after ${res.how} click: ${choice.playerName} — one submission max, holding`);
     } else {
