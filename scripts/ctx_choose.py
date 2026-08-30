@@ -268,7 +268,10 @@ if config["strategy"].get("force_required_slots_endgame"):
     _slots = config["league"]["roster_slots"]
     _cnt = _rcounts(my_roster, players)
     _total_rounds = sum(int(v) for k, v in _slots.items() if k != "IR")
-    _remaining = _total_rounds - len(my_roster)
+    # remaining rounds from round_no (overall -> panel (N/15) + slot math),
+    # NOT len(my_roster): panel-parsed rosters carry phantom entries (mock #8
+    # counted 12 at 10 real picks -> forcing fired r12 instead of r14).
+    _remaining = _total_rounds - round_no + 1
     _empty = {p: int(_slots.get(p, 0)) - _cnt[p] for p in ("QB", "RB", "WR", "TE", "K", "DST") if _cnt[p] < int(_slots.get(p, 0))}
     _flex_extra = sum(max(0, _cnt[p] - int(_slots.get(p, 0))) for p in ("RB", "WR", "TE"))
     _flex_empty = max(0, int(_slots.get("FLEX", 0)) - _flex_extra)
