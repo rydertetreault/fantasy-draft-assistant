@@ -19,97 +19,90 @@
   approved; no bench-scoring or floor changes needed. Item CLOSED.
 - ESPN Synaps2 draft is Mon Sep 7 6 PM — the day after. Don't let prep collide.
 
-## Current state (post mock #1, all pushed @ `489878e`)
+## Current state (post mock #8 — VALIDATED CLEAN, live driver armed @ `eca7f0b`)
 
-- **Decision engine is cross-platform and validated**: `ctx_choose.py` +
-  `src/fantasy_draft_assistant/context.py` (wait-loss, slot-adjusted VORP,
-  hard caps QB2/TE2/K1/DEF1). **OWNER DIRECTIVE (mock #4, r2 Josh Allen
-  graded B + RB,RB,RB start): follow the ESPN profile formula — the Yahoo
-  profile now has HARD round floors (QB r5, DST r14, K r15) enforced at the
-  ctx layer, starters-before-flex, and a K/DST ADP-ghost exemption. All
-  profile-gated; ESPN path A/B-proven byte-identical.** Same brain that went
-  16/16 on the ESPN validation mock.
-- **Half-PPR board**: `data/yahoo/board.csv` (450 players) via
-  `scripts/make_yahoo_board.py` (ESPN projections − 0.5×receptions; rebuild
-  after fresh `fetch_espn_data.mjs` on draft day). Config: `config.yahoo.yaml`.
-- **Yahoo mock driver**: `scripts/yahoo_mock_driver.mjs` — self-discovering
-  DOM, MOCK-ONLY (hard-refuses the real room). 8 verified clicks @ ~527ms in
-  mock #1 once row discovery worked.
-- **Mock #1 verdict (user audit):** missed round 1, drafted 3 QBs. All root
-  causes found and fixed (see table below). **NOT yet validated clean.**
+- **MOCK #8 (2026-08-30 5:32 PM) PASSED THE FULL BAR**: 15/15 driver picks
+  VERIFIED (~530ms), round 1 fired, K (Dicker) + DEF (Broncos) landed via
+  the ENDGAME GATE + select-dropdown list switch, 2QB/2TE/1K/1DEF, zero
+  ghosts, zero autopicks. This is the clean validation mock.
+- **`scripts/yahoo_live_driver.mjs` (NEW, tested)**: the byte-identical
+  mock-8 loop, REAL room only (refuses every mock/foreign tab), dry-run by
+  default; `--live` requires `--grant-file` (alias allowlist `allidoiswin`,
+  RoughRydas forbidden, league 384341, session id
+  `470.l.384341-2026-<start_ms>`, validity window, expiry re-checked before
+  EVERY click). All 6 refusal paths + both arming modes tested offline.
+  Currently RUNNING in dry-run, waiting to latch the real room tonight.
+- **Decision engine cross-platform and validated**: `ctx_choose.py` +
+  `context.py` (wait-loss, slot-adjusted VORP, hard caps QB2/TE2/K1/DEF1,
+  hard floors QB r5 / DST r14 / K r14-15, starters-before-flex, K/DST
+  ADP-ghost exemption, endgame required-slot forcing + `required_now`
+  emission). All profile-gated; ESPN path A/B byte-identical (6/6 + 4/4
+  scenarios re-proven today). 332 tests pass.
+- **Half-PPR board**: `data/yahoo/board.csv` (452 players) rebuilt fresh
+  3:46 PM draft day via `fetch_espn_data.mjs` + `make_yahoo_board.py`.
+- **Mock driver** `yahoo_mock_driver.mjs` stays MOCK-ONLY (owner rule).
 
-## Bug harvest from mock #1 — fixed, offline-proven, needs live validation
+## The endgame-gate saga (mocks #5-#8) — how K/DEF got guaranteed
 
-| Failure | Fix (in `489878e`) |
+| Mock | Result | Lesson |
+|---|---|---|
+| #5 | 15/15 mechanics, ZERO K/DEF | DST gain 4.87 lost to the 5.0 filter-click gate; fallback never emitted `wanted` |
+| #6 | 15/15 mechanics, ZERO K/DEF | Filter-tab click silently missed; "rows changed" check lied (any opponent pick satisfied it); fallback clicked RB/WR over wanted DST |
+| #7 | 13 picks, r14 lost to autopick | ENDGAME GATE correctly REFUSED the RB, but all switch strategies failed: **Yahoo's position filter is a `<select>` dropdown, not tabs** — and the search-box fallback ("broncos") poisoned the list to 0 draft buttons. Bought the DOM truth via live recon |
+| #8 | **15/15 + K + DEF ✅** | Select-dropdown switch (native setter + change event) verified live: 31 DST rows / 40 K rows, gate recovered both turns in ~1.5s |
+
+**Hard guarantee now in the driver:** while rounds left <= empty required
+slots (`required_now` from the chooser, round-number based), clicking any
+other position is REFUSED; list-switch strategies retry until the clock
+forces an emergency valve at <=8s (beats autopick). Post-#8 fix, offline
+replay-proven: forcing keys off `round_no`, not the phantom-inflated panel
+roster, so K/DEF land r14/15 per owner directive (bench r10-13 untouched,
+K/DST ordered by value).
+
+## Bug harvest from mock #1 — all live-validated by mock #8
+
+| Failure | Fix |
 |---|---|
-| Missed pick 9 (round 1) | Row discovery + turn signal now known (see DOM notes) — armed pre-draft it fires from pick 1 |
+| Missed pick 9 (round 1) | Row discovery + turn signal — fires from pick 1 (live-proven #5-#8) |
 | "Javonte Williams" click landed Jameson Williams (WR) | **Position-locked** row matching |
-| "Jeremiyah Love" re-offer clicked Jordan Love → QB3 | Pos lock + roster **no-reoffer** (panel-synced roster added to drafted set) |
-| "Bijan Robinson" at 135 clicked Brian Robinson Jr. (same team+pos+abbrev!) | **ADP-sanity ghost filter**: ADP + 30 < current overall ⇒ not a candidate, ever |
-| DEF slot never filled | **DST bridge**: board "Lions D/ST" ↔ Yahoo "Detroit DEF" (city/nickname/team-token match) |
-| Dart QB2 by forfeit | Funnel widened (base 100 / ctx 30) + **filter-click**: when the engine's best unseen candidate beats best visible by >5, click Yahoo's position filter tab, wait for rows to re-render, re-choose |
-| Restart amnesia (wrong overall, lost roster) | Roster-panel `(N/15)` count is the turn index; picks persisted per-room; announcements freshness-gated (15s) |
+| "Jeremiyah Love" re-offer clicked Jordan Love → QB3 | Pos lock + roster **no-reoffer** |
+| "Bijan Robinson" at 135 clicked Brian Robinson Jr. | **ADP-sanity ghost filter** (K/DST exempt) |
+| DEF slot never filled | **DST bridge** + endgame gate + select-dropdown switch (live-proven #8) |
+| Dart QB2 by forfeit | Funnel widened + `wanted`-driven list switch |
+| Restart amnesia | Roster-panel `(N/15)` = turn index; picks persisted per-room |
 
-**Still open:**
-0. **K/DEF strategy per owner (post mock #5), all offline-verified:**
-   bench depth r10-13 stays untouched; r14/15 fill K+DEF ordered by VALUE
-   (elite kicker can precede a flat DST tier — K floor moved to 14);
-   `reactive_floor_unlock` answers early position runs (3+ hist-evidenced
-   takes) — "defense is based on when other teams start taking theirs but
-   can be deferred". K/DST are also excluded from the ADP count-fill (their
-   ESPN ADPs are fiction vs real rooms; Aubrey was being fill-"drafted" at
-   r14). **None of this has live reps yet — next mock must show K+DEF
-   actually landing.**
-1. **Mock #5 (2026-08-30, real-users room, FAST ~28s/round): mechanics
-   15/15 VERIFIED** (~530ms; slot from waiting-room label; in-place nav +
-   fast turns handled). Strategy through r7 = the directives working:
-   WR/RB/WR/RB/TE, QB r7. **FAILED the bar: ZERO K + ZERO DEF** — DST gain
-   4.87 missed the 5.0 filter-click gate at r14 AND the fallback path never
-   emitted `wanted`. Fixed (offline-replayed on the captured o134/o147
-   states): endgame required-slot forcing (rounds left <= empty required
-   slots ⇒ candidates restricted to them), fallback emits wanted+tokens,
-   driver trusts the chooser's wanted. Picks-scrape captured the real panel
-   format ("e. mcpherson\n(k · cin)") → parser handles it; Players-first
-   state reset fixes delta-only diffs. **Scrape has zero full-draft live
-   reps; filter-click STILL zero live reps.**
-2. **OWNER GRADING NEEDED: QB2 (Bo Nix r8, ctx 0.71) + TE2 (Kelce r9, ctx
-   0.06)** — in 10-team half-PPR the bench RB/WR pool is below replacement
-   by r8, so capped-position backups outscore them. Caps held, but if
-   backup QB/TE are dead roster spots, the fix is bench scoring
-   (upside-weighted RB/WR bench) or QB2/TE2 floors — awaiting directive.
-3. **Mock #4 (2026-08-30, instant-start room): mechanics 4/4 VERIFIED** —
-   room hop + URL slot + mid-draft restart w/ persisted state + Players-tab
-   remount guard all worked. **Strategy graded B by owner: Josh Allen r2
-   (QBs never that high) and RB,RB,RB before any WR.** Fixes (all
-   profile-gated, offline-replayed against the exact mock-4 turns): hard
-   floors QB5/DST14/K15 at the ctx layer (ESPN's -30 base-funnel penalty
-   never bound there), starters-before-flex bench-weighting, K/DST exempt
-   from the ADP ghost filter (Aubrey adp 86.6 would be "ghost" at r14/15).
-   Replays now go WR/WR at the o15/o26 turns; K/DST land r14/15 only.
-   **Needs a full clean validation mock.**
-2. Filter-click still has zero *correct* live reps. Watch it on TE/K/DEF turns.
-3. **Opponent modeling now feeds on REAL picks (owner directive)**: driver
-   scrapes the room's "Picks" panel off-turn (body-text diff → `hist.txt`,
-   restores "Players"); chooser attributes true pick order to snake slots
-   (abbrev+injury-tag matching, same-team twin dedup by ADP with
-   visible-row rescue, newest-first autodetect) → per-team need, run
-   detection, survival math on actuals. Profile-gated
-   (`history_order_attribution`); ESPN legacy path 4/4 byte-identical.
-   **Picks-tab scrape has ZERO live reps — validate the panel format,
-   tab restore, and `picks-scrape: N lines` log next mock.**
-3. Fallback once labeled an empty-TE-slot pick "bench 0.0" — believed to be a
-   phantom-roster artifact of the collision bugs; confirm gone.
-4. **Pre-rank floor: NOT IMPLEMENTED** (`yahoo_set_prerank.mjs` is a refusing
-   skeleton). This is rung #1 — Synaps1 proved floors win drafts alone. Needs
-   DOM recon of Yahoo's pre-rank editor before the real draft.
-5. The mock driver is MOCK-ONLY by design. Real-draft actuation must go
-   through `yahoo_actuate.mjs` gates (allowlist, grant with exact session id,
-   dry-run gate at T-30) — wire it AFTER a clean validation mock.
-6. Yahoo ADP proxy is ESPN ADP — fine for gap modeling, imperfect for their
+**Still open (accepted for tonight):**
+1. **Phantom panel-roster entries** (parser counts 12 at 10 real picks —
+   trailing RB/WR ghosts). Endgame forcing is now immune (round_no based);
+   residual effect is mild scoring bias in bench weighting. Fix parser
+   post-draft.
+2. **Pre-rank floor NOT IMPLEMENTED** (`yahoo_set_prerank.mjs` refusing
+   skeleton). CUT for tonight — no time for DOM recon; the validated driver
+   is the plan A, manual takeover is plan B.
+3. Yahoo ADP proxy is ESPN ADP — fine for gap modeling, imperfect for their
    room's sort order.
+4. QB2/TE2 verdict (owner, 2026-08-30): fine as-is. CLOSED.
+5. Picks-scrape, room hop, URL slot, mid-draft restart: all have live reps
+   across #5-#8. CLOSED.
 
-## Yahoo draft-room DOM cheat sheet (hard-won, mock #1)
+## Yahoo draft-room DOM cheat sheet (hard-won, mocks #1-#8)
 
+- **POSITION FILTER IS A `<select name="position-filter">` DROPDOWN — NOT
+  TABS** (mock #7 live recon). Option values: `pos_type=All`, `pos=QB/WR/
+  RB/TE/K/DEF` (+`pos_type=O`, `pos=W/R/T`); DEF's text label is "Team
+  Defenses". React select: use the NATIVE value setter + bubbling `change`
+  event; `.click()` on option text silently no-ops (cost mocks #4-#7 their
+  K/DEF turns).
+- **Search box** (`input placeholder="Search for a player"`) filters by
+  NAME and POISONS the list for everything else (0 draft buttons on our
+  clock = lost turn, mock #7). Clear via native setter + `input` event
+  before any list switch and after any pick. Last-resort only.
+- **DEF rows are nickname form: "Broncos DEF", "Cowboys DEF"** (not
+  "Denver DEF") — the DST bridge (city/nick/team-token) matches either.
+- **A CLOSED page still reports its last draftclient URL** — `page.url()`
+  doesn't throw, so a hop check keyed on URL alone spins on the dead
+  handle forever. `page.isClosed()` must force the target re-scan
+  (found pre-mock #8; the driver missed a fresh waiting room for 10 min).
 - Room URL: `football.fantasysports.yahoo.com/draftclient/f1/<mock_id>/<slot>`
   — **the trailing segment is OUR SLOT** (mock #2 `.../10171133/7`, mock #3
   `.../10171677/3`): primary slot source, critical for instant-start rooms
@@ -193,8 +186,9 @@ SLOT=<slot> TEAMS=10 nohup node scripts/yahoo_mock_driver.mjs > data/yahoo/mock_
 **Validation bar (all must hold):** round 1 fires · every VERIFIED pick is the
 intended player (spot-check panel vs log) · TE/K/DEF filled via filter-clicks
 · ≤2 QB, ≤2 TE, exactly 1 K + 1 DEF · zero ghost candidates · no autopicks
-while the driver is up. Then: implement the pre-rank floor + wire
-`yahoo_actuate.mjs` for the real room, mirroring the ESPN gate sequence.
+while the driver is up. **MET BY MOCK #8 (2026-08-30).** Pre-rank floor was
+cut for tonight; `yahoo_live_driver.mjs` (gated, above) replaced the
+per-click `yahoo_actuate.mjs` wiring as the real-room path.
 
 ## Rules that must not be relaxed
 
@@ -213,8 +207,10 @@ while the driver is up. Then: implement the pre-rank floor + wire
 
 ## Key files
 
+`scripts/yahoo_live_driver.mjs` (REAL room, gated — tonight's driver) ·
 `scripts/yahoo_mock_driver.mjs` · `scripts/ctx_choose.py` ·
 `scripts/make_yahoo_board.py` · `config.yahoo.yaml` · `data/yahoo/board.csv` ·
+`data/yahoo/live_driver.log` (tonight's log) ·
 `scripts/yahoo_room_probe.mjs` (recon) · `scripts/yahoo_{actuate,set_prerank,
 poll,fetch}.mjs` (real-room scaffolds, refuse-by-default) ·
 `src/fantasy_draft_assistant/{context,yahoo_safety}.py` ·
