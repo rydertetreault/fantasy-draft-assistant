@@ -41,3 +41,9 @@ strategy:
   # exempt them from the ADP ghost filter or the endgame blocks the best
   # K/DST at exactly the rounds we must draft them. Yahoo-profile only.
   adp_ghost_skill_only: true
+  # OWNER DIRECTIVE: base picks on how the other teams have actually
+  # picked. The driver scrapes the room's Picks tab; this flag parses that
+  # scrape in true pick order for exact per-team snake attribution ->
+  # opponent need / run / survival modeling on real picks. Yahoo-only;
+  # ESPN keeps its validated legacy (full-name bag + ADP-order) path.
+  history_order_attribution: true

@@ -105,20 +105,83 @@ n_drafted = max(0, current_overall - 1)
 known_gone = list(dict.fromkeys(roster_given + sorted(excludes)))
 adp_order = b.sort_values("adp")["player"].tolist()
 
-# history text (ws frames / disappearance log): identity evidence only —
-# it refines WHO is gone but can never change HOW MANY are gone (the
-# announcement count is exact; additive history re-inflated it: r10 bug).
+# history text (Picks-tab scrape): identity evidence only — it refines WHO
+# is gone but can never change HOW MANY are gone (the announcement count is
+# exact; additive history re-inflated it: r10 bug). OWNER DIRECTIVE: parse
+# in TEXT ORDER so real pick order feeds per-team attribution — opponent
+# need/run/survival modeling on actual picks, not an ADP fiction.
 hist = open(a.history, encoding="utf8", errors="replace").read().lower()
-hist_names = [n for n in name2id if n.lower() in hist and n not in known_gone and not is_visible(n)]
+# ORDERED attribution is PROFILE-GATED (owner two-profile rule): Yahoo's
+# Picks-tab scrape is a real ordered pick list; ESPN's ws-frame dumps are
+# not — ESPN keeps the legacy full-name bag + ADP-order attribution.
+_ordered_mode = bool(config["strategy"].get("history_order_attribution"))
+_strip = lambda n: n.replace(" Jr.", "").replace(" Sr.", "").replace(" III", "").replace(" II", "")
+_ab_of = lambda n: (lambda p: f"{p[0][0].lower()}. {' '.join(p[1:]).lower()}" if len(p) >= 2 else "")(_strip(n).split())
+_ab_twins: dict[tuple[str, str], int] = {}
+for _nm in name2id:
+    _k = (_ab_of(_nm), name2pos.get(_nm, ""))
+    _ab_twins[_k] = _ab_twins.get(_k, 0) + 1
+hist_hits = []
+_hit_at: dict[int, str] = {}
+if _ordered_mode:
+    for nm in name2id:
+        if is_visible(nm):
+            continue
+        i = hist.find(nm.lower())
+        if i < 0:
+            ab, pos = _ab_of(nm), name2pos.get(nm, "")
+            if ab:
+                pl = pos.lower().replace("dst", "def")
+                m = re.search(re.escape(ab) + r"\s+(?:[qdoir]+\s+)?" + re.escape(pl) + r"\b", hist)
+                if m:
+                    if _ab_twins.get((ab, pos), 0) > 1:
+                        # abbrev twins (B. Robinson RB x2): the team token near
+                        # the match must confirm THIS player, else skip — never
+                        # mark the wrong twin as drafted.
+                        seg = " " + re.sub(r"\s+", " ", hist[m.start(): m.start() + 80]) + " "
+                        tm = str(name2team.get(nm, "")).lower()
+                        if not tm or f" {tm} " not in seg:
+                            continue
+                    i = m.start()
+        if i >= 0:
+            # same-team+pos+abbrev twins (Bijan/Brian Robinson, BOTH Atl) match
+            # the SAME text position: keep the lower-ADP twin only — if that is
+            # ever wrong, the elite twin is still available and his visible row
+            # rescues him (is_visible guard precedes history matching).
+            prev = _hit_at.get(i)
+            if prev is None or name2adp.get(nm, 999) < name2adp.get(prev, 999):
+                _hit_at[i] = nm
+hist_hits = sorted(_hit_at.items())
+ordered_hist = (
+    [nm for _, nm in hist_hits]
+    if _ordered_mode
+    else [n for n in name2id if n.lower() in hist and not is_visible(n)]  # legacy bag
+)
+# picks panels often render newest-first: if the early half looks worse
+# (higher ADP) than the late half, flip to true draft order.
+if _ordered_mode and len(ordered_hist) >= 4:
+    _adps = [float(name2adp.get(n, 999)) for n in ordered_hist]
+    _h = len(_adps) // 2
+    if sum(_adps[:_h]) / _h > sum(_adps[_h:]) / (len(_adps) - _h):
+        ordered_hist.reverse()
+hist_names = [n for n in ordered_hist if n not in known_gone]
 fill = [n for n in adp_order if n not in known_gone and n not in hist_names and not is_visible(n)]
 drafted_names = (known_gone + hist_names + fill)[:max(n_drafted, len(known_gone))]
 
-# attribution: drafted players in ADP order approximates draft order -> snake
-by_adp = sorted((n for n in drafted_names if n in name2pos), key=lambda n: float(b.set_index("player")["adp"].get(n, 999)))
+# attribution: REAL history order first (exact per-team snake rosters for
+# the opponent model); ADP order approximates only the unknown remainder.
+# Legacy (ESPN) mode: pure ADP-order attribution, exactly as validated.
+_ord = {n: i for i, n in enumerate(ordered_hist)} if _ordered_mode else {}
+by_order = sorted(
+    (n for n in drafted_names if n in name2pos),
+    key=lambda n: (0, _ord[n]) if n in _ord else (1, float(name2adp.get(n, 999))),
+)
 picks = [
     TeamPick(o + 1, snake_slot_for_overall(o + 1, a.teams), name, name2pos[name])
-    for o, name in enumerate(by_adp)
+    for o, name in enumerate(by_order)
 ]
+if os.environ.get("CTX_DEBUG"):
+    print("PICKS " + json.dumps([[p.overall, p.team_slot, p.player, p.pos] for p in picks]), file=sys.stderr)
 my_roster = list(roster_given)  # our verified clicks
 if a.roster_file:
     try:

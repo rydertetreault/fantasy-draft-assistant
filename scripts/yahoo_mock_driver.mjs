@@ -114,7 +114,8 @@ const CLICK2 = () => {
 };
 
 try { const saved = JSON.parse((await import("node:fs")).readFileSync(D("our_picks.json"), "utf8")); if (saved.room === page.url()) { var _op = saved.picks; var _slot = saved.slot; } } catch {}
-let ourPicks = (typeof _op !== "undefined" ? _op : []), clickedThisTurn = false, lastSig = "", slot = (typeof _slot === "number" && _slot >= 1 ? _slot : SLOT), slotSource = (typeof _slot === "number" && _slot >= 1 ? "persisted" : "env-default"), lastAnnounced = 0;
+let ourPicks = (typeof _op !== "undefined" ? _op : []), clickedThisTurn = false, lastSig = "", slot = (typeof _slot === "number" && _slot >= 1 ? _slot : SLOT), slotSource = (typeof _slot === "number" && _slot >= 1 ? "persisted" : "env-default"), lastAnnounced = 0, lastHistAt = 0, lastHistLines = -1;
+writeFileSync(D("hist.txt"), ""); // fresh room: scrape refills within ~12s
 if (slotSource === "persisted") log(`slot restored: ${slot} (persisted from this room)`);
 { const uS = slotFromUrl(urlOf(page)); if (uS) { if (uS !== slot) log(`slot from room URL: ${uS} (was ${slot}/${slotSource})`); slot = uS; slotSource = "room URL"; } }
 while (ourPicks.length < ROUNDS) {
@@ -167,7 +168,39 @@ while (ourPicks.length < ROUNDS) {
   // lobby shows a persistent "YOUR TURN - 9TH PICK" label => banner alone is
   // NOT proof we are on the clock. Require live rows + enabled Draft buttons.
   const onTurn = s.titleTurn && s.rows.length > 0;
-  if (!onTurn) { clickedThisTurn = false; await new Promise((r) => setTimeout(r, 500)); continue; }
+  if (!onTurn) {
+    clickedThisTurn = false;
+    // OWNER DIRECTIVE: feed the chooser the REAL draft history so opponent
+    // need/run/survival modeling works off actual picks. Off-turn only
+    // (never burn clock / touch the panel while Draft buttons are live):
+    // click "Picks", diff body text before/after (queue & roster lines are
+    // in both snapshots so they can't leak in), restore "Players".
+    if (Date.now() - lastHistAt > 12000 && /draftclient/i.test(urlOf(page))) {
+      lastHistAt = Date.now();
+      try {
+        const before = await page.evaluate(() => document.body.innerText);
+        const clicked = await page.evaluate(() => {
+          const t = Array.from(document.querySelectorAll("button, [role=tab], a, li")).find((e) => (e.innerText || "").trim() === "Picks");
+          if (t) { t.click(); return true; } return false;
+        });
+        if (clicked) {
+          await new Promise((r) => setTimeout(r, 700));
+          const after = await page.evaluate(() => document.body.innerText);
+          const beforeSet = new Set(before.split("\n").map((x) => x.trim()));
+          const added = after.split("\n").map((x) => x.trim()).filter((x) => x && !beforeSet.has(x));
+          if (added.length) {
+            writeFileSync(D("hist.txt"), added.join("\n").toLowerCase());
+            if (added.length !== lastHistLines) { log(`picks-scrape: ${added.length} lines`); lastHistLines = added.length; }
+          }
+          await page.evaluate(() => {
+            const t = Array.from(document.querySelectorAll("button, [role=tab], a, li")).find((e) => (e.innerText || "").trim() === "Players");
+            if (t) t.click();
+          }).catch(() => null);
+        }
+      } catch {}
+    }
+    await new Promise((r) => setTimeout(r, 500)); continue;
+  }
   if (clickedThisTurn) { await new Promise((r) => setTimeout(r, 600)); continue; }
   if (!s.rows.length) { await new Promise((r) => setTimeout(r, 400)); continue; }
 
@@ -178,7 +211,7 @@ while (ourPicks.length < ROUNDS) {
   const haveCount = cm ? parseInt(cm[1], 10) : ourPicks.length;
   const overall = ((k) => { const r = k + 1; return r % 2 === 1 ? (r - 1) * TEAMS + slot : r * TEAMS - slot + 1; })(haveCount);
   writeFileSync(D("visible.json"), JSON.stringify(s.rows));
-  writeFileSync(D("hist.txt"), "");
+  // hist.txt NOT blanked here — it holds the last off-turn Picks scrape
   writeFileSync(D("roster.txt"), s.rosterText || "");
   let choice;
   try {
