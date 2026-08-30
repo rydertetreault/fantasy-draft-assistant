@@ -203,6 +203,7 @@ def contextual_recommend(
     our_slot: int,
     config: dict,
     limit: int = 10,
+    current_overall: int | None = None,
 ) -> pd.DataFrame:
     """Re-rank the engine's base recommendations using full draft context.
 
@@ -218,7 +219,11 @@ def contextual_recommend(
     the pick naturally waits; a draining scarce tier screams NOW.
     """
     teams = int(config["league"]["teams"])
-    current_overall = len(all_picks)
+    # trust the caller's exact overall (e.g. parsed from the room's own
+    # announcement) over the length of a possibly-undercounted pick list —
+    # an inflated gap fabricates wait_loss (the r2 Josh Allen bug).
+    if current_overall is None:
+        current_overall = len(all_picks)
     gap = picks_between(current_overall, our_slot, teams)
 
     drafted = {p.player for p in all_picks}
