@@ -1,0 +1,230 @@
+2026-08-29T23:45:28.925Z driver attached: https://fantasy.espn.com/football/draft?leagueId=274024468&seasonId=2026&teamId=4&memberId
+2026-08-29T23:45:28.940Z pickArea: You are on the clock! Your autopick would be: David Montgomery / Houston Texans RB DRAFT | RND 5 OF 16 00:21
+2026-08-29T23:45:28.941Z OUR TURN r5 clock=00:21 -> Drake Maye (QB)
+2026-08-29T23:45:29.699Z actuate: Verify the pick via a fresh snapshot before doing anything else. (759ms total)
+2026-08-29T23:45:30.203Z VERIFIED pick 1: Drake Maye | roster {"QB":1,"RB":0,"WR":0,"TE":1,"K":0,"DST":0}
+2026-08-29T23:45:30.606Z pickArea: You drafted Drake Maye! New England Patriots / QB | RND 5 OF 16 00:30
+2026-08-29T23:45:33.427Z pickArea: You're on the clock in: 14 Picks Round 6, Pick 9 | RND 5 OF 16 00:30
+2026-08-29T23:45:34.640Z pickArea: You're on the clock in: 13 Picks Round 6, Pick 9 | RND 5 OF 16 00:30
+2026-08-29T23:45:35.848Z pickArea: You're on the clock in: 12 Picks Round 6, Pick 9 | RND 5 OF 16 00:29
+2026-08-29T23:45:37.457Z pickArea: You're on the clock in: 11 Picks Round 6, Pick 9 | RND 5 OF 16 00:30
+2026-08-29T23:45:38.675Z pickArea: You're on the clock in: 10 Picks Round 6, Pick 9 | RND 5 OF 16 00:29
+2026-08-29T23:45:40.285Z pickArea: You're on the clock in: 9 Picks Round 6, Pick 9 | RND 5 OF 16 00:29
+2026-08-29T23:45:41.895Z pickArea: You're on the clock in: 8 Picks Round 6, Pick 9 | RND 6 OF 16 00:29
+2026-08-29T23:45:43.505Z pickArea: You're on the clock in: 7 Picks Round 6, Pick 9 | RND 6 OF 16 00:30
+2026-08-29T23:45:44.714Z pickArea: You're on the clock in: 6 Picks Round 6, Pick 9 | RND 6 OF 16 00:28
+2026-08-29T23:45:46.328Z pickArea: You're on the clock in: 5 Picks Round 6, Pick 9 | RND 6 OF 16 00:29
+2026-08-29T23:45:47.941Z pickArea: You're on the clock in: 4 Picks Round 6, Pick 9 | RND 6 OF 16 00:30
+2026-08-29T23:45:49.552Z pickArea: You're on the clock in: 3 Picks Round 6, Pick 9 | RND 6 OF 16 00:30
+2026-08-29T23:45:50.760Z pickArea: You're on the clock in: 2 Picks Round 6, Pick 9 | RND 6 OF 16 00:29
+2026-08-29T23:45:52.372Z pickArea: You're on the clock in: 1 Pick Round 6, Pick 9 | RND 6 OF 16 00:29
+2026-08-29T23:45:53.983Z pickArea: You are on the clock! Your autopick would be: Rhamondre Stevenson / New England Patriots RB DRAFT | RND 6 OF 16 00:29
+2026-08-29T23:45:53.983Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:45:56.986Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:45:59.990Z OUR TURN r6 clock=00:24 -> Courtland Sutton (WR)
+2026-08-29T23:46:00.776Z actuate: Verify the pick via a fresh snapshot before doing anything else. (786ms total)
+2026-08-29T23:46:01.278Z VERIFIED pick 2: Courtland Sutton | roster {"QB":1,"RB":0,"WR":1,"TE":1,"K":0,"DST":0}
+2026-08-29T23:46:01.681Z pickArea: You drafted Courtland Sutton! Denver Broncos / WR | RND 6 OF 16 00:30
+2026-08-29T23:46:04.900Z pickArea: You're on the clock in: 4 Picks Round 7, Pick 4 | RND 6 OF 16 00:30
+2026-08-29T23:46:05.704Z pickArea: You're on the clock in: 3 Picks Round 7, Pick 4 | RND 7 OF 16 00:30
+2026-08-29T23:46:07.314Z pickArea: You're on the clock in: 2 Picks Round 7, Pick 4 | RND 7 OF 16 00:30
+2026-08-29T23:46:08.521Z pickArea: You're on the clock in: 1 Pick Round 7, Pick 4 | RND 7 OF 16 00:29
+2026-08-29T23:46:10.129Z pickArea: You are on the clock! Your autopick would be: Jaylen Warren / Pittsburgh Steelers RB DRAFT | RND 7 OF 16 00:29
+2026-08-29T23:46:10.130Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:46:13.132Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:46:16.134Z OUR TURN r7 clock=00:24 -> Michael Pittman Jr. (WR)
+2026-08-29T23:46:16.913Z actuate: Verify the pick via a fresh snapshot before doing anything else. (779ms total)
+2026-08-29T23:46:17.414Z VERIFIED pick 3: Michael Pittman Jr. | roster {"QB":1,"RB":0,"WR":2,"TE":1,"K":0,"DST":0}
+2026-08-29T23:46:17.817Z pickArea: You drafted Michael Pittman Jr.! Pittsburgh Steelers / WR | RND 7 OF 16 00:30
+2026-08-29T23:46:20.634Z pickArea: You're on the clock in: 14 Picks Round 8, Pick 9 | RND 7 OF 16 00:30
+2026-08-29T23:46:21.843Z pickArea: You're on the clock in: 13 Picks Round 8, Pick 9 | RND 7 OF 16 00:30
+2026-08-29T23:46:23.051Z pickArea: You're on the clock in: 12 Picks Round 8, Pick 9 | RND 7 OF 16 00:29
+2026-08-29T23:46:24.662Z pickArea: You're on the clock in: 11 Picks Round 8, Pick 9 | RND 7 OF 16 00:28
+2026-08-29T23:46:26.273Z pickArea: You're on the clock in: 10 Picks Round 8, Pick 9 | RND 7 OF 16 00:30
+2026-08-29T23:46:27.507Z pickArea: You're on the clock in: 9 Picks Round 8, Pick 9 | RND 7 OF 16 00:29
+2026-08-29T23:46:29.117Z pickArea: You're on the clock in: 8 Picks Round 8, Pick 9 | RND 8 OF 16 00:29
+2026-08-29T23:46:30.728Z pickArea: You're on the clock in: 7 Picks Round 8, Pick 9 | RND 8 OF 16 00:29
+2026-08-29T23:46:32.340Z pickArea: You're on the clock in: 6 Picks Round 8, Pick 9 | RND 8 OF 16 00:30
+2026-08-29T23:46:33.551Z pickArea: You're on the clock in: 5 Picks Round 8, Pick 9 | RND 8 OF 16 00:29
+2026-08-29T23:46:35.165Z pickArea: You're on the clock in: 4 Picks Round 8, Pick 9 | RND 8 OF 16 00:29
+2026-08-29T23:46:36.773Z pickArea: You're on the clock in: 3 Picks Round 8, Pick 9 | RND 8 OF 16 00:30
+2026-08-29T23:46:38.382Z pickArea: You're on the clock in: 2 Picks Round 8, Pick 9 | RND 8 OF 16 00:30
+2026-08-29T23:46:39.590Z pickArea: You're on the clock in: 1 Pick Round 8, Pick 9 | RND 8 OF 16 00:28
+2026-08-29T23:46:41.200Z pickArea: You are on the clock! Your autopick would be: Jonathon Brooks / Carolina Panthers RB DRAFT | RND 8 OF 16 00:29
+2026-08-29T23:46:41.201Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:46:44.203Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:46:47.205Z OUR TURN r8 clock=00:24 -> Alec Pierce (WR)
+2026-08-29T23:46:47.971Z actuate: Verify the pick via a fresh snapshot before doing anything else. (767ms total)
+2026-08-29T23:46:48.475Z VERIFIED pick 4: Alec Pierce | roster {"QB":1,"RB":0,"WR":3,"TE":1,"K":0,"DST":0}
+2026-08-29T23:46:48.877Z pickArea: You drafted Alec Pierce! Indianapolis Colts / WR | RND 8 OF 16 00:29
+2026-08-29T23:46:51.699Z pickArea: You're on the clock in: 4 Picks Round 9, Pick 4 | RND 8 OF 16 00:30
+2026-08-29T23:46:52.512Z pickArea: You're on the clock in: 3 Picks Round 9, Pick 4 | RND 9 OF 16 00:29
+2026-08-29T23:46:54.122Z pickArea: You're on the clock in: 2 Picks Round 9, Pick 4 | RND 9 OF 16 00:29
+2026-08-29T23:46:55.736Z pickArea: You're on the clock in: 1 Pick Round 9, Pick 4 | RND 9 OF 16 00:30
+2026-08-29T23:46:57.346Z pickArea: You are on the clock! Your autopick would be: Kyle Monangai / Chicago Bears RB DRAFT | RND 9 OF 16 00:30
+2026-08-29T23:46:57.346Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:47:00.349Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:47:03.352Z OUR TURN r9 clock=00:24 -> Kyle Monangai (RB)
+2026-08-29T23:47:04.136Z actuate: Verify the pick via a fresh snapshot before doing anything else. (784ms total)
+2026-08-29T23:47:04.639Z VERIFIED pick 5: Kyle Monangai | roster {"QB":1,"RB":1,"WR":3,"TE":1,"K":0,"DST":0}
+2026-08-29T23:47:05.042Z pickArea: You drafted Kyle Monangai! Chicago Bears / RB | RND 9 OF 16 00:30
+2026-08-29T23:47:07.861Z pickArea: You're on the clock in: 14 Picks Round 10, Pick 9 | RND 9 OF 16 00:30
+2026-08-29T23:47:09.070Z pickArea: You're on the clock in: 13 Picks Round 10, Pick 9 | RND 9 OF 16 00:30
+2026-08-29T23:47:10.682Z pickArea: You're on the clock in: 12 Picks Round 10, Pick 9 | RND 9 OF 16 00:30
+2026-08-29T23:47:11.890Z pickArea: You're on the clock in: 11 Picks Round 10, Pick 9 | RND 9 OF 16 00:29
+2026-08-29T23:47:13.501Z pickArea: You're on the clock in: 10 Picks Round 10, Pick 9 | RND 9 OF 16 00:29
+2026-08-29T23:47:15.114Z pickArea: You're on the clock in: 9 Picks Round 10, Pick 9 | RND 9 OF 16 00:30
+2026-08-29T23:47:16.322Z pickArea: You're on the clock in: 8 Picks Round 10, Pick 9 | RND 10 OF 16 00:29
+2026-08-29T23:47:17.932Z pickArea: You're on the clock in: 7 Picks Round 10, Pick 9 | RND 10 OF 16 00:29
+2026-08-29T23:47:19.546Z pickArea: You're on the clock in: 6 Picks Round 10, Pick 9 | RND 10 OF 16 00:29
+2026-08-29T23:47:21.156Z pickArea: You're on the clock in: 5 Picks Round 10, Pick 9 | RND 10 OF 16 00:30
+2026-08-29T23:47:22.394Z pickArea: You're on the clock in: 4 Picks Round 10, Pick 9 | RND 10 OF 16 00:29
+2026-08-29T23:47:24.006Z pickArea: You're on the clock in: 3 Picks Round 10, Pick 9 | RND 10 OF 16 00:28
+2026-08-29T23:47:25.617Z pickArea: You're on the clock in: 2 Picks Round 10, Pick 9 | RND 10 OF 16 00:30
+2026-08-29T23:47:27.229Z pickArea: You're on the clock in: 1 Pick Round 10, Pick 9 | RND 10 OF 16 00:30
+2026-08-29T23:47:28.438Z pickArea: You are on the clock! Your autopick would be: Jacory Croskey-Merritt / Washington Commanders RB DRAFT | RND 10 OF 16 00:29
+2026-08-29T23:47:28.439Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:47:31.442Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:47:34.445Z OUR TURN r10 clock=00:24 -> Kyler Murray (QB)
+2026-08-29T23:47:35.225Z actuate: Verify the pick via a fresh snapshot before doing anything else. (780ms total)
+2026-08-29T23:47:35.728Z VERIFIED pick 6: Kyler Murray | roster {"QB":2,"RB":1,"WR":3,"TE":1,"K":0,"DST":0}
+2026-08-29T23:47:36.131Z pickArea: You drafted Kyler Murray! Minnesota Vikings / QB | RND 10 OF 16 00:30
+2026-08-29T23:47:38.958Z pickArea: You're on the clock in: 4 Picks Round 11, Pick 4 | RND 10 OF 16 00:30
+2026-08-29T23:47:40.167Z pickArea: You're on the clock in: 3 Picks Round 11, Pick 4 | RND 11 OF 16 00:30
+2026-08-29T23:47:41.780Z pickArea: You're on the clock in: 2 Picks Round 11, Pick 4 | RND 11 OF 16 00:30
+2026-08-29T23:47:42.989Z pickArea: You're on the clock in: 1 Pick Round 11, Pick 4 | RND 11 OF 16 00:29
+2026-08-29T23:47:44.600Z pickArea: You are on the clock! Your autopick would be: Jordan Mason / Minnesota Vikings RB DRAFT | RND 11 OF 16 00:30
+2026-08-29T23:47:44.600Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:47:47.603Z OUR TURN r11 clock=00:27 -> Xavier Worthy (WR)
+2026-08-29T23:47:48.388Z actuate: Verify the pick via a fresh snapshot before doing anything else. (785ms total)
+2026-08-29T23:47:48.889Z VERIFIED pick 7: Xavier Worthy | roster {"QB":2,"RB":1,"WR":4,"TE":1,"K":0,"DST":0}
+2026-08-29T23:47:49.292Z pickArea: You drafted Xavier Worthy! Kansas City Chiefs / WR | RND 11 OF 16 00:30
+2026-08-29T23:47:52.515Z pickArea: You're on the clock in: 14 Picks Round 12, Pick 9 | RND 11 OF 16 00:30
+2026-08-29T23:47:53.320Z pickArea: You're on the clock in: 13 Picks Round 12, Pick 9 | RND 11 OF 16 00:29
+2026-08-29T23:47:54.933Z pickArea: You're on the clock in: 12 Picks Round 12, Pick 9 | RND 11 OF 16 00:30
+2026-08-29T23:47:56.544Z pickArea: You're on the clock in: 11 Picks Round 12, Pick 9 | RND 11 OF 16 00:30
+2026-08-29T23:47:57.752Z pickArea: You're on the clock in: 10 Picks Round 12, Pick 9 | RND 11 OF 16 00:29
+2026-08-29T23:47:59.363Z pickArea: You're on the clock in: 9 Picks Round 12, Pick 9 | RND 11 OF 16 00:30
+2026-08-29T23:48:00.978Z pickArea: You're on the clock in: 8 Picks Round 12, Pick 9 | RND 12 OF 16 00:30
+2026-08-29T23:48:02.185Z pickArea: You're on the clock in: 7 Picks Round 12, Pick 9 | RND 12 OF 16 00:29
+2026-08-29T23:48:03.798Z pickArea: You're on the clock in: 6 Picks Round 12, Pick 9 | RND 12 OF 16 00:29
+2026-08-29T23:48:05.411Z pickArea: You're on the clock in: 5 Picks Round 12, Pick 9 | RND 12 OF 16 00:30
+2026-08-29T23:48:06.641Z pickArea: You're on the clock in: 4 Picks Round 12, Pick 9 | RND 12 OF 16 00:29
+2026-08-29T23:48:08.251Z pickArea: You're on the clock in: 3 Picks Round 12, Pick 9 | RND 12 OF 16 00:29
+2026-08-29T23:48:09.876Z pickArea: You're on the clock in: 2 Picks Round 12, Pick 9 | RND 12 OF 16 00:30
+2026-08-29T23:48:11.487Z pickArea: You're on the clock in: 1 Pick Round 12, Pick 9 | RND 12 OF 16 00:30
+2026-08-29T23:48:12.696Z pickArea: You are on the clock! Your autopick would be: Alvin Kamara / New Orleans Saints RB DRAFT | RND 12 OF 16 00:29
+2026-08-29T23:48:12.696Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:48:15.699Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:48:18.702Z OUR TURN r12 clock=00:24 -> T.J. Hockenson (TE)
+2026-08-29T23:48:19.510Z actuate: Verify the pick via a fresh snapshot before doing anything else. (808ms total)
+2026-08-29T23:48:20.013Z VERIFIED pick 8: T.J. Hockenson | roster {"QB":2,"RB":1,"WR":4,"TE":2,"K":0,"DST":0}
+2026-08-29T23:48:20.417Z pickArea: You drafted T.J. Hockenson! Minnesota Vikings / TE | RND 12 OF 16 00:30
+2026-08-29T23:48:23.237Z pickArea: You're on the clock in: 4 Picks Round 13, Pick 4 | RND 12 OF 16 00:30
+2026-08-29T23:48:24.445Z pickArea: You're on the clock in: 3 Picks Round 13, Pick 4 | RND 13 OF 16 00:30
+2026-08-29T23:48:25.655Z pickArea: You're on the clock in: 2 Picks Round 13, Pick 4 | RND 13 OF 16 00:29
+2026-08-29T23:48:27.267Z pickArea: You're on the clock in: 1 Pick Round 13, Pick 4 | RND 13 OF 16 00:29
+2026-08-29T23:48:28.880Z pickArea: You are on the clock! Your autopick would be: Dylan Sampson / Cleveland Browns RB DRAFT | RND 13 OF 16 00:29
+2026-08-29T23:48:28.880Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:48:31.884Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:48:34.887Z OUR TURN r13 clock=00:24 -> Calvin Ridley (WR)
+2026-08-29T23:48:35.672Z actuate: Verify the pick via a fresh snapshot before doing anything else. (785ms total)
+2026-08-29T23:48:36.176Z VERIFIED pick 9: Calvin Ridley | roster {"QB":2,"RB":1,"WR":5,"TE":2,"K":0,"DST":0}
+2026-08-29T23:48:36.578Z pickArea: You drafted Calvin Ridley! Tennessee Titans / WR | RND 13 OF 16 00:30
+2026-08-29T23:48:39.800Z pickArea: You're on the clock in: 14 Picks Round 14, Pick 9 | RND 13 OF 16 00:30
+2026-08-29T23:48:40.605Z pickArea: You're on the clock in: 13 Picks Round 14, Pick 9 | RND 13 OF 16 00:29
+2026-08-29T23:48:42.217Z pickArea: You're on the clock in: 12 Picks Round 14, Pick 9 | RND 13 OF 16 00:30
+2026-08-29T23:48:43.429Z pickArea: You're on the clock in: 11 Picks Round 14, Pick 9 | RND 13 OF 16 00:29
+2026-08-29T23:48:45.047Z pickArea: You're on the clock in: 10 Picks Round 14, Pick 9 | RND 13 OF 16 00:29
+2026-08-29T23:48:46.656Z pickArea: You're on the clock in: 9 Picks Round 14, Pick 9 | RND 13 OF 16 00:29
+2026-08-29T23:48:48.270Z pickArea: You're on the clock in: 8 Picks Round 14, Pick 9 | RND 14 OF 16 00:30
+2026-08-29T23:48:49.882Z pickArea: You're on the clock in: 7 Picks Round 14, Pick 9 | RND 14 OF 16 00:30
+2026-08-29T23:48:51.092Z pickArea: You're on the clock in: 6 Picks Round 14, Pick 9 | RND 14 OF 16 00:29
+2026-08-29T23:48:52.705Z pickArea: You're on the clock in: 5 Picks Round 14, Pick 9 | RND 14 OF 16 00:30
+2026-08-29T23:48:53.945Z pickArea: You're on the clock in: 4 Picks Round 14, Pick 9 | RND 14 OF 16 00:28
+2026-08-29T23:48:55.556Z pickArea: You're on the clock in: 3 Picks Round 14, Pick 9 | RND 14 OF 16 00:29
+2026-08-29T23:48:57.170Z pickArea: You're on the clock in: 2 Picks Round 14, Pick 9 | RND 14 OF 16 00:29
+2026-08-29T23:48:58.783Z pickArea: You're on the clock in: 1 Pick Round 14, Pick 9 | RND 14 OF 16 00:30
+2026-08-29T23:48:59.997Z pickArea: You are on the clock! Your autopick would be: Jonah Coleman / Denver Broncos RB DRAFT | RND 14 OF 16 00:29
+2026-08-29T23:48:59.998Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:49:02.999Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:49:06.004Z OUR TURN r14 clock=00:24 -> Braelon Allen (RB)
+2026-08-29T23:49:06.786Z actuate: Verify the pick via a fresh snapshot before doing anything else. (782ms total)
+2026-08-29T23:49:07.287Z VERIFIED pick 10: Braelon Allen | roster {"QB":2,"RB":2,"WR":5,"TE":2,"K":0,"DST":0}
+2026-08-29T23:49:07.691Z pickArea: You drafted Braelon Allen! New York Jets / RB | RND 14 OF 16 00:30
+2026-08-29T23:49:10.916Z pickArea: You're on the clock in: 4 Picks Round 15, Pick 4 | RND 14 OF 16 00:30
+2026-08-29T23:49:11.723Z pickArea: You're on the clock in: 3 Picks Round 15, Pick 4 | RND 15 OF 16 00:29
+2026-08-29T23:49:13.337Z pickArea: You're on the clock in: 2 Picks Round 15, Pick 4 | RND 15 OF 16 00:30
+2026-08-29T23:49:14.545Z pickArea: You're on the clock in: 1 Pick Round 15, Pick 4 | RND 15 OF 16 00:28
+2026-08-29T23:49:16.159Z pickArea: You are on the clock! Your autopick would be: Ravens D/ST DRAFT | RND 15 OF 16 00:29
+2026-08-29T23:49:16.159Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:49:19.163Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:49:22.166Z OUR TURN r15 clock=00:24 -> Harrison Mevis (K)
+2026-08-29T23:49:22.957Z actuate: Verify the pick via a fresh snapshot before doing anything else. (791ms total)
+2026-08-29T23:49:23.460Z VERIFIED pick 11: Harrison Mevis | roster {"QB":2,"RB":2,"WR":5,"TE":2,"K":1,"DST":0}
+2026-08-29T23:49:23.863Z pickArea: You drafted Harrison Mevis! Los Angeles Rams / K | RND 15 OF 16 00:30
+2026-08-29T23:49:27.113Z pickArea: You're on the clock in: 14 Picks Round 16, Pick 9 | RND 15 OF 16 00:30
+2026-08-29T23:49:27.919Z pickArea: You're on the clock in: 13 Picks Round 16, Pick 9 | RND 15 OF 16 00:29
+2026-08-29T23:49:29.532Z pickArea: You're on the clock in: 12 Picks Round 16, Pick 9 | RND 15 OF 16 00:28
+2026-08-29T23:49:31.145Z pickArea: You're on the clock in: 11 Picks Round 16, Pick 9 | RND 15 OF 16 00:30
+2026-08-29T23:49:32.354Z pickArea: You're on the clock in: 10 Picks Round 16, Pick 9 | RND 15 OF 16 00:29
+2026-08-29T23:49:33.966Z pickArea: You're on the clock in: 9 Picks Round 16, Pick 9 | RND 15 OF 16 00:28
+2026-08-29T23:49:35.578Z pickArea: You're on the clock in: 8 Picks Round 16, Pick 9 | RND 16 OF 16 00:30
+2026-08-29T23:49:37.202Z pickArea: You're on the clock in: 7 Picks Round 16, Pick 9 | RND 16 OF 16 00:30
+2026-08-29T23:49:38.412Z pickArea: You're on the clock in: 6 Picks Round 16, Pick 9 | RND 16 OF 16 00:29
+2026-08-29T23:49:40.024Z pickArea: You're on the clock in: 5 Picks Round 16, Pick 9 | RND 16 OF 16 00:29
+2026-08-29T23:49:41.637Z pickArea: You're on the clock in: 4 Picks Round 16, Pick 9 | RND 16 OF 16 00:30
+2026-08-29T23:49:43.248Z pickArea: You're on the clock in: 3 Picks Round 16, Pick 9 | RND 16 OF 16 00:30
+2026-08-29T23:49:44.458Z pickArea: You're on the clock in: 2 Picks Round 16, Pick 9 | RND 16 OF 16 00:29
+2026-08-29T23:49:46.068Z pickArea: You're on the clock in: 1 Pick Round 16, Pick 9 | RND 16 OF 16 00:29
+2026-08-29T23:49:47.679Z pickArea: You are on the clock! Your autopick would be: Buccaneers D/ST DRAFT | RND 16 OF 16 00:30
+2026-08-29T23:49:47.679Z NO BOARD MATCH among avail:  — skipping (ESPN autopick will cover)
+2026-08-29T23:49:50.682Z OUR TURN r16 clock=00:26 -> Chiefs D/ST (DST)
+REFUSED: playerId must be a positive integer
+2026-08-29T23:49:50.843Z actuate FAILED: Error: Command failed: node /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/scripts/espn_actuate.mjs {"playerId":-16012,"play — no retry this turn
+2026-08-29T23:49:54.247Z OUR TURN r16 clock=00:23 -> Chiefs D/ST (DST)
+REFUSED: playerId must be a positive integer
+2026-08-29T23:49:54.405Z actuate FAILED: Error: Command failed: node /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/scripts/espn_actuate.mjs {"playerId":-16012,"play — no retry this turn
+2026-08-29T23:49:57.810Z OUR TURN r16 clock=00:19 -> Chiefs D/ST (DST)
+REFUSED: playerId must be a positive integer
+2026-08-29T23:49:57.963Z actuate FAILED: Error: Command failed: node /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/scripts/espn_actuate.mjs {"playerId":-16012,"play — no retry this turn
+2026-08-29T23:50:01.367Z OUR TURN r16 clock=00:16 -> Chiefs D/ST (DST)
+REFUSED: playerId must be a positive integer
+2026-08-29T23:50:01.524Z actuate FAILED: Error: Command failed: node /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/scripts/espn_actuate.mjs {"playerId":-16012,"play — no retry this turn
+2026-08-29T23:50:04.929Z OUR TURN r16 clock=00:12 -> Chiefs D/ST (DST)
+REFUSED: playerId must be a positive integer
+2026-08-29T23:50:05.084Z actuate FAILED: Error: Command failed: node /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/scripts/espn_actuate.mjs {"playerId":-16012,"play — no retry this turn
+2026-08-29T23:50:08.486Z OUR TURN r16 clock=00:09 -> Chiefs D/ST (DST)
+REFUSED: playerId must be a positive integer
+2026-08-29T23:50:08.639Z actuate FAILED: Error: Command failed: node /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/scripts/espn_actuate.mjs {"playerId":-16012,"play — no retry this turn
+2026-08-29T23:50:12.044Z OUR TURN r16 clock=00:05 -> Chiefs D/ST (DST)
+REFUSED: playerId must be a positive integer
+2026-08-29T23:50:12.202Z actuate FAILED: Error: Command failed: node /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/scripts/espn_actuate.mjs {"playerId":-16012,"play — no retry this turn
+2026-08-29T23:50:15.606Z OUR TURN r16 clock=00:02 -> Chiefs D/ST (DST)
+REFUSED: playerId must be a positive integer
+2026-08-29T23:50:15.763Z actuate FAILED: Error: Command failed: node /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/scripts/espn_actuate.mjs {"playerId":-16012,"play — no retry this turn
+2026-08-29T23:50:19.173Z pickArea: You're on Autopick Disable Autopick to draft players DISABLE AUTOPICK | RND 16 OF 16 00:29
+2026-08-29T23:50:22.400Z pickArea: Your Draft is Complete! Good luck in your quest to bring home this trophy |  --:--
+2026-08-29T23:50:22.400Z DRAFT COMPLETE (signal)
+2026-08-29T23:50:22.400Z driver exiting
+node:internal/process/promises:324
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+ProtocolError: Protocol error (Page.handleJavaScriptDialog): No dialog is showing
+    at /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/node_modules/playwright-core/lib/coreBundle.js:34783:61
+    at new Promise (<anonymous>)
+    at _CRSession.send (/Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/node_modules/playwright-core/lib/coreBundle.js:34782:16)
+    at Dialog._onHandle (/Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/node_modules/playwright-core/lib/coreBundle.js:37653:32)
+    at Dialog._accept (/Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/node_modules/playwright-core/lib/coreBundle.js:12954:20)
+    at Dialog._close (/Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/node_modules/playwright-core/lib/coreBundle.js:12964:22)
+    at DialogManager.dialogDidOpen (/Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/node_modules/playwright-core/lib/coreBundle.js:12986:18)
+    at _FrameSession._onDialog (/Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/node_modules/playwright-core/lib/coreBundle.js:37646:49)
+    at _CRSession.<anonymous> (/Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/node_modules/playwright-core/lib/coreBundle.js:37320:103)
+    at _CRSession.emit (node:events:509:20) {
+  type: 'error',
+  method: 'Page.handleJavaScriptDialog',
+  logs: undefined
+}
+
+Node.js v26.5.0

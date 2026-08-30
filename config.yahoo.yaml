@@ -20,3 +20,7 @@ strategy:
   bye_penalty_weight: 1.5
   # No preset position-round rules — wait-loss math decides (user directive).
   wait_until_round: {}
+  # REQUIRED with empty wait_until_round: extends wait-loss modeling to
+  # K/DST (else their wait_loss = full projection -> round-1 kicker bug,
+  # mock #2). Yahoo-profile only; ESPN relies on its round floors instead.
+  wait_loss_all_positions: true

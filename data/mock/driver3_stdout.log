@@ -1,0 +1,308 @@
+2026-08-30T01:07:09.767Z driver3 armed: probing for a mock draft-room page
+2026-08-30T01:07:19.579Z room: league=163703618 teamId=4
+2026-08-30T01:07:19.580Z mock grant written
+2026-08-30T01:07:19.581Z raw CDP Network tap enabled
+2026-08-30T01:07:19.581Z chooser: contextual engine (slot-adjusted VORP), teams=12
+2026-08-30T01:07:23.085Z WS CREATED: wss://fantasydraft.espn.com/game-1/league-163703618/JOIN?1=1&2=163703618&3=4&4={053215C3-C
+2026-08-30T01:07:23.627Z pickArea: Your draft is about to start Your first pick: Round 1, Pick 3 | DRAFTING IN 00:26
+2026-08-30T01:07:24.513Z WS CREATED: wss://espn.connections.edge.bamgrid.com/dfcc3f/connection?X-Application-Version=0.0.1&X-BA
+2026-08-30T01:07:49.828Z pickArea: You're on the clock in: 2 Picks Round 1, Pick 3 | RND 1 OF 16 --:--
+2026-08-30T01:07:50.632Z pickArea: You're on the clock in: 1 Pick Round 1, Pick 3 | RND 1 OF 16 00:30
+2026-08-30T01:07:51.840Z pickArea: You are on the clock! Your autopick would be: Christian McCaffrey / San Francisco 49ers RB DRAFT | RND 1 OF 16 00:29
+2026-08-30T01:07:52.240Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:07:53.035Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:07:53.828Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:07:54.626Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:07:55.418Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:07:56.217Z OUR TURN (overall~3 slot~3) clock=00:26 -> Jahmyr Gibbs (RB) why={"vorp":187.03,"survival":0,"wait_loss":90.24,"slot":"starter","run_pressure":0,"ctx_score":137,"round":1,"picks_known":2,"my_roster_pos":[]}
+2026-08-30T01:07:56.979Z actuate LIVE ok (762ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:07:57.482Z VERIFIED our pick #1: Jahmyr Gibbs (RB) | total 1265ms
+2026-08-30T01:07:57.885Z pickArea: You drafted Jahmyr Gibbs! Detroit Lions / RB | RND 1 OF 16 00:30
+2026-08-30T01:08:00.703Z pickArea:  | RND 1 OF 16 00:30
+2026-08-30T01:08:03.120Z pickArea: You're on the clock in: 14 Picks Round 2, Pick 10 | RND 1 OF 16 00:29
+2026-08-30T01:08:04.732Z pickArea: You're on the clock in: 13 Picks Round 2, Pick 10 | RND 1 OF 16 00:30
+2026-08-30T01:08:06.344Z pickArea: You're on the clock in: 12 Picks Round 2, Pick 10 | RND 1 OF 16 00:30
+2026-08-30T01:08:07.553Z pickArea: You're on the clock in: 11 Picks Round 2, Pick 10 | RND 1 OF 16 00:29
+2026-08-30T01:08:09.165Z pickArea: You're on the clock in: 10 Picks Round 2, Pick 10 | RND 1 OF 16 00:29
+2026-08-30T01:08:10.779Z pickArea: You're on the clock in: 9 Picks Round 2, Pick 10 | RND 2 OF 16 00:28
+2026-08-30T01:08:12.391Z pickArea: You're on the clock in: 8 Picks Round 2, Pick 10 | RND 2 OF 16 00:30
+2026-08-30T01:08:13.600Z pickArea: You're on the clock in: 7 Picks Round 2, Pick 10 | RND 2 OF 16 00:29
+2026-08-30T01:08:15.210Z pickArea: You're on the clock in: 6 Picks Round 2, Pick 10 | RND 2 OF 16 00:29
+2026-08-30T01:08:16.822Z pickArea: You're on the clock in: 5 Picks Round 2, Pick 10 | RND 2 OF 16 00:30
+2026-08-30T01:08:18.434Z pickArea: You're on the clock in: 4 Picks Round 2, Pick 10 | RND 2 OF 16 00:30
+2026-08-30T01:08:19.641Z pickArea: You're on the clock in: 3 Picks Round 2, Pick 10 | RND 2 OF 16 00:29
+2026-08-30T01:08:21.253Z pickArea: You're on the clock in: 2 Picks Round 2, Pick 10 | RND 2 OF 16 00:29
+2026-08-30T01:08:22.865Z pickArea: You're on the clock in: 1 Pick Round 2, Pick 10 | RND 2 OF 16 00:30
+2026-08-30T01:08:24.073Z pickArea: You are on the clock! Your autopick would be: Nico Collins / Houston Texans WR DRAFT | RND 2 OF 16 00:29
+2026-08-30T01:08:24.557Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:08:25.431Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:08:26.303Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:08:27.176Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:08:28.067Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:08:28.935Z OUR TURN (overall~22 slot~3) clock=00:26 -> Kenneth Walker III (RB) why={"vorp":96.36,"survival":0.213,"wait_loss":14.98,"slot":"starter","run_pressure":1,"ctx_score":39.07,"round":2,"picks_known":21,"my_roster_pos":["RB"]}
+2026-08-30T01:08:29.697Z actuate LIVE ok (762ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:08:30.200Z VERIFIED our pick #2: Kenneth Walker III (RB) | total 1265ms
+2026-08-30T01:08:30.603Z pickArea: You drafted Kenneth Walker III! Kansas City Chiefs / RB | RND 2 OF 16 00:30
+2026-08-30T01:08:33.423Z pickArea: You're on the clock in: 2 Picks Round 3, Pick 3 | RND 3 OF 16 00:30
+2026-08-30T01:08:34.631Z pickArea: You're on the clock in: 1 Pick Round 3, Pick 3 | RND 3 OF 16 00:30
+2026-08-30T01:08:35.840Z pickArea: You are on the clock! Your autopick would be: Rashee Rice / Kansas City Chiefs WR DRAFT | RND 3 OF 16 00:29
+2026-08-30T01:08:36.329Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:08:37.211Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:08:38.099Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:08:38.984Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:08:39.862Z OUR TURN (overall~27 slot~3) clock=00:27 -> Breece Hall (RB) why={"vorp":78.05,"survival":0.003,"wait_loss":61.65,"slot":"flex","run_pressure":0,"ctx_score":81.16,"round":3,"picks_known":26,"my_roster_pos":["RB","RB"]}
+2026-08-30T01:08:40.625Z actuate LIVE ok (763ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:08:41.128Z VERIFIED our pick #3: Breece Hall (RB) | total 1266ms
+2026-08-30T01:08:41.531Z pickArea: You drafted Breece Hall! New York Jets / RB | RND 3 OF 16 00:30
+2026-08-30T01:08:44.757Z pickArea: You're on the clock in: 16 Picks Round 4, Pick 10 | RND 3 OF 16 00:30
+2026-08-30T01:08:45.562Z pickArea: You're on the clock in: 15 Picks Round 4, Pick 10 | RND 3 OF 16 00:29
+2026-08-30T01:08:47.174Z pickArea: You're on the clock in: 14 Picks Round 4, Pick 10 | RND 3 OF 16 00:30
+2026-08-30T01:08:48.385Z pickArea: You're on the clock in: 13 Picks Round 4, Pick 10 | RND 3 OF 16 00:29
+2026-08-30T01:08:49.996Z pickArea: You're on the clock in: 12 Picks Round 4, Pick 10 | RND 3 OF 16 00:29
+2026-08-30T01:08:51.607Z pickArea: You're on the clock in: 11 Picks Round 4, Pick 10 | RND 3 OF 16 00:30
+2026-08-30T01:08:52.830Z pickArea: You're on the clock in: 10 Picks Round 4, Pick 10 | RND 3 OF 16 00:29
+2026-08-30T01:08:54.441Z pickArea: You're on the clock in: 9 Picks Round 4, Pick 10 | RND 4 OF 16 00:29
+2026-08-30T01:08:56.052Z pickArea: You're on the clock in: 8 Picks Round 4, Pick 10 | RND 4 OF 16 00:28
+2026-08-30T01:08:57.663Z pickArea: You're on the clock in: 7 Picks Round 4, Pick 10 | RND 4 OF 16 00:30
+2026-08-30T01:08:59.276Z pickArea: You're on the clock in: 6 Picks Round 4, Pick 10 | RND 4 OF 16 00:30
+2026-08-30T01:09:00.485Z pickArea: You're on the clock in: 5 Picks Round 4, Pick 10 | RND 4 OF 16 00:29
+2026-08-30T01:09:02.098Z pickArea: You're on the clock in: 4 Picks Round 4, Pick 10 | RND 4 OF 16 00:30
+2026-08-30T01:09:03.709Z pickArea: You're on the clock in: 3 Picks Round 4, Pick 10 | RND 4 OF 16 00:30
+2026-08-30T01:09:04.917Z pickArea: You're on the clock in: 2 Picks Round 4, Pick 10 | RND 4 OF 16 00:29
+2026-08-30T01:09:06.529Z pickArea: You're on the clock in: 1 Pick Round 4, Pick 10 | RND 4 OF 16 00:29
+2026-08-30T01:09:08.142Z pickArea: You are on the clock! Your autopick would be: Lamar Jackson / Baltimore Ravens QB DRAFT | RND 4 OF 16 00:30
+2026-08-30T01:09:08.625Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:09.494Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:10.387Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:11.261Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:12.146Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:13.014Z OUR TURN (overall~46 slot~3) clock=00:26 -> Tyler Warren (TE) why={"vorp":52.65,"survival":0.359,"wait_loss":10.88,"slot":"starter","run_pressure":0,"ctx_score":24.04,"round":4,"picks_known":45,"my_roster_pos":["RB","RB","RB"]}
+2026-08-30T01:09:13.773Z actuate LIVE ok (759ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:09:14.276Z VERIFIED our pick #4: Tyler Warren (TE) | total 1262ms
+2026-08-30T01:09:14.680Z pickArea: You drafted Tyler Warren! Indianapolis Colts / TE | RND 4 OF 16 00:30
+2026-08-30T01:09:17.505Z pickArea: You're on the clock in: 2 Picks Round 5, Pick 3 | RND 5 OF 16 00:30
+2026-08-30T01:09:18.715Z pickArea: You're on the clock in: 1 Pick Round 5, Pick 3 | RND 5 OF 16 00:30
+2026-08-30T01:09:19.924Z pickArea: You are on the clock! Your autopick would be: Terry McLaurin / Washington Commanders WR DRAFT | RND 5 OF 16 00:29
+2026-08-30T01:09:20.408Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:21.282Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:22.164Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:23.027Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:23.896Z OUR TURN (overall~51 slot~3) clock=00:27 -> Drake Maye (QB) why={"vorp":35.75,"survival":0,"wait_loss":17.74,"slot":"starter","run_pressure":0,"ctx_score":26.67,"round":5,"picks_known":50,"my_roster_pos":["RB","RB","RB","TE"]}
+2026-08-30T01:09:24.656Z actuate LIVE ok (760ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:09:25.159Z VERIFIED our pick #5: Drake Maye (QB) | total 1263ms
+2026-08-30T01:09:25.561Z pickArea: You drafted Drake Maye! New England Patriots / QB | RND 5 OF 16 00:30
+2026-08-30T01:09:28.785Z pickArea: You're on the clock in: 16 Picks Round 6, Pick 10 | RND 5 OF 16 00:30
+2026-08-30T01:09:29.591Z pickArea: You're on the clock in: 15 Picks Round 6, Pick 10 | RND 5 OF 16 00:29
+2026-08-30T01:09:31.204Z pickArea: You're on the clock in: 14 Picks Round 6, Pick 10 | RND 5 OF 16 00:30
+2026-08-30T01:09:32.415Z pickArea: You're on the clock in: 13 Picks Round 6, Pick 10 | RND 5 OF 16 00:29
+2026-08-30T01:09:34.028Z pickArea: You're on the clock in: 12 Picks Round 6, Pick 10 | RND 5 OF 16 00:29
+2026-08-30T01:09:35.638Z pickArea: You're on the clock in: 11 Picks Round 6, Pick 10 | RND 5 OF 16 00:30
+2026-08-30T01:09:37.251Z pickArea: You're on the clock in: 10 Picks Round 6, Pick 10 | RND 5 OF 16 00:30
+2026-08-30T01:09:38.460Z pickArea: You're on the clock in: 9 Picks Round 6, Pick 10 | RND 6 OF 16 00:29
+2026-08-30T01:09:40.074Z pickArea: You're on the clock in: 8 Picks Round 6, Pick 10 | RND 6 OF 16 00:29
+2026-08-30T01:09:41.687Z pickArea: You're on the clock in: 7 Picks Round 6, Pick 10 | RND 6 OF 16 00:29
+2026-08-30T01:09:43.298Z pickArea: You're on the clock in: 6 Picks Round 6, Pick 10 | RND 6 OF 16 00:30
+2026-08-30T01:09:44.507Z pickArea: You're on the clock in: 5 Picks Round 6, Pick 10 | RND 6 OF 16 00:29
+2026-08-30T01:09:46.120Z pickArea: You're on the clock in: 4 Picks Round 6, Pick 10 | RND 6 OF 16 00:28
+2026-08-30T01:09:47.735Z pickArea: You're on the clock in: 3 Picks Round 6, Pick 10 | RND 6 OF 16 00:30
+2026-08-30T01:09:49.346Z pickArea: You're on the clock in: 2 Picks Round 6, Pick 10 | RND 6 OF 16 00:30
+2026-08-30T01:09:50.555Z pickArea: You're on the clock in: 1 Pick Round 6, Pick 10 | RND 6 OF 16 00:29
+2026-08-30T01:09:52.167Z pickArea: You are on the clock! Your autopick would be: Luther Burden III / Chicago Bears WR DRAFT | RND 6 OF 16 00:30
+2026-08-30T01:09:52.643Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:53.513Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:54.372Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:55.236Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:56.116Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:09:56.977Z OUR TURN (overall~70 slot~3) clock=00:26 -> Luther Burden III (WR) why={"vorp":9.93,"survival":0.192,"wait_loss":1.72,"slot":"starter","run_pressure":0,"ctx_score":4.2,"round":6,"picks_known":69,"my_roster_pos":["RB","RB","RB","TE","QB"]}
+2026-08-30T01:09:57.738Z actuate LIVE ok (761ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:09:58.241Z VERIFIED our pick #6: Luther Burden III (WR) | total 1264ms
+2026-08-30T01:09:58.644Z pickArea: You drafted Luther Burden III! Chicago Bears / WR | RND 6 OF 16 00:30
+2026-08-30T01:10:01.878Z pickArea: You're on the clock in: 2 Picks Round 7, Pick 3 | RND 7 OF 16 00:30
+2026-08-30T01:10:02.684Z pickArea: You're on the clock in: 1 Pick Round 7, Pick 3 | RND 7 OF 16 00:30
+2026-08-30T01:10:04.296Z pickArea: You are on the clock! Your autopick would be: Carnell Tate / Tennessee Titans WR DRAFT | RND 7 OF 16 00:30
+2026-08-30T01:10:04.777Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:05.648Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:06.540Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:07.408Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:08.290Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:09.157Z OUR TURN (overall~75 slot~3) clock=00:26 -> Courtland Sutton (WR) why={"vorp":8.41,"survival":0.002,"wait_loss":22.49,"slot":"starter","run_pressure":0,"ctx_score":24.59,"round":7,"picks_known":74,"my_roster_pos":["RB","RB","RB","TE","QB","WR"]}
+2026-08-30T01:10:09.919Z actuate LIVE ok (762ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:10:10.424Z VERIFIED our pick #7: Courtland Sutton (WR) | total 1267ms
+2026-08-30T01:10:10.827Z pickArea: You drafted Courtland Sutton! Denver Broncos / WR | RND 7 OF 16 00:30
+2026-08-30T01:10:13.648Z pickArea: You're on the clock in: 16 Picks Round 8, Pick 10 | RND 7 OF 16 00:30
+2026-08-30T01:10:14.455Z pickArea: You're on the clock in: 15 Picks Round 8, Pick 10 | RND 7 OF 16 00:29
+2026-08-30T01:10:16.068Z pickArea: You're on the clock in: 14 Picks Round 8, Pick 10 | RND 7 OF 16 00:28
+2026-08-30T01:10:17.679Z pickArea: You're on the clock in: 13 Picks Round 8, Pick 10 | RND 7 OF 16 00:29
+2026-08-30T01:10:19.292Z pickArea: You're on the clock in: 12 Picks Round 8, Pick 10 | RND 7 OF 16 00:30
+2026-08-30T01:10:20.906Z pickArea: You're on the clock in: 11 Picks Round 8, Pick 10 | RND 7 OF 16 00:30
+2026-08-30T01:10:22.114Z pickArea: You're on the clock in: 10 Picks Round 8, Pick 10 | RND 7 OF 16 00:29
+2026-08-30T01:10:23.727Z pickArea: You're on the clock in: 9 Picks Round 8, Pick 10 | RND 8 OF 16 00:30
+2026-08-30T01:10:25.339Z pickArea: You're on the clock in: 8 Picks Round 8, Pick 10 | RND 8 OF 16 00:30
+2026-08-30T01:10:26.549Z pickArea: You're on the clock in: 7 Picks Round 8, Pick 10 | RND 8 OF 16 00:29
+2026-08-30T01:10:28.161Z pickArea: You're on the clock in: 6 Picks Round 8, Pick 10 | RND 8 OF 16 00:29
+2026-08-30T01:10:29.774Z pickArea: You're on the clock in: 5 Picks Round 8, Pick 10 | RND 8 OF 16 00:30
+2026-08-30T01:10:31.386Z pickArea: You're on the clock in: 4 Picks Round 8, Pick 10 | RND 8 OF 16 00:30
+2026-08-30T01:10:32.597Z pickArea: You're on the clock in: 3 Picks Round 8, Pick 10 | RND 8 OF 16 00:29
+2026-08-30T01:10:34.210Z pickArea: You're on the clock in: 2 Picks Round 8, Pick 10 | RND 8 OF 16 00:29
+2026-08-30T01:10:35.822Z pickArea: You're on the clock in: 1 Pick Round 8, Pick 10 | RND 8 OF 16 00:30
+2026-08-30T01:10:37.048Z pickArea: You are on the clock! Your autopick would be: Wan'Dale Robinson / Tennessee Titans WR DRAFT | RND 8 OF 16 00:29
+2026-08-30T01:10:37.560Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:37.964Z pickArea: You are on the clock! Your autopick would be: Aaron Jones Sr. / Minnesota Vikings RB DRAFT | RND 8 OF 16 00:30
+2026-08-30T01:10:38.422Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:39.276Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:40.135Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:41.002Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:41.851Z OUR TURN (overall~94 slot~3) clock=00:26 -> Aaron Jones Sr. (RB) why={"vorp":-0.24,"survival":1,"wait_loss":0,"slot":"bench","run_pressure":1,"ctx_score":-0.07,"round":8,"picks_known":93,"my_roster_pos":["RB","RB","RB","TE","QB","WR","WR"]}
+2026-08-30T01:10:42.608Z actuate LIVE ok (757ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:10:43.112Z VERIFIED our pick #8: Aaron Jones Sr. (RB) | total 1261ms
+2026-08-30T01:10:43.515Z pickArea: You drafted Aaron Jones Sr.! Minnesota Vikings / RB | RND 8 OF 16 00:30
+2026-08-30T01:10:46.342Z pickArea: You're on the clock in: 2 Picks Round 9, Pick 3 | RND 9 OF 16 00:30
+2026-08-30T01:10:47.554Z pickArea: You're on the clock in: 1 Pick Round 9, Pick 3 | RND 9 OF 16 00:30
+2026-08-30T01:10:49.166Z pickArea: You are on the clock! Your autopick would be: Matthew Golden / Green Bay Packers WR DRAFT | RND 9 OF 16 00:30
+2026-08-30T01:10:49.635Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:50.523Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:51.381Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:52.240Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:53.115Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:10:53.967Z OUR TURN (overall~99 slot~3) clock=00:26 -> Patrick Mahomes (QB) why={"vorp":2.29,"survival":0.011,"wait_loss":0,"slot":"bench","run_pressure":0,"ctx_score":0.69,"round":9,"picks_known":98,"my_roster_pos":["RB","RB","RB","TE","QB","WR","WR","RB"]}
+2026-08-30T01:10:54.736Z actuate LIVE ok (769ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:10:55.240Z VERIFIED our pick #9: Patrick Mahomes (QB) | total 1273ms
+2026-08-30T01:10:55.643Z pickArea: You drafted Patrick Mahomes! Kansas City Chiefs / QB | RND 9 OF 16 00:30
+2026-08-30T01:10:58.465Z pickArea: You're on the clock in: 16 Picks Round 10, Pick 10 | RND 9 OF 16 00:30
+2026-08-30T01:10:59.278Z pickArea: You're on the clock in: 15 Picks Round 10, Pick 10 | RND 9 OF 16 00:29
+2026-08-30T01:11:00.892Z pickArea: You're on the clock in: 14 Picks Round 10, Pick 10 | RND 9 OF 16 00:28
+2026-08-30T01:11:02.505Z pickArea: You're on the clock in: 13 Picks Round 10, Pick 10 | RND 9 OF 16 00:29
+2026-08-30T01:11:04.118Z pickArea: You're on the clock in: 12 Picks Round 10, Pick 10 | RND 9 OF 16 00:30
+2026-08-30T01:11:05.327Z pickArea: You're on the clock in: 11 Picks Round 10, Pick 10 | RND 9 OF 16 00:29
+2026-08-30T01:11:06.939Z pickArea: You're on the clock in: 10 Picks Round 10, Pick 10 | RND 9 OF 16 00:29
+2026-08-30T01:11:08.552Z pickArea: You're on the clock in: 9 Picks Round 10, Pick 10 | RND 10 OF 16 00:30
+2026-08-30T01:11:09.800Z pickArea: You're on the clock in: 8 Picks Round 10, Pick 10 | RND 10 OF 16 00:29
+2026-08-30T01:11:11.413Z pickArea: You're on the clock in: 7 Picks Round 10, Pick 10 | RND 10 OF 16 00:29
+2026-08-30T01:11:13.028Z pickArea: You're on the clock in: 6 Picks Round 10, Pick 10 | RND 10 OF 16 00:29
+2026-08-30T01:11:14.639Z pickArea: You're on the clock in: 5 Picks Round 10, Pick 10 | RND 10 OF 16 00:30
+2026-08-30T01:11:15.849Z pickArea: You're on the clock in: 4 Picks Round 10, Pick 10 | RND 10 OF 16 00:28
+2026-08-30T01:11:17.463Z pickArea: You're on the clock in: 3 Picks Round 10, Pick 10 | RND 10 OF 16 00:29
+2026-08-30T01:11:19.076Z pickArea: You're on the clock in: 2 Picks Round 10, Pick 10 | RND 10 OF 16 00:30
+2026-08-30T01:11:20.689Z pickArea: You're on the clock in: 1 Pick Round 10, Pick 10 | RND 10 OF 16 00:30
+2026-08-30T01:11:21.901Z pickArea: You are on the clock! Your autopick would be: Isaiah Likely / New York Giants TE DRAFT | RND 10 OF 16 00:29
+2026-08-30T01:11:22.353Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:11:23.224Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:11:24.064Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:11:24.908Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:11:25.756Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:11:26.620Z OUR TURN (overall~118 slot~3) clock=00:26 -> Mark Andrews (TE) why={"vorp":3.32,"survival":0.048,"wait_loss":0,"slot":"bench","run_pressure":0,"ctx_score":1,"round":10,"picks_known":117,"my_roster_pos":["RB","RB","RB","TE","QB","WR","WR","RB","QB"]}
+2026-08-30T01:11:27.381Z actuate LIVE ok (761ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:11:27.885Z VERIFIED our pick #10: Mark Andrews (TE) | total 1265ms
+2026-08-30T01:11:28.288Z pickArea: You drafted Mark Andrews! Baltimore Ravens / TE | RND 10 OF 16 00:30
+2026-08-30T01:11:31.513Z pickArea: You're on the clock in: 2 Picks Round 11, Pick 3 | RND 11 OF 16 00:30
+2026-08-30T01:11:32.318Z pickArea: You're on the clock in: 1 Pick Round 11, Pick 3 | RND 11 OF 16 00:30
+2026-08-30T01:11:33.932Z pickArea: You are on the clock! Your autopick would be: Jayden Reed / Green Bay Packers WR DRAFT | RND 11 OF 16 00:30
+2026-08-30T01:11:34.380Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:11:35.228Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:11:36.096Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:11:36.947Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:11:37.803Z OUR TURN (overall~123 slot~3) clock=00:26 -> Jayden Reed (WR) why={"fallback":"slot-aware: bench value -7.7"}
+2026-08-30T01:11:38.564Z actuate LIVE ok (761ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:11:39.068Z VERIFIED our pick #11: Jayden Reed (WR) | total 1265ms
+2026-08-30T01:11:39.472Z pickArea: You drafted Jayden Reed! Green Bay Packers / WR | RND 11 OF 16 00:30
+2026-08-30T01:11:42.294Z pickArea: You're on the clock in: 16 Picks Round 12, Pick 10 | RND 11 OF 16 00:30
+2026-08-30T01:11:43.503Z pickArea: You're on the clock in: 15 Picks Round 12, Pick 10 | RND 11 OF 16 00:30
+2026-08-30T01:11:44.714Z pickArea: You're on the clock in: 14 Picks Round 12, Pick 10 | RND 11 OF 16 00:29
+2026-08-30T01:11:46.327Z pickArea: You're on the clock in: 13 Picks Round 12, Pick 10 | RND 11 OF 16 00:30
+2026-08-30T01:11:47.941Z pickArea: You're on the clock in: 12 Picks Round 12, Pick 10 | RND 11 OF 16 00:30
+2026-08-30T01:11:49.151Z pickArea: You're on the clock in: 11 Picks Round 12, Pick 10 | RND 11 OF 16 00:29
+2026-08-30T01:11:50.780Z pickArea: You're on the clock in: 10 Picks Round 12, Pick 10 | RND 11 OF 16 00:29
+2026-08-30T01:11:52.393Z pickArea: You're on the clock in: 9 Picks Round 12, Pick 10 | RND 12 OF 16 00:30
+2026-08-30T01:11:53.625Z pickArea: You're on the clock in: 8 Picks Round 12, Pick 10 | RND 12 OF 16 00:29
+2026-08-30T01:11:55.237Z pickArea: You're on the clock in: 7 Picks Round 12, Pick 10 | RND 12 OF 16 00:28
+2026-08-30T01:11:56.851Z pickArea: You're on the clock in: 6 Picks Round 12, Pick 10 | RND 12 OF 16 00:29
+2026-08-30T01:11:58.466Z pickArea: You're on the clock in: 5 Picks Round 12, Pick 10 | RND 12 OF 16 00:30
+2026-08-30T01:11:59.677Z pickArea: You're on the clock in: 4 Picks Round 12, Pick 10 | RND 12 OF 16 00:29
+2026-08-30T01:12:01.293Z pickArea: You're on the clock in: 3 Picks Round 12, Pick 10 | RND 12 OF 16 00:29
+2026-08-30T01:12:02.907Z pickArea: You're on the clock in: 2 Picks Round 12, Pick 10 | RND 12 OF 16 00:29
+2026-08-30T01:12:04.522Z pickArea: You're on the clock in: 1 Pick Round 12, Pick 10 | RND 12 OF 16 00:30
+2026-08-30T01:12:05.733Z pickArea: You are on the clock! Your autopick would be: Jared Goff / Detroit Lions QB DRAFT | RND 12 OF 16 00:29
+2026-08-30T01:12:06.179Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:07.015Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:07.849Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:08.726Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:09.568Z OUR TURN (overall~142 slot~3) clock=00:27 -> Woody Marks (RB) why={"fallback":"slot-aware: bench value -15.0"}
+2026-08-30T01:12:10.328Z actuate LIVE ok (760ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:12:10.832Z VERIFIED our pick #12: Woody Marks (RB) | total 1264ms
+2026-08-30T01:12:11.236Z pickArea: You drafted Woody Marks! Houston Texans / RB | RND 12 OF 16 00:30
+2026-08-30T01:12:14.061Z pickArea: You're on the clock in: 2 Picks Round 13, Pick 3 | RND 13 OF 16 00:30
+2026-08-30T01:12:15.271Z pickArea: You're on the clock in: 1 Pick Round 13, Pick 3 | RND 13 OF 16 00:30
+2026-08-30T01:12:16.481Z pickArea: You are on the clock! Your autopick would be: Daniel Jones / Indianapolis Colts QB DRAFT | RND 13 OF 16 00:29
+2026-08-30T01:12:16.926Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:17.765Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:18.609Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:19.448Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:20.298Z OUR TURN (overall~147 slot~3) clock=00:27 -> Calvin Ridley (WR) why={"fallback":"slot-aware: bench value -18.2"}
+2026-08-30T01:12:21.059Z actuate LIVE ok (761ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:12:21.563Z VERIFIED our pick #13: Calvin Ridley (WR) | total 1265ms
+2026-08-30T01:12:21.967Z pickArea: You drafted Calvin Ridley! Tennessee Titans / WR | RND 13 OF 16 00:30
+2026-08-30T01:12:24.788Z pickArea: You're on the clock in: 16 Picks Round 14, Pick 10 | RND 13 OF 16 00:30
+2026-08-30T01:12:25.998Z pickArea: You're on the clock in: 15 Picks Round 14, Pick 10 | RND 13 OF 16 00:30
+2026-08-30T01:12:27.209Z pickArea: You're on the clock in: 14 Picks Round 14, Pick 10 | RND 13 OF 16 00:29
+2026-08-30T01:12:28.820Z pickArea: You're on the clock in: 13 Picks Round 14, Pick 10 | RND 13 OF 16 00:29
+2026-08-30T01:12:30.435Z pickArea: You're on the clock in: 12 Picks Round 14, Pick 10 | RND 13 OF 16 00:28
+2026-08-30T01:12:32.049Z pickArea: You're on the clock in: 11 Picks Round 14, Pick 10 | RND 13 OF 16 00:30
+2026-08-30T01:12:33.276Z pickArea: You're on the clock in: 10 Picks Round 14, Pick 10 | RND 13 OF 16 00:29
+2026-08-30T01:12:34.890Z pickArea: You're on the clock in: 9 Picks Round 14, Pick 10 | RND 14 OF 16 00:29
+2026-08-30T01:12:36.505Z pickArea: You're on the clock in: 8 Picks Round 14, Pick 10 | RND 14 OF 16 00:30
+2026-08-30T01:12:38.120Z pickArea: You're on the clock in: 7 Picks Round 14, Pick 10 | RND 14 OF 16 00:30
+2026-08-30T01:12:39.330Z pickArea: You're on the clock in: 6 Picks Round 14, Pick 10 | RND 14 OF 16 00:29
+2026-08-30T01:12:40.945Z pickArea: You're on the clock in: 5 Picks Round 14, Pick 10 | RND 14 OF 16 00:30
+2026-08-30T01:12:42.559Z pickArea: You're on the clock in: 4 Picks Round 14, Pick 10 | RND 14 OF 16 00:30
+2026-08-30T01:12:43.767Z pickArea: You're on the clock in: 3 Picks Round 14, Pick 10 | RND 14 OF 16 00:29
+2026-08-30T01:12:45.383Z pickArea: You're on the clock in: 2 Picks Round 14, Pick 10 | RND 14 OF 16 00:28
+2026-08-30T01:12:46.996Z pickArea: You're on the clock in: 1 Pick Round 14, Pick 10 | RND 14 OF 16 00:30
+2026-08-30T01:12:48.232Z pickArea: You are on the clock! Your autopick would be: Seahawks D/ST DRAFT | RND 14 OF 16 00:29
+2026-08-30T01:12:48.661Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:49.486Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:50.308Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:51.132Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:51.962Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:12:52.789Z OUR TURN (overall~166 slot~3) clock=00:26 -> Denzel Boston (WR) why={"fallback":"slot-aware: bench value -16.1"}
+2026-08-30T01:12:53.553Z actuate LIVE ok (764ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:12:54.057Z VERIFIED our pick #14: Denzel Boston (WR) | total 1268ms
+2026-08-30T01:12:54.460Z pickArea: You drafted Denzel Boston! Cleveland Browns / WR | RND 14 OF 16 00:30
+2026-08-30T01:12:57.287Z pickArea: You're on the clock in: 2 Picks Round 15, Pick 3 | RND 15 OF 16 00:30
+2026-08-30T01:12:58.500Z pickArea: You're on the clock in: 1 Pick Round 15, Pick 3 | RND 15 OF 16 00:29
+2026-08-30T01:12:59.728Z pickArea: You are on the clock! Your autopick would be: Ravens D/ST DRAFT | RND 15 OF 16 00:29
+2026-08-30T01:13:00.164Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:13:01.013Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:13:01.843Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:13:02.678Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:13:03.512Z OUR TURN (overall~171 slot~3) clock=00:27 -> Harrison Mevis (K) why={"vorp":15.53,"survival":0.002,"wait_loss":159.53,"slot":"starter","run_pressure":0,"ctx_score":163.41,"round":15,"picks_known":170,"my_roster_pos":["RB","RB","RB","TE","QB","WR","WR","RB","QB","TE","WR","RB","WR","WR"]}
+2026-08-30T01:13:04.273Z actuate LIVE ok (761ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:13:04.777Z VERIFIED our pick #15: Harrison Mevis (K) | total 1265ms
+2026-08-30T01:13:05.180Z pickArea: You drafted Harrison Mevis! Los Angeles Rams / K | RND 15 OF 16 00:29
+2026-08-30T01:13:08.407Z pickArea: You're on the clock in: 16 Picks Round 16, Pick 10 | RND 15 OF 16 00:30
+2026-08-30T01:13:09.214Z pickArea: You're on the clock in: 15 Picks Round 16, Pick 10 | RND 15 OF 16 00:29
+2026-08-30T01:13:10.827Z pickArea: You're on the clock in: 14 Picks Round 16, Pick 10 | RND 15 OF 16 00:30
+2026-08-30T01:13:12.443Z pickArea: You're on the clock in: 13 Picks Round 16, Pick 10 | RND 15 OF 16 00:30
+2026-08-30T01:13:13.654Z pickArea: You're on the clock in: 12 Picks Round 16, Pick 10 | RND 15 OF 16 00:29
+2026-08-30T01:13:15.268Z pickArea: You're on the clock in: 11 Picks Round 16, Pick 10 | RND 15 OF 16 00:28
+2026-08-30T01:13:16.883Z pickArea: You're on the clock in: 10 Picks Round 16, Pick 10 | RND 15 OF 16 00:30
+2026-08-30T01:13:18.093Z pickArea: You're on the clock in: 9 Picks Round 16, Pick 10 | RND 16 OF 16 00:29
+2026-08-30T01:13:19.708Z pickArea: You're on the clock in: 8 Picks Round 16, Pick 10 | RND 16 OF 16 00:29
+2026-08-30T01:13:21.321Z pickArea: You're on the clock in: 7 Picks Round 16, Pick 10 | RND 16 OF 16 00:30
+2026-08-30T01:13:22.531Z pickArea: You're on the clock in: 6 Picks Round 16, Pick 10 | RND 16 OF 16 00:29
+2026-08-30T01:13:24.142Z pickArea: You're on the clock in: 5 Picks Round 16, Pick 10 | RND 16 OF 16 00:29
+2026-08-30T01:13:25.756Z pickArea: You're on the clock in: 4 Picks Round 16, Pick 10 | RND 16 OF 16 00:30
+2026-08-30T01:13:27.370Z pickArea: You're on the clock in: 3 Picks Round 16, Pick 10 | RND 16 OF 16 00:30
+2026-08-30T01:13:28.582Z pickArea: You're on the clock in: 2 Picks Round 16, Pick 10 | RND 16 OF 16 00:29
+2026-08-30T01:13:30.197Z pickArea: You're on the clock in: 1 Pick Round 16, Pick 10 | RND 16 OF 16 00:28
+2026-08-30T01:13:31.811Z pickArea: You are on the clock! Your autopick would be: Lions D/ST DRAFT | RND 16 OF 16 00:30
+2026-08-30T01:13:32.223Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:13:33.026Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:13:33.848Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:13:34.658Z chooser err: Error: Command failed: /Users/justintetreault/Fantasy Football Drafting/fantasy-draft-assistant/.venv/bin/python /Users/
+2026-08-30T01:13:35.462Z OUR TURN (overall~190 slot~3) clock=00:26 -> Lions D/ST (DST) why={"vorp":12.98,"survival":0.008,"wait_loss":107.82,"slot":"starter","run_pressure":0,"ctx_score":111.07,"round":16,"picks_known":189,"my_roster_pos":["RB","RB","RB","TE","QB","WR","WR","RB","QB","TE","WR","RB","WR","WR","K"]}
+2026-08-30T01:13:36.227Z actuate LIVE ok (765ms): Verify the pick via a fresh snapshot before doing anything else.
+2026-08-30T01:13:36.730Z VERIFIED our pick #16: Lions D/ST (DST) | total 1268ms
+2026-08-30T01:13:37.134Z pickArea: You drafted Lions D/ST! Detroit Lions / D/ST | RND 16 OF 16 00:30
+2026-08-30T01:13:39.555Z pickArea: Your Draft is Complete! Good luck in your quest to bring home this trophy |  00:29
+2026-08-30T01:13:39.555Z DRAFT COMPLETE
+2026-08-30T01:13:39.555Z driver3 exiting

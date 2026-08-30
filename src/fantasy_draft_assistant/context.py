@@ -274,9 +274,20 @@ def contextual_recommend(
 
     runs = detect_runs(all_picks)
     takes = expected_position_takes(gap_probs, runs, all_picks, teams)
+    # Positions with no next_best entry default to 0.0 in the wait_loss
+    # calc, i.e. wait_loss = full projection — catastrophic for K/DST
+    # (round-1 Brandon Aubrey bug, Yahoo mock #2). ESPN profile never saw
+    # it because wait_until_round floors suppress K/DST until r14/15.
+    # PROFILE-GATED so the validated ESPN path stays byte-identical:
+    # only profiles with strategy.wait_loss_all_positions (Yahoo) extend
+    # the wait-loss model to K/DST; nobody takes them early, so their
+    # wait_loss correctly ~0 and they sink until the endgame.
+    wait_positions = tuple(CORE_POSITIONS)
+    if config.get("strategy", {}).get("wait_loss_all_positions"):
+        wait_positions = wait_positions + ("K", "DST")
     next_best_at = {
         pos: expected_next_best(available, pos, takes.get(pos, 0.0))
-        for pos in CORE_POSITIONS
+        for pos in wait_positions
     }
     replacement = replacement_levels(players, teams)
 

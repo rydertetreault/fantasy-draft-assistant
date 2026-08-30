@@ -46,16 +46,27 @@
 | Restart amnesia (wrong overall, lost roster) | Roster-panel `(N/15)` count is the turn index; picks persisted per-room; announcements freshness-gated (15s) |
 
 **Still open:**
-1. Filter-click has zero live reps (code-only). Watch it on TE/K/DEF turns.
-2. Fallback once labeled an empty-TE-slot pick "bench 0.0" — believed to be a
+1. **Mock #2 (2026-08-30) was cut short at r2** — 2/2 VERIFIED picks (Josh
+   Allen o7, Derrick Henry o14) but the room tab died; validation bar NOT met.
+   Fixed post-mock: (a) K/DST wait-loss hole — `next_best_at` only covered
+   QB/RB/WR/TE so kicker wait_loss = full projection ⇒ round-1 "want K
+   Brandon Aubrey" filter-clicks. Fix is PROFILE-GATED
+   (`strategy.wait_loss_all_positions: true`, Yahoo config only; ESPN path
+   proven byte-identical via A/B). (b) overall/slot bookkeeping per the
+   banner-ordinal correction above. (c) page re-latch on tab death.
+   **TWO-PROFILE RULE (owner directive): league settings differ (ESPN 12tm
+   full-PPR K/DST floors r14/15 vs Yahoo 10tm half-PPR no floors) — every
+   engine change must be per-profile; ESPN's validated profile stays frozen.**
+2. Filter-click still has zero *correct* live reps. Watch it on TE/K/DEF turns.
+3. Fallback once labeled an empty-TE-slot pick "bench 0.0" — believed to be a
    phantom-roster artifact of the collision bugs; confirm gone.
-3. **Pre-rank floor: NOT IMPLEMENTED** (`yahoo_set_prerank.mjs` is a refusing
+4. **Pre-rank floor: NOT IMPLEMENTED** (`yahoo_set_prerank.mjs` is a refusing
    skeleton). This is rung #1 — Synaps1 proved floors win drafts alone. Needs
    DOM recon of Yahoo's pre-rank editor before the real draft.
-4. The mock driver is MOCK-ONLY by design. Real-draft actuation must go
+5. The mock driver is MOCK-ONLY by design. Real-draft actuation must go
    through `yahoo_actuate.mjs` gates (allowlist, grant with exact session id,
    dry-run gate at T-30) — wire it AFTER a clean validation mock.
-5. Yahoo ADP proxy is ESPN ADP — fine for gap modeling, imperfect for their
+6. Yahoo ADP proxy is ESPN ADP — fine for gap modeling, imperfect for their
    room's sort order.
 
 ## Yahoo draft-room DOM cheat sheet (hard-won, mock #1)
@@ -66,8 +77,13 @@
   that is refused by the mock driver.
 - **Turn signal = `document.title`**: `"YOUR TURN, DRAFT NOW | ..."` on the
   clock; `"N picks until your turn | ..."` waiting; `"You are next | ..."`.
-  In-page label `"YOUR TURN - 89TH PICK"` (ordinal) = upcoming pick number —
-  parse ordinals ONLY, never "N picks until".
+  **OWNER-CORRECTED (mock #2): mid-draft banner ordinals are the draft's
+  CURRENT round/pick — NOT our pick number.** The countdown ("you're up in
+  X picks") sits next to current-position text; parsing it as our overall
+  caused the stuck-"overall 14" bookkeeping. Only the PRE-DRAFT waiting-room
+  label ("YOUR TURN - 7TH PICK") names our first pick → slot inference is
+  gated to pre-first-pick + off-turn; our overall comes ONLY from the roster
+  panel count `(N/15)` + slot math. Slot persists in `our_picks.json`.
 - **Atomic/hashed CSS** (`_ys_*`, `D(f)`, `Mstart(a)`) — no semantic classes.
   Derive player rows FROM the per-row `Draft` buttons (exact text match;
   "Drafted" is a different, dangerous near-match) → smallest ancestor with a
@@ -79,8 +95,11 @@
 - **Roster panel** `"YOUR TEAM (N/15) QB J. Allen QB Buf …"` = ground truth
   incl. autopicks; count `(N/15)` verifies clicks (count-increment, never
   name matching) and indexes our next turn.
-- 30s clock in mocks (real league: 60s). Bots pick ~1s — our turns arrive in
-  bursts; near-slot pairs (e.g. slot 9 → overalls 9,12 then a 16-pick wait).
+- 30s clock in mocks (real league: 60s). **Mocks run with REAL USERS
+  (owner-confirmed): pick timing varies wildly — no bot-burst assumptions,
+  no freshness-window shortcuts.** Rooms/tabs can also die mid-draft
+  (mock #2 tab closed at r2): driver now re-latches to a live
+  `draftclient`/`mock_waiting` tab instead of error-spinning.
 
 ## Next session — run the validation mock
 

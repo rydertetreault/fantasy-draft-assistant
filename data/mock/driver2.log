@@ -1,0 +1,53 @@
+2026-08-29T23:57:51.220Z driver2 armed: waiting for a draft-room page to open (probing)
+2026-08-30T00:10:39.451Z tapping page: https://fantasy.espn.com/football/draft?leagueId=395418066&seasonId=2026&teamId=4&memberId
+2026-08-30T00:10:39.451Z room: league=395418066 teamId=4
+2026-08-30T00:10:39.452Z mock grant written
+2026-08-30T00:10:40.100Z WS OPEN: wss://fantasydraft.espn.com/game-1/league-395418066/JOIN?1=1&2=395418066&3=4&4={053215C3-C
+2026-08-30T00:10:40.744Z tapping page: https://fantasy.espn.com/football/draft?leagueId=395418066&seasonId=2026&teamId=4&memberId
+2026-08-30T00:10:43.610Z WS OPEN: wss://fantasydraft.espn.com/game-1/league-395418066/JOIN?1=1&2=395418066&3=4&4={053215C3-C
+2026-08-30T00:10:43.610Z WS OPEN: wss://fantasydraft.espn.com/game-1/league-395418066/JOIN?1=1&2=395418066&3=4&4={053215C3-C
+2026-08-30T00:10:46.956Z WS OPEN: wss://fantasydraft.espn.com/game-1/league-395418066/JOIN?1=1&2=395418066&3=4&4={053215C3-C
+2026-08-30T00:10:46.956Z WS OPEN: wss://fantasydraft.espn.com/game-1/league-395418066/JOIN?1=1&2=395418066&3=4&4={053215C3-C
+2026-08-30T00:10:47.283Z pickArea: Your draft is about to start Your first pick: Round 1, Pick 4 | DRAFTING IN 00:22
+2026-08-30T00:10:47.598Z WS OPEN: wss://espn.connections.edge.bamgrid.com/dfcc3f/connection?X-Application-Version=0.0.1&X-BA
+2026-08-30T00:10:47.598Z WS OPEN: wss://espn.connections.edge.bamgrid.com/dfcc3f/connection?X-Application-Version=0.0.1&X-BA
+2026-08-30T00:11:09.529Z pickArea: You're on the clock in: 3 Picks Round 1, Pick 4 | RND 1 OF 16 --:--
+2026-08-30T00:11:10.333Z pickArea: You're on the clock in: 2 Picks Round 1, Pick 4 | RND 1 OF 16 00:30
+2026-08-30T00:11:11.943Z pickArea: You're on the clock in: 1 Pick Round 1, Pick 4 | RND 1 OF 16 00:30
+2026-08-30T00:11:13.150Z pickArea: You are on the clock! Your autopick would be: Ja'Marr Chase / Cincinnati Bengals WR DRAFT | RND 1 OF 16 00:29
+2026-08-30T00:11:16.775Z inferred our slot: 1 (overall 1, ws picks 0)
+2026-08-30T00:11:17.314Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:18.110Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:18.910Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:19.749Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:20.549Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:21.342Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:22.136Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:22.930Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:23.726Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:24.542Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:25.346Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:26.141Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:26.937Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:27.733Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:28.519Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:29.313Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:30.106Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:30.898Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:31.694Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:32.487Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:33.291Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:34.079Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:34.882Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:35.682Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:36.480Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:37.279Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:38.069Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:38.862Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:39.665Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:40.472Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:41.265Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:42.080Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:42.892Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:43.703Z choice Jahmyr Gibbs not visible in avail list — retrying shortly
+2026-08-30T00:11:44.106Z pickArea: You're on Autopick Disable Autopick to draft players DISABLE AUTOPICK | RND 1 OF 16 00:30

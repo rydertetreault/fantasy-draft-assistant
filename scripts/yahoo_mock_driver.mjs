@@ -100,14 +100,31 @@ const CLICK2 = () => {
   b.click(); return { ok: true, how: "two-step" };
 };
 
-try { const saved = JSON.parse((await import("node:fs")).readFileSync(D("our_picks.json"), "utf8")); if (saved.room === page.url()) { var _op = saved.picks; } } catch {}
-let ourPicks = (typeof _op !== "undefined" ? _op : []), clickedThisTurn = false, lastSig = "", slot = SLOT, slotSource = "env-default", lastAnnounced = 0, lastAnnouncedAt = 0;
+try { const saved = JSON.parse((await import("node:fs")).readFileSync(D("our_picks.json"), "utf8")); if (saved.room === page.url()) { var _op = saved.picks; var _slot = saved.slot; } } catch {}
+let ourPicks = (typeof _op !== "undefined" ? _op : []), clickedThisTurn = false, lastSig = "", slot = (typeof _slot === "number" && _slot >= 1 ? _slot : SLOT), slotSource = (typeof _slot === "number" && _slot >= 1 ? "persisted" : "env-default"), lastAnnounced = 0;
+if (slotSource === "persisted") log(`slot restored: ${slot} (persisted from this room)`);
 while (ourPicks.length < ROUNDS) {
   let s;
-  try { s = await page.evaluate(STATE); } catch (e) { log(`eval err: ${String(e).slice(0, 70)}`); await new Promise((r) => setTimeout(r, 1500)); continue; }
-  // self-correcting slot: Yahoo's own "your turn - Nth pick" is authoritative
-  if (s.announcedPick > 0 && s.announcedPick !== lastAnnounced) {
-    lastAnnounced = s.announcedPick; lastAnnouncedAt = Date.now();
+  try { s = await page.evaluate(STATE); } catch (e) {
+    log(`eval err: ${String(e).slice(0, 70)}`);
+    // page closed (room tab replaced/crashed): re-latch to a live mock room
+    // instead of spinning forever (mock #2: 13:58 error loop). Same guards:
+    // prefer an active draftclient, never the real league room.
+    if (/closed/i.test(String(e))) {
+      const cand = browser.contexts().flatMap((c) => c.pages()).filter((p) =>
+        /yahoo\.com/i.test(p.url()) && !isRealRoom(p.url()));
+      const np = cand.find((p) => /draftclient/i.test(p.url())) ||
+                 cand.find((p) => /mock_waiting/i.test(p.url())) || null;
+      if (np && np !== page) { page = np; log(`re-latched room: ${page.url().slice(0, 110)}`); }
+    }
+    await new Promise((r) => setTimeout(r, 1500)); continue;
+  }
+  // USER-CONFIRMED (mock #2): mid-draft, the ordinal next to the countdown
+  // is the draft's CURRENT round/pick — NOT our pick. It is only meaningful
+  // as OUR pick in the pre-draft waiting room ("YOUR TURN - 7TH PICK").
+  // So: slot inference ONLY before our first pick and only off-turn.
+  if (ourPicks.length === 0 && !s.titleTurn && s.announcedPick > 0 && s.announcedPick !== lastAnnounced) {
+    lastAnnounced = s.announcedPick;
     const o = s.announcedPick;
     const r = Math.ceil(o / TEAMS);
     const inferred = r % 2 === 1 ? o - (r - 1) * TEAMS : r * TEAMS - o + 1;
@@ -126,12 +143,11 @@ while (ourPicks.length < ROUNDS) {
   if (!s.rows.length) { await new Promise((r) => setTimeout(r, 400)); continue; }
 
   // turn index from the room's own roster count "(N/15)" — restart-proof,
-  // autopick-proof. Ordinal announcement (49TH PICK) is primary when present.
+  // autopick-proof, and the ONLY trusted source for our overall (banner
+  // ordinals are the draft's current position, never ours — mock #2).
   const cm = /\((\d+)\/\d+\)/.exec(s.rosterText || "");
   const haveCount = cm ? parseInt(cm[1], 10) : ourPicks.length;
-  const fromCount = ((k) => { const r = k + 1; return r % 2 === 1 ? (r - 1) * TEAMS + slot : r * TEAMS - slot + 1; })(haveCount);
-  const annFresh = Date.now() - lastAnnouncedAt < 15000;
-  const overall = (annFresh && lastAnnounced > 0 && lastAnnounced >= fromCount - TEAMS && lastAnnounced <= fromCount + TEAMS) ? lastAnnounced : fromCount;
+  const overall = ((k) => { const r = k + 1; return r % 2 === 1 ? (r - 1) * TEAMS + slot : r * TEAMS - slot + 1; })(haveCount);
   writeFileSync(D("visible.json"), JSON.stringify(s.rows));
   writeFileSync(D("hist.txt"), "");
   writeFileSync(D("roster.txt"), s.rosterText || "");
@@ -227,7 +243,7 @@ while (ourPicks.length < ROUNDS) {
       }
       if (verified) {
         ourPicks.push(choice.playerName);
-        writeFileSync(D("our_picks.json"), JSON.stringify({ room: page.url(), picks: ourPicks }));
+        writeFileSync(D("our_picks.json"), JSON.stringify({ room: page.url(), picks: ourPicks, slot }));
         log(`VERIFIED pick #${ourPicks.length}: ${choice.playerName} (${choice.pos}) via ${res.how} | ${Date.now() - t0}ms`);
       }
       else log(`UNVERIFIED after ${res.how} click: ${choice.playerName} — one submission max, holding`);
