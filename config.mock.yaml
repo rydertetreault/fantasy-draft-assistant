@@ -1,0 +1,23 @@
+league:
+  teams: 12
+  scoring: ppr # standard, half_ppr, ppr
+  roster_slots:
+    QB: 1
+    RB: 2
+    WR: 2
+    TE: 1
+    FLEX: 1
+    DST: 1
+    K: 1
+    BENCH: 6
+strategy:
+  # Higher means the assistant prioritizes filling starters earlier.
+  roster_need_weight: 8.0
+  # Higher means positions with fewer quality options get bumped.
+  scarcity_weight: 6.0
+  # Higher means ADP bargains get bumped.
+  value_weight: 4.0
+  # Small penalty for stacking too many same-bye starters.
+  bye_penalty_weight: 1.5
+  # Do not recommend these positions before these rounds unless value is huge.
+  wait_until_round: {}

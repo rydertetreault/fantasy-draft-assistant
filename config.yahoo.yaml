@@ -1,0 +1,22 @@
+# Dad's Yahoo league: "Old Backs Fresh Minds" (384341), team 6 "All I Do Is Win"
+# Confirmed 2026-08-29: 10-team HALF-PPR H2H snake, 60s/pick.
+# Roster: QB/2RB/2WR/TE/W-R-T flex/K/DEF + 6 BN (+2 IR, not drafted).
+league:
+  teams: 10
+  scoring: half_ppr
+  roster_slots:
+    QB: 1
+    RB: 2
+    WR: 2
+    TE: 1
+    FLEX: 1   # W/R/T
+    DST: 1    # Yahoo "DEF"
+    K: 1
+    BENCH: 6
+strategy:
+  roster_need_weight: 8.0
+  scarcity_weight: 6.0
+  value_weight: 4.0
+  bye_penalty_weight: 1.5
+  # No preset position-round rules — wait-loss math decides (user directive).
+  wait_until_round: {}
