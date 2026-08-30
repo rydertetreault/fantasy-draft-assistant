@@ -72,9 +72,19 @@
 ## Yahoo draft-room DOM cheat sheet (hard-won, mock #1)
 
 - Room URL: `football.fantasysports.yahoo.com/draftclient/f1/<mock_id>/<slot>`
-  — mocks are namespaced under `/f1/384341/...` (`mock_waiting`, etc.).
-  **REAL room = exactly `/f1/384341/draft` with no "mock"** — that and only
-  that is refused by the mock driver.
+  — **the trailing segment is OUR SLOT** (mock #2 `.../10171133/7`, mock #3
+  `.../10171677/3`): primary slot source, critical for instant-start rooms
+  with no waiting room. Mocks are namespaced under `/f1/384341/...`
+  (`mock_waiting`, etc.). **REAL room = `/f1/384341/draft` OR
+  `draftclient/f1/384341/<slot>`** (league id inside draftclient = real) —
+  both forms refused by the mock driver.
+- **Entering the room does NOT open a new browser tab (owner-confirmed):
+  the current page target UNHOOKS (dies) and a new page target appears in
+  place.** Held Page handles go silently stale. The driver re-scans all CDP
+  targets every cycle and hops to any live draftclient — arm it BEFORE
+  joining; rooms can fill and start instantly (mock #3 cost ~100s latched
+  to a dead lobby handle; pick 3 saved with 11s left). Expect the real
+  draft to load straight into the room.
 - **Turn signal = `document.title`**: `"YOUR TURN, DRAFT NOW | ..."` on the
   clock; `"N picks until your turn | ..."` waiting; `"You are next | ..."`.
   **OWNER-CORRECTED (mock #2): mid-draft banner ordinals are the draft's

@@ -25,18 +25,31 @@ const { execFileSync } = await import("node:child_process");
 const browser = await chromium.connectOverCDP(process.env.BROWSER_CDP_URL || "http://localhost:9222");
 log(`yahoo mock driver armed: slot ${SLOT}/${TEAMS}, our overalls ${[0,1,2,3].map(ourOverall).join(",")}...`);
 
-// REAL room = exactly /f1/384341/draft with no "mock" anywhere. Yahoo
-// namespaces the user's mocks UNDER the league path (/f1/384341/mock_waiting),
-// so the guard must be surgical, not prefix-based.
-const isRealRoom = (u) => /\/f1\/384341\/draft(\b|$|[/?#])/.test(u) && !/mock/i.test(u);
+// REAL room guard, TWO forms (owner safety rule): the classic
+// /f1/384341/draft page AND draftclient/f1/384341/<slot> — the league id
+// inside the draftclient namespace IS the real room. Mocks get their own
+// mock ids there (draftclient/f1/10171677/3), so this stays surgical.
+const isRealRoom = (u) => (/\/f1\/384341\/draft(\b|$|[/?#])/.test(u) && !/mock/i.test(u)) || /\/draftclient\/f1\/384341(\b|[/?#])/.test(u);
+const urlOf = (p) => { try { return p.url(); } catch { return ""; } };
+// OWNER-CONFIRMED (mock #3): entering the room does NOT open a new browser
+// tab — the existing page UNHOOKS (its target dies) and a NEW page target
+// appears in place. A held Page handle silently goes stale, so room
+// discovery re-scans ALL targets every cycle: prefer a live draftclient,
+// else a waiting room; never the lobby, never the real room.
+const findRoom = () => {
+  const cand = browser.contexts().flatMap((c) => c.pages()).filter((p) => {
+    const u = urlOf(p);
+    return /yahoo\.com/i.test(u) && !isRealRoom(u) && !/mock_lobby/i.test(u) && (/draftclient/i.test(u) || /mock/i.test(u) || /draft/i.test(u));
+  });
+  return cand.find((p) => /draftclient/i.test(urlOf(p))) || cand[0] || null;
+};
+// draftclient URL ends in OUR SLOT (mock #2: .../10171133/7 = slot 7;
+// mock #3: .../10171677/3 = slot 3) — instant-start rooms have no waiting
+// room label, so the URL is the primary slot source.
+const slotFromUrl = (u) => { const m = /\/draftclient\/f1\/\d+\/(\d{1,2})(\b|[/?#])/.exec(u || ""); const s = m ? parseInt(m[1], 10) : 0; return s >= 1 && s <= TEAMS ? s : 0; };
 let page = null;
-while (!page) {
-  page = browser.contexts().flatMap((c) => c.pages()).find((p) =>
-    /yahoo\.com/i.test(p.url()) && (/mock/i.test(p.url()) || /draft/i.test(p.url())) && !isRealRoom(p.url())) || null;
-  if (!page) await new Promise((r) => setTimeout(r, 700));
-}
-log(`room: ${page.url().slice(0, 110)}`);
-if (isRealRoom(page.url())) { log("REFUSED: real league room"); process.exit(3); }
+while (!page) { page = findRoom(); if (!page) await new Promise((r) => setTimeout(r, 500)); }
+log(`room: ${urlOf(page).slice(0, 110)}`);
 
 const STATE = () => {
   const t = (el) => (el ? (el.innerText || "").replace(/\s+/g, " ").trim() : "");
@@ -103,27 +116,30 @@ const CLICK2 = () => {
 try { const saved = JSON.parse((await import("node:fs")).readFileSync(D("our_picks.json"), "utf8")); if (saved.room === page.url()) { var _op = saved.picks; var _slot = saved.slot; } } catch {}
 let ourPicks = (typeof _op !== "undefined" ? _op : []), clickedThisTurn = false, lastSig = "", slot = (typeof _slot === "number" && _slot >= 1 ? _slot : SLOT), slotSource = (typeof _slot === "number" && _slot >= 1 ? "persisted" : "env-default"), lastAnnounced = 0;
 if (slotSource === "persisted") log(`slot restored: ${slot} (persisted from this room)`);
+{ const uS = slotFromUrl(urlOf(page)); if (uS) { if (uS !== slot) log(`slot from room URL: ${uS} (was ${slot}/${slotSource})`); slot = uS; slotSource = "room URL"; } }
 while (ourPicks.length < ROUNDS) {
+  // room hop: if our handle is stale/non-room and a live draftclient target
+  // exists, jump to it NOW (instant-start rooms unhook the old page without
+  // opening a tab — waiting for an eval error costs picks).
+  if (!/draftclient/i.test(urlOf(page))) {
+    const np = findRoom();
+    if (np && np !== page && /draftclient/i.test(urlOf(np))) {
+      page = np; clickedThisTurn = false;
+      log(`room hop: ${urlOf(page).slice(0, 110)}`);
+      const uS = slotFromUrl(urlOf(page));
+      if (uS) { if (uS !== slot) log(`slot from room URL: ${uS} (was ${slot}/${slotSource})`); slot = uS; slotSource = "room URL"; }
+    }
+  }
   let s;
   try { s = await page.evaluate(STATE); } catch (e) {
     log(`eval err: ${String(e).slice(0, 70)}`);
-    // page closed (room tab replaced/crashed): re-latch to a live mock room
-    // instead of spinning forever (mock #2: 13:58 error loop). Same guards:
-    // prefer an active draftclient, never the real league room.
-    if (/closed/i.test(String(e))) {
-      const cand = browser.contexts().flatMap((c) => c.pages()).filter((p) =>
-        /yahoo\.com/i.test(p.url()) && !isRealRoom(p.url()));
-      const np = cand.find((p) => /draftclient/i.test(p.url())) ||
-                 cand.find((p) => /mock_waiting/i.test(p.url())) || null;
-      if (np && np !== page) { page = np; log(`re-latched room: ${page.url().slice(0, 110)}`); }
-    }
-    await new Promise((r) => setTimeout(r, 1500)); continue;
+    await new Promise((r) => setTimeout(r, 800)); continue; // hop check re-scans next cycle
   }
   // USER-CONFIRMED (mock #2): mid-draft, the ordinal next to the countdown
   // is the draft's CURRENT round/pick — NOT our pick. It is only meaningful
   // as OUR pick in the pre-draft waiting room ("YOUR TURN - 7TH PICK").
   // So: slot inference ONLY before our first pick and only off-turn.
-  if (ourPicks.length === 0 && !s.titleTurn && s.announcedPick > 0 && s.announcedPick !== lastAnnounced) {
+  if (slotSource !== "room URL" && ourPicks.length === 0 && !s.titleTurn && s.announcedPick > 0 && s.announcedPick !== lastAnnounced) {
     lastAnnounced = s.announcedPick;
     const o = s.announcedPick;
     const r = Math.ceil(o / TEAMS);
