@@ -132,3 +132,79 @@ def test_rb_run_with_rb_need_raises_rb_urgency(players, config):
     if len(rb_rows):
         # every RB row must carry a non-zero run adjustment (bonus or pivot)
         assert (rb_rows["run_adj"] != 0.0).all()
+
+
+# ---- slot-adjusted valuation (the 3-RBs-before-WR1 regression) ------------
+
+def _synthetic_pool():
+    """Pool where RB VORP dominates raw position value, mirroring full PPR."""
+    rows = []
+    for i in range(12):
+        rows.append((f"RB{i+1}", "RB", 300 - i * 18))   # steep RB dropoff
+    for i in range(12):
+        rows.append((f"WR{i+1}", "WR", 280 - i * 8))    # shallow WR dropoff
+    for i in range(6):
+        rows.append((f"QB{i+1}", "QB", 360 - i * 6))
+        rows.append((f"TE{i+1}", "TE", 200 - i * 12))
+    return pd.DataFrame(
+        {
+            "player": [r[0] for r in rows],
+            "team": 1,
+            "pos": [r[1] for r in rows],
+            "bye": 0,
+            "projection": [float(r[2]) for r in rows],
+            "adp": range(1, len(rows) + 1),
+            "tier": 1,
+        }
+    )
+
+
+def _ctx_top(players, config, my_roster, drafted_extra=()):
+    drafted = list(my_roster) + list(drafted_extra)
+    picks = [
+        TeamPick(i + 1, (i % 12) + 1, name, players.set_index("player")["pos"][name])
+        for i, name in enumerate(drafted)
+    ]
+    state = {"drafted": drafted, "my_roster": list(my_roster)}
+    base = recommend(players, state, config, round_no=4, pick_no=4, limit=30)
+    return contextual_recommend(players, base, picks, list(my_roster), 4, config, limit=5)
+
+
+def test_three_rbs_means_wr_tops_the_list(config):
+    """The user's regression: with RB1/RB2/RB3 rostered (2 RB slots + flex
+    consumed), the next pick must be a WR, not a 4th RB."""
+    players = _synthetic_pool()
+    config["league"]["teams"] = 12
+    config["league"]["roster_slots"] = {
+        "QB": 1, "RB": 2, "WR": 2, "TE": 1, "FLEX": 1, "DST": 1, "K": 1, "BENCH": 6,
+    }
+    out = _ctx_top(players, config, ["RB1", "RB2", "RB3"])
+    assert out.iloc[0]["pos"] == "WR", out[["player", "pos", "slot", "ctx_score"]]
+    # and the best remaining RB must be valued as bench, not starter
+    rb_rows = out[out["pos"] == "RB"]
+    if len(rb_rows):
+        assert (rb_rows["slot"] == "bench").all()
+
+
+def test_wr_heavy_means_rb_tops_the_list(config):
+    players = _synthetic_pool()
+    config["league"]["teams"] = 12
+    config["league"]["roster_slots"] = {
+        "QB": 1, "RB": 2, "WR": 2, "TE": 1, "FLEX": 1, "DST": 1, "K": 1, "BENCH": 6,
+    }
+    out = _ctx_top(players, config, ["WR1", "WR2", "WR3"])
+    assert out.iloc[0]["pos"] == "RB", out[["player", "pos", "slot", "ctx_score"]]
+
+
+def test_second_qb_is_bench_valued(config):
+    players = _synthetic_pool()
+    config["league"]["teams"] = 12
+    config["league"]["roster_slots"] = {
+        "QB": 1, "RB": 2, "WR": 2, "TE": 1, "FLEX": 1, "DST": 1, "K": 1, "BENCH": 6,
+    }
+    out = _ctx_top(players, config, ["QB1", "RB1", "WR1"])
+    qb_rows = out[out["pos"] == "QB"]
+    if len(qb_rows):
+        assert (qb_rows["slot"] == "bench").all()
+    # a second QB must never outrank a starter-slot RB/WR here
+    assert out.iloc[0]["pos"] in ("RB", "WR")

@@ -34,6 +34,39 @@ def replacement_levels(players: pd.DataFrame, teams: int) -> dict[str, float]:
     return levels
 
 
+def slot_adjusted_vorp(
+    pos: str,
+    projection: float,
+    my_roster: list[str],
+    players: pd.DataFrame,
+    config: dict,
+    replacement: dict[str, float],
+) -> tuple[float, str]:
+    """VORP valued at the lineup slot this candidate would actually fill.
+
+    - empty dedicated slot     -> projection - replacement[pos] (full VORP)
+    - dedicated full, flex open -> projection - best flex replacement
+      (a 3rd RB competes for ONE flex spot against WRs/TEs, not for RB2)
+    - lineup full at pos       -> 30% of VORP (bench depth/bye/upside)
+    Returns (value, slot_label) so the reasoning is auditable.
+    """
+    from .ranking import roster_counts
+
+    slots = config["league"]["roster_slots"]
+    counts = roster_counts(my_roster, players)
+    dedicated = int(slots.get(pos, 0))
+    if counts[pos] < dedicated:
+        return projection - replacement.get(pos, 0.0), "starter"
+    if pos in FLEX_POSITIONS and int(slots.get("FLEX", 0)) > 0:
+        flex_used = sum(
+            max(0, counts[p] - int(slots.get(p, 0))) for p in FLEX_POSITIONS
+        )
+        if flex_used < int(slots.get("FLEX", 0)):
+            flex_repl = max(replacement.get(p, 0.0) for p in FLEX_POSITIONS)
+            return projection - flex_repl, "flex"
+    return 0.3 * (projection - replacement.get(pos, 0.0)), "bench"
+
+
 @dataclass(frozen=True)
 class TeamPick:
     """One completed pick with team attribution."""
@@ -171,7 +204,9 @@ def contextual_recommend(
     runs = detect_runs(all_picks)
     replacement = replacement_levels(players, teams)
     out = base_recommendations.copy()
-    urgency_col, cliff_col, run_col, surv_col, vorp_col, ctx_col = [], [], [], [], [], []
+    urgency_col, cliff_col, run_col, surv_col, vorp_col, slot_col, ctx_col = (
+        [], [], [], [], [], [], []
+    )
 
     for _, row in out.iterrows():
         pos = str(row["pos"])
@@ -194,21 +229,27 @@ def contextual_recommend(
             # holds; if the run already emptied the tier, pivot away instead.
             run_adj = 8.0 * need if survivors >= 1.0 else -6.0
 
-        # VORP base: value over what's freely available at draft's end.
-        # Keep the engine's contextual adjustments (need/scarcity/bye/value)
-        # by carrying (score - projection), but replace the raw-projection
-        # base that made high-scoring QBs/Ks outrank scarce RBs.
-        vorp = float(row["projection"]) - replacement.get(pos, 0.0)
+        # Slot-adjusted VORP: value at the lineup slot actually being filled.
+        # Kills both failure modes seen in rehearsal: WR-stacking (raw
+        # projection) and RB-stacking (position VORP blind to filled slots).
+        vorp_slot, slot_label = slot_adjusted_vorp(
+            pos, float(row["projection"]), my_roster, players, config, replacement
+        )
         engine_adj = float(row["score"]) - float(row["projection"])
+        # run/cliff urgency only matters for players who improve the lineup
+        if slot_label == "bench":
+            cliff, run_adj = 0.0, min(0.0, run_adj)
 
         urgency_col.append(round(urgency, 2))
         cliff_col.append(round(cliff, 2))
         run_col.append(round(run_adj, 2))
         surv_col.append(round(surv, 3))
-        vorp_col.append(round(vorp, 2))
-        ctx_col.append(round(vorp + engine_adj + urgency + cliff + run_adj, 2))
+        vorp_col.append(round(vorp_slot, 2))
+        slot_col.append(slot_label)
+        ctx_col.append(round(vorp_slot + engine_adj + urgency + cliff + run_adj, 2))
 
     out["vorp"] = vorp_col
+    out["slot"] = slot_col
     out["survival"] = surv_col
     out["urgency"] = urgency_col
     out["tier_cliff"] = cliff_col
