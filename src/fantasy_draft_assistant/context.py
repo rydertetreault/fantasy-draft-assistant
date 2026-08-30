@@ -163,6 +163,38 @@ def tier_survivors(
     return in_tier - expected_taken
 
 
+def expected_position_takes(
+    gap_probs: list[dict[str, float]], runs: dict[str, int]
+) -> dict[str, float]:
+    """Expected number of players taken at each position before our next
+    pick, from live opponent-need modeling. An active run at a position is
+    live evidence the drain rate is hotter than the need model says."""
+    takes: dict[str, float] = {}
+    for pos in CORE_POSITIONS:
+        takes[pos] = sum(p.get(pos, 0.0) for p in gap_probs)
+        if pos in runs:
+            takes[pos] += 1.0
+    return takes
+
+
+def expected_next_best(
+    available: pd.DataFrame, pos: str, takes: float
+) -> float:
+    """Expected projection of the best player left at pos at our next pick,
+    after `takes` expected picks come off the top (linear interpolation)."""
+    projs = (
+        available[available["pos"] == pos]
+        .sort_values("projection", ascending=False)["projection"]
+        .tolist()
+    )
+    if not projs:
+        return 0.0
+    lo = min(int(takes), len(projs) - 1)
+    hi = min(lo + 1, len(projs) - 1)
+    frac = min(1.0, max(0.0, takes - lo))
+    return float(projs[lo] * (1 - frac) + projs[hi] * frac)
+
+
 def contextual_recommend(
     players: pd.DataFrame,
     base_recommendations: pd.DataFrame,
@@ -174,12 +206,16 @@ def contextual_recommend(
 ) -> pd.DataFrame:
     """Re-rank the engine's base recommendations using full draft context.
 
-    Final score = base engine score
-                + urgency:   (1 - survival) * value-over-next-available
-                + cliff:     bonus when the pos's best tier empties in the gap
-                + run:       bonus when a run at a needed pos is in progress,
-                             small penalty when the run already gutted the tier
-                             (pivot to the abandoned position instead).
+    Primary signal is WAIT-LOSS, computed live from this draft — no preset
+    round rules:
+        wait_loss = candidate projection - E[best projection left at their
+                    position at our NEXT pick], where the expectation comes
+                    from opponent-need modeling of every team picking in the
+                    gap, heated further by live run detection.
+    Final score = wait_loss + 0.25 * slot_adjusted_vorp     (lineup-relevant)
+                = 0.30 * slot_adjusted_vorp                  (bench-only)
+    A flat position curve or saturated opponents drive wait_loss to ~0 and
+    the pick naturally waits; a draining scarce tier screams NOW.
     """
     teams = int(config["league"]["teams"])
     current_overall = len(all_picks)
@@ -202,57 +238,46 @@ def contextual_recommend(
     ]
 
     runs = detect_runs(all_picks)
+    takes = expected_position_takes(gap_probs, runs)
+    next_best_at = {
+        pos: expected_next_best(available, pos, takes.get(pos, 0.0))
+        for pos in CORE_POSITIONS
+    }
     replacement = replacement_levels(players, teams)
     out = base_recommendations.copy()
-    urgency_col, cliff_col, run_col, surv_col, vorp_col, slot_col, ctx_col = (
-        [], [], [], [], [], [], []
+    wait_col, run_col, surv_col, vorp_col, slot_col, ctx_col = (
+        [], [], [], [], [], []
     )
 
     for _, row in out.iterrows():
         pos = str(row["pos"])
         surv = survival_probability(row, gap_probs, available, current_overall)
-        # value over next available at this position if we wait
-        at_pos = available[
-            (available["pos"] == pos) & (available["player"] != row["player"])
-        ].sort_values("projection", ascending=False)
-        next_best = float(at_pos["projection"].iloc[0]) if len(at_pos) else 0.0
-        vona = max(0.0, float(row["projection"]) - next_best)
-        urgency = (1.0 - surv) * vona
 
-        survivors = tier_survivors(available, pos, gap_probs)
-        need = roster_need_score(pos, my_roster, players, config)
-        cliff = 12.0 * need if survivors < 1.0 else 0.0
-
-        run_adj = 0.0
-        if pos in runs:
-            # run in progress: urgent if we still need the pos and the tier
-            # holds; if the run already emptied the tier, pivot away instead.
-            run_adj = 8.0 * need if survivors >= 1.0 else -6.0
-
-        # Slot-adjusted VORP: value at the lineup slot actually being filled.
-        # Kills both failure modes seen in rehearsal: WR-stacking (raw
-        # projection) and RB-stacking (position VORP blind to filled slots).
         vorp_slot, slot_label = slot_adjusted_vorp(
             pos, float(row["projection"]), my_roster, players, config, replacement
         )
-        engine_adj = float(row["score"]) - float(row["projection"])
-        # run/cliff urgency only matters for players who improve the lineup
-        if slot_label == "bench":
-            cliff, run_adj = 0.0, min(0.0, run_adj)
+        wait_loss = max(
+            0.0, float(row["projection"]) - next_best_at.get(pos, 0.0)
+        )
+        run_pressure = 1.0 if pos in runs else 0.0
 
-        urgency_col.append(round(urgency, 2))
-        cliff_col.append(round(cliff, 2))
-        run_col.append(round(run_adj, 2))
+        if slot_label == "bench":
+            ctx = 0.30 * vorp_slot  # depth value only; waiting costs nothing
+            wait_loss = 0.0
+        else:
+            ctx = wait_loss + 0.25 * vorp_slot
+
+        wait_col.append(round(wait_loss, 2))
+        run_col.append(run_pressure)
         surv_col.append(round(surv, 3))
         vorp_col.append(round(vorp_slot, 2))
         slot_col.append(slot_label)
-        ctx_col.append(round(vorp_slot + engine_adj + urgency + cliff + run_adj, 2))
+        ctx_col.append(round(ctx, 2))
 
     out["vorp"] = vorp_col
     out["slot"] = slot_col
     out["survival"] = surv_col
-    out["urgency"] = urgency_col
-    out["tier_cliff"] = cliff_col
-    out["run_adj"] = run_col
+    out["wait_loss"] = wait_col
+    out["run_pressure"] = run_col
     out["ctx_score"] = ctx_col
     return out.sort_values("ctx_score", ascending=False).head(limit)

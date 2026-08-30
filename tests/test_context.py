@@ -103,18 +103,17 @@ def test_contextual_rerank_produces_components(players, config):
     state = {"drafted": [p.player for p in picks], "my_roster": my_roster}
     base = recommend(players, state, config, round_no=2, pick_no=9, limit=15)
     out = contextual_recommend(players, base, picks, my_roster, 4, config, limit=8)
-    for col in ("survival", "urgency", "tier_cliff", "run_adj", "ctx_score"):
+    for col in ("survival", "wait_loss", "run_pressure", "slot", "vorp", "ctx_score"):
         assert col in out.columns
     assert len(out) == 8
     scores = list(out["ctx_score"])
     assert scores == sorted(scores, reverse=True)
 
 
-def test_rb_run_with_rb_need_raises_rb_urgency(players, config):
-    """An RB run among opponents while we still need RB2 must push RBs up
-    relative to the no-run baseline (when the tier still has survivors)."""
+def test_rb_run_heats_rb_wait_loss(players, config):
+    """An active RB run is live evidence of drain: expected takes rise, so the
+    expected next-best RB drops, so RB wait_loss must not decrease."""
     teams = 12
-    # our slot 4 took a WR at pick 4; opponents took 5 straight RBs recently
     base_picks = _mid_draft_picks(players, 12, teams)
     rbs = players[
         (players["pos"] == "RB")
@@ -128,10 +127,9 @@ def test_rb_run_with_rb_need_raises_rb_urgency(players, config):
     state = {"drafted": [p.player for p in run_picks], "my_roster": my_roster}
     base = recommend(players, state, config, round_no=2, pick_no=6, limit=15)
     out = contextual_recommend(players, base, run_picks, my_roster, 4, config, limit=15)
-    rb_rows = out[out["pos"] == "RB"]
+    rb_rows = out[(out["pos"] == "RB") & (out["slot"] != "bench")]
     if len(rb_rows):
-        # every RB row must carry a non-zero run adjustment (bonus or pivot)
-        assert (rb_rows["run_adj"] != 0.0).all()
+        assert (rb_rows["run_pressure"] == 1.0).all()
 
 
 # ---- slot-adjusted valuation (the 3-RBs-before-WR1 regression) ------------
@@ -208,3 +206,24 @@ def test_second_qb_is_bench_valued(config):
         assert (qb_rows["slot"] == "bench").all()
     # a second QB must never outrank a starter-slot RB/WR here
     assert out.iloc[0]["pos"] in ("RB", "WR")
+
+
+def test_qb_waits_from_live_math_not_round_rules(config):
+    """No preset round gates: with a flat QB curve and a steep RB curve, the
+    QB slot open, and no QB run in the room, wait_loss alone must keep the
+    QB from topping the list — the RB tier is what evaporates."""
+    players = _synthetic_pool()  # QB steps -6/pick (flat), RB steps -18 (steep)
+    config["league"]["teams"] = 12
+    config["league"]["roster_slots"] = {
+        "QB": 1, "RB": 2, "WR": 2, "TE": 1, "FLEX": 1, "DST": 1, "K": 1, "BENCH": 6,
+    }
+    assert config["strategy"].get("wait_until_round") in ({}, None) or \
+        "QB" not in (config["strategy"].get("wait_until_round") or {})
+    out = _ctx_top(players, config, [], drafted_extra=["RB1", "WR1", "RB2"])
+    top = out.iloc[0]
+    assert top["pos"] in ("RB", "WR"), out[["player", "pos", "wait_loss", "vorp", "ctx_score"]]
+    # QB wait_loss must be small relative to the steep positions' wait_loss
+    qb_rows = out[out["pos"] == "QB"]
+    rb_rows = out[(out["pos"] == "RB") & (out["slot"] == "starter")]
+    if len(qb_rows) and len(rb_rows):
+        assert qb_rows["wait_loss"].max() <= rb_rows["wait_loss"].max()
