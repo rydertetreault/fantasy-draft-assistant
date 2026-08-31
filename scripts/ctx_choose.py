@@ -100,6 +100,13 @@ def is_visible(name: str, pos: str = "") -> bool:
 
 roster_given = [x.strip() for x in a.roster.split(",") if x.strip()]
 excludes = {x.strip() for x in a.exclude.split(",") if x.strip()}
+# OWNER DIRECTIVE (2026-08-30, post-Yahoo draft): persistent per-profile
+# do-not-draft list (config strategy.avoid_players). Unlike --exclude
+# (treated as GONE for attribution), avoided players stay on the board for
+# opponent/identity modeling — we simply never click them, in every pass
+# including the emergency valve. Profile-gated by construction: an absent
+# or empty key is a byte-identical no-op.
+avoid_set = {str(x).strip() for x in (config["strategy"].get("avoid_players") or []) if str(x).strip()}
 current_overall = a.overall if a.overall > 0 else 1
 n_drafted = max(0, current_overall - 1)
 known_gone = list(dict.fromkeys(roster_given + sorted(excludes)))
@@ -288,7 +295,7 @@ choice = None
 top_any = None
 for _, r in ctx.iterrows():
     nm = str(r["player"])
-    if nm in excludes:
+    if nm in excludes or nm in avoid_set:
         continue
     # ADP sanity: an elite player 30+ picks past ADP is a ghost row collision
     # (Bijan vs Brian Robinson, same team/pos/abbrev), never a real faller.
@@ -338,7 +345,7 @@ if choice is None:
     for _restrict, allow_floored in _passes:
         for _, r in b.iterrows():
             nm = str(r["player"])
-            if nm in excludes or nm in drafted_names or not is_visible(nm):
+            if nm in excludes or nm in avoid_set or nm in drafted_names or not is_visible(nm):
                 continue
             pos = str(r["pos"]).replace("D/ST", "DST")
             if _restrict and pos not in _restrict:

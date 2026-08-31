@@ -23,6 +23,10 @@ league:
     BENCH: 7
     IR: 1
 strategy:
+  # OWNER DIRECTIVE (2026-08-30, post-Yahoo-draft): never draft these players.
+  # Absolute — skipped in every chooser pass including the emergency valve.
+  avoid_players:
+    - Josh Jacobs   # NFL commissioner's exempt list, indefinite (2026-08-30)
   roster_need_weight: 8.0
   scarcity_weight: 6.0
   value_weight: 4.0

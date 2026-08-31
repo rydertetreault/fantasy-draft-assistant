@@ -63,8 +63,13 @@ const findRoom = () => {
   const cand = browser.contexts().flatMap((c) => c.pages()).filter((p) => isRealRoom(urlOf(p)));
   return cand.find((p) => /draftclient/i.test(urlOf(p))) || cand[0] || null;
 };
-// the real draftclient URL ends in OUR SLOT (primary slot source)
-const slotFromUrl = (u) => { const m = /\/draftclient\/f1\/384341\/(\d{1,2})(\b|[/?#])/.exec(u || ""); const s = m ? parseInt(m[1], 10) : 0; return s >= 1 && s <= TEAMS ? s : 0; };
+// DRAFT-DAY DISCOVERY (2026-08-30, live room recon): in the REAL room the
+// trailing draftclient URL segment is the TEAM ID (6) — NOT the draft slot.
+// (Mock rooms DID use the slot there; that assumption does not transfer.)
+// Waiting-room label read "YOUR TURN - 2ND PICK" while the URL ended in /6.
+// URL-based slot inference is therefore DISABLED: slot comes from SLOT env /
+// persisted state / the pre-draft ordinal label parsed below.
+const slotFromUrl = () => 0;
 let page = null;
 while (!page) { page = findRoom(); if (!page) await new Promise((r) => setTimeout(r, 500)); }
 log(`room: ${urlOf(page).slice(0, 110)}`);

@@ -11,6 +11,9 @@ league:
     K: 1
     BENCH: 6
 strategy:
+  # OWNER DIRECTIVE (2026-08-30): never draft these players (mirrors real profiles).
+  avoid_players:
+    - Josh Jacobs   # NFL commissioner's exempt list, indefinite (2026-08-30)
   # Higher means the assistant prioritizes filling starters earlier.
   roster_need_weight: 8.0
   # Higher means positions with fewer quality options get bumped.
