@@ -12,3 +12,14 @@ src/*.egg-info/
 data/synaps1/
 data/synaps2/
 data/leagues/
+
+# Yahoo draft-room runtime artifacts — session URLs embed auth tokens;
+# raw/ holds logged-in page dumps. NEVER track these. (2026-08-30 scrub)
+data/yahoo/*.log
+data/yahoo/*.jsonl
+data/yahoo/our_picks.json
+data/yahoo/live_*
+data/yahoo/raw/
+data/yahoo/hist.txt
+data/yahoo/roster.txt
+data/yahoo/visible.json
