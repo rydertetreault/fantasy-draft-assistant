@@ -6,8 +6,8 @@
 ## Who / what / when
 
 - **User:** Justin. Two authorized ESPN teams: **Synaps1** and **Synaps2**.
-- **FORBIDDEN:** the team **RoughRydas** — never touch it, never act on it.
-  Code enforces this (`PermissionError` at allowlist construction). See `TEAM_SAFETY.md`.
+- **RoughRydas:** was forbidden through 2026-09-05; **owner-authorized 2026-09-06** (Ryder). See `TEAM_SAFETY.md`, profile `config.roughrydas.yaml`.
+  Draft: Sun Sep 6 2026 8:00 PM EDT, league `1851947`, team `1`, slot 8.
 - **Synaps1 draft: TODAY (Sat Aug 29, 2026) 6:00 PM EDT.** League `305025860`,
   team id `2`, 10-team full-PPR snake, 90s/pick, slot randomized ~5:00 PM.
   Draft session id for grants: `305025860-2026-1788040800000`.

@@ -7,7 +7,7 @@ A **DraftScript** is a JSONL file of events, one JSON object per line:
   draft order (team ids, first round) and round count.
 - ``{"type": "identity", "alias": ..., "league_id": ..., "team_id": ...,
   "season": ...}`` — OUR identity. The harness builds the
-  :class:`safety.Allowlist` from it, so a forbidden alias (RoughRydas) is
+  :class:`safety.Allowlist` from it, so a forbidden alias is
   refused right here with ``PermissionError`` before any state exists.
 - ``{"type": "grant", "grant": {...}}`` — ephemeral autopick authorization.
 - ``{"type": "snapshot", "draftDetail": {...}}`` — an observed ESPN
@@ -208,7 +208,7 @@ class ReplayRunner:
             team_id=event.get("team_id"),
             season=event.get("season"),
         )
-        # Forbidden identities (RoughRydas) blow up RIGHT HERE, before any
+        # Forbidden identities blow up RIGHT HERE, before any
         # draft state exists — Allowlist construction is the hard gate.
         self.allowlist = Allowlist([identity])
         self.identity = identity

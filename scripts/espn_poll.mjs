@@ -23,7 +23,6 @@ const die = (code, msg) => { console.error(`REFUSED: ${msg}`); process.exit(code
 
 const TEAM = String(process.env.TEAM || "").trim().toLowerCase();
 if (!/^[a-z0-9][a-z0-9_-]*$/.test(TEAM)) die(2, "TEAM env var must be a safe alias slug (e.g. synaps1)");
-if (TEAM === "roughrydas") die(2, "RoughRydas is forbidden — never poll it");
 const LEAGUE = parseInt(process.env.LEAGUE_ID || "", 10);
 const SEASON = parseInt(process.env.SEASON_ID || "", 10);
 if (!Number.isInteger(LEAGUE) || LEAGUE <= 0) die(2, "LEAGUE_ID env var is required");

@@ -4,7 +4,7 @@ Mirrors :mod:`fantasy_draft_assistant.safety` (the battle-tested ESPN guard)
 with Yahoo-shaped identities, and REUSES its primitives without modifying it:
 
 - Exact allowlist match on every identity field before any write action.
-- Default deny for unknown teams; forbidden aliases (RoughRydas) can NEVER
+- Default deny for unknown teams; forbidden aliases (FORBIDDEN_ALIASES) can NEVER
   pass or be allowlisted — same normalized-alias comparison as ESPN.
 - Partial/ambiguous identities fail closed.
 - Stale state (age > 3000 ms, same budget as ESPN) blocks writes even for
@@ -19,7 +19,7 @@ THE ALLOWLIST CONTAINS EXACTLY ONE CONFIRMED TEAM: "All I Do Is Win"
 (league 384341 "Old Backs Fresh Minds", team 6, game_key "470", season 2026),
 confirmed verbatim by the account owner (relayed by the user) on 2026-08-29
 and mirrored in TEAM_SAFETY.md. Everything else — every other id, every ESPN
-alias, and RoughRydas above all — still refuses.
+alias, and any forbidden alias — still refuses.
 
 All functions here are pure decision functions with no side effects.
 """
@@ -173,7 +173,7 @@ def build_default_allowlist() -> YahooAllowlist:
     recon), season 2026. Confirmed verbatim by the account owner (relayed by
     the user) on 2026-08-29; mirrored in TEAM_SAFETY.md. Adding entries here
     remains a deliberate, reviewed act — and NEVER anything resembling
-    RoughRydas.
+    any FORBIDDEN_ALIASES entry.
     """
     return YahooAllowlist(
         [

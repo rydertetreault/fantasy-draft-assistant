@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 import yaml
 
+from fantasy_draft_assistant import safety
 from fantasy_draft_assistant.preflight import run_preflight
 
 from test_operator import CONFIG, LEAGUE, SEASON
@@ -76,7 +77,7 @@ class TestHappyPath:
         for name in (
             "config",
             "identity-allowlist",
-            "roughrydas-selftest",
+            "default-deny-selftest",
             "board",
             "board-freshness",
             "raw-source-freshness",
@@ -141,9 +142,14 @@ class TestHardFailures:
         assert report["ok"] is False
         assert check_map(report)["board"]["status"] == "fail"
 
-    def test_forbidden_configured_team_fails_allowlist_check(self, workspace):
+    def test_forbidden_configured_team_fails_allowlist_check(
+        self, workspace, monkeypatch
+    ):
+        monkeypatch.setattr(
+            safety, "FORBIDDEN_ALIASES", frozenset({"forbidden-sentinel"})
+        )
         bad = dict(CONFIG)
-        bad["espn"] = {**CONFIG["espn"], "authorized_team": "RoughRydas"}
+        bad["espn"] = {**CONFIG["espn"], "authorized_team": "Forbidden-Sentinel"}
         (workspace / "config.synaps1.yaml").write_text(yaml.safe_dump(bad))
         report = preflight(workspace)
         assert report["ok"] is False

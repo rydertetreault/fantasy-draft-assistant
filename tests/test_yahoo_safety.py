@@ -13,8 +13,9 @@ docs/yahoo-adapter.research.md):
   refused.
 - Exact five-field match (alias, game_key, league_id, team_id, season) is
   required even against a populated allowlist.
-- RoughRydas can NEVER pass or be allowlisted (PermissionError, reusing the
-  ESPN forbidden-alias set).
+- Any forbidden alias can NEVER pass or be allowlisted (PermissionError, reusing
+  the ESPN forbidden-alias set; tested with a monkeypatched sentinel since
+  RoughRydas was removed from the set 2026-09-06 on owner authorization).
 - Ambiguous/partial identity fails closed; bools are not ids.
 - Stale (>3000 ms) or negative state age blocks even allowlisted identities.
 - The actuation scripts (yahoo_actuate.mjs, yahoo_set_prerank.mjs) refuse at
@@ -29,7 +30,8 @@ from pathlib import Path
 
 import pytest
 
-from fantasy_draft_assistant.safety import FORBIDDEN_ALIASES, MAX_STATE_AGE_MS
+from fantasy_draft_assistant import safety, yahoo_safety
+from fantasy_draft_assistant.safety import MAX_STATE_AGE_MS
 from fantasy_draft_assistant.yahoo_safety import (
     YahooAllowlist,
     YahooTeamIdentity,
@@ -83,7 +85,7 @@ class TestDefaultAllowlist:
 
     def test_confirmed_ids_with_imposter_alias_refused(self):
         imposter = YahooTeamIdentity(
-            alias="RoughRydas", game_key="470", league_id=384341, team_id=6, season=2026
+            alias="imposter", game_key="470", league_id=384341, team_id=6, season=2026
         )
         assert imposter not in build_default_allowlist()
         assert can_submit_yahoo(imposter, build_default_allowlist(), FRESH) is False
@@ -153,21 +155,44 @@ class TestExactMatchSemantics:
 
 
 # ---------------------------------------------------------------------------
-# RoughRydas can never pass or be allowlisted
+# Forbidden aliases can never pass or be allowlisted (sentinel-based)
 # ---------------------------------------------------------------------------
+
+SENTINEL = "forbidden-sentinel"
+
+
+@pytest.fixture
+def forbidden_sentinel(monkeypatch):
+    """Inject a sentinel forbidden alias.
+
+    yahoo_safety imported FORBIDDEN_ALIASES by name, so both module globals
+    must be patched for the guard to see it.
+    """
+    patched = frozenset({SENTINEL})
+    monkeypatch.setattr(safety, "FORBIDDEN_ALIASES", patched)
+    monkeypatch.setattr(yahoo_safety, "FORBIDDEN_ALIASES", patched)
+    return SENTINEL
+
 
 class TestForbiddenTeam:
     def test_forbidden_aliases_are_shared_with_espn_guard(self):
-        assert "roughrydas" in FORBIDDEN_ALIASES
+        assert yahoo_safety.FORBIDDEN_ALIASES is safety.FORBIDDEN_ALIASES
 
-    @pytest.mark.parametrize("alias", ["RoughRydas", "roughrydas", "  ROUGHRYDAS  "])
-    def test_allowlisting_roughrydas_raises_permission_error(self, alias):
+    @pytest.mark.parametrize(
+        "alias", ["Forbidden-Sentinel", "forbidden-sentinel", "  FORBIDDEN-SENTINEL  "]
+    )
+    def test_allowlisting_forbidden_alias_raises_permission_error(
+        self, forbidden_sentinel, alias
+    ):
+        assert _identity(alias=alias).is_forbidden
         with pytest.raises(PermissionError):
             YahooAllowlist([_identity(alias=alias)])
 
-    def test_roughrydas_denied_even_if_entries_share_its_ids(self):
+    def test_forbidden_alias_denied_even_if_entries_share_its_ids(
+        self, forbidden_sentinel
+    ):
         allowlist = YahooAllowlist([_identity()])
-        imposter = _identity(alias="RoughRydas")
+        imposter = _identity(alias=forbidden_sentinel)
         assert imposter not in allowlist
         assert can_submit_yahoo(imposter, allowlist, FRESH) is False
 

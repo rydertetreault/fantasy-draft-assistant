@@ -86,9 +86,15 @@ def is_visible(name: str, pos: str = "") -> bool:
     p = (pos or name2pos.get(name, "")).lower().replace("dst", "def")
     tm = name2team.get(name, "")
     if p == "def":
+        # Yahoo rows: "Broncos DEF" / "Denver DEF"; ESPN rows: "Broncos D/ST DEN D/ST".
+        # (2026-09-06 ESPN mock: r16 DST lost to autopick because only " def"
+        # was accepted — every D/ST row was invisible to the chooser.)
         city, nick = name2city.get(name, ""), name2nick.get(name, "")
         for row in visible_rows:
-            if " def" in f" {row} " and (city and city in row or nick and nick in row or (tm and f" {tm} " in f" {row} ")):
+            r = f" {row} "
+            if (" def" in r or " d/st" in r or " dst" in r) and (
+                city and city in row or nick and nick in row or (tm and f" {tm} " in r)
+            ):
                 return True
         return False
     for row in visible_rows:
@@ -145,7 +151,8 @@ if _ordered_mode:
             for tok in (name2nick.get(nm, ""), name2city.get(nm, "")):
                 if tok:
                     j = hist.find(tok)
-                    if j >= 0 and "def" in hist[max(0, j - 40): j + 40]:
+                    _win = hist[max(0, j - 40): j + 40]
+                    if j >= 0 and ("def" in _win or "d/st" in _win or "dst" in _win):
                         i = j
                         break
         if i < 0:

@@ -3,7 +3,9 @@
 Contract (docs/live-draft-operator.spec.md, TEAM_SAFETY.md):
 
 - Exact allowlist match on every identity field before any write action.
-- Default deny for unknown teams; RoughRydas can NEVER pass or be allowlisted.
+- Default deny for unknown teams; any alias in FORBIDDEN_ALIASES can NEVER pass
+  or be allowlisted. (RoughRydas was removed from that set 2026-09-06 on the
+  owner's direct authorization — see TEAM_SAFETY.md.)
 - Partial/ambiguous identities fail closed.
 - Stale state (age > 3000 ms) blocks writes even for allowlisted identities.
 - Negative state age (clock skew) means freshness is UNKNOWN and fails closed.
@@ -16,9 +18,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Iterable, Iterator
 
-# The one team we must never touch. Comparison is done on a normalized alias
+# Teams we must never touch. Comparison is done on a normalized alias
 # (lowercase, whitespace stripped) so case/spacing tricks cannot bypass it.
-FORBIDDEN_ALIASES: frozenset[str] = frozenset({"roughrydas"})
+# 2026-09-06: RoughRydas removed — the owner (Ryder) authorized drafting for
+# it directly in this session. The mechanism stays; the set is currently
+# empty. Protection for every other team is the default-deny allowlist.
+FORBIDDEN_ALIASES: frozenset[str] = frozenset()
 
 #: Maximum acceptable draft-state age for a write action, in milliseconds.
 MAX_STATE_AGE_MS: int = 3_000
@@ -81,7 +86,7 @@ class Allowlist:
     """Explicit allowlist of exact team identities.
 
     Membership (`identity in allowlist`) requires an exact match on all four
-    fields. Forbidden aliases (RoughRydas) are refused at construction, and
+    fields. Forbidden aliases are refused at construction, and
     incomplete identities cannot be allowlisted — fail closed everywhere.
     """
 

@@ -1,0 +1,65 @@
+# RoughRydas — ESPN league configuration ("The Tetreau Invitational")
+# OWNER-AUTHORIZED 2026-09-06 (Ryder, the team owner, in-session): drafting for
+# this team is permitted. See TEAM_SAFETY.md.
+# Source: ESPN mSettings/mTeam read-only fetch (data/leagues/1851947/raw/
+# settings_teams.json, captured 2026-09-04). ESPN team name: "Rough Rydahs".
+espn:
+  league_id: 1851947
+  team_id: 1
+  season_id: 2026
+  authorized_team: roughrydas
+  read_only: false
+league:
+  teams: 10
+  scoring: ppr            # 1.0/rec (statId 53 = 1.0)
+  draft_type: snake
+  draft_time: "2026-09-06T20:00:00-04:00"
+  seconds_per_pick: 90
+  draft_slot: 8           # pickOrder [8,11,5,3,10,4,7,1,2,6] -> team 1 is 8th
+  roster_slots:
+    QB: 1
+    RB: 2
+    WR: 2
+    TE: 1
+    FLEX: 1
+    DST: 1
+    K: 1
+    BENCH: 7
+    IR: 1
+strategy:
+  # ---- Strategy ported from the validated Yahoo profile (config.yahoo.yaml,
+  # ---- mock #8 + live draft 2026-08-30) per owner directive 2026-09-06.
+  # ---- Per the two-profile rule this profile is independent; synaps1/2 stay
+  # ---- frozen. Differences from Yahoo: full PPR, 16 rounds (7 BN), 90s/pick.
+  avoid_players:
+    - Josh Jacobs   # NFL commissioner's exempt list, indefinite (2026-08-30)
+  roster_need_weight: 8.0
+  scarcity_weight: 6.0
+  value_weight: 4.0
+  bye_penalty_weight: 1.5
+  # Position round floors (HARD at the ctx layer, see hard_wait_floors).
+  # QB never early in a 10-team 1-QB league. 16 rounds here (vs Yahoo's 15):
+  # K/DST forced into the final two rounds (15/16), ordered by value.
+  wait_until_round:
+    QB: 5
+    DST: 15
+    K: 15
+  # Floors unlock early only on real evidence of a positional run in the room.
+  reactive_floor_unlock:
+    DST: 3
+    K: 3
+  hard_wait_floors: true
+  # RB/WR/TE starter slots valued ahead of flex-stacking.
+  fill_starters_before_flex: true
+  # Required with hard floors (K/DST wait-loss modeling).
+  wait_loss_all_positions: true
+  # K/DST exempt from the ADP ghost filter (they always fall past ADP).
+  adp_ghost_skill_only: true
+  # Exact per-team snake attribution from the room's real pick order ->
+  # opponent-need / run / survival modeling.
+  history_order_attribution: true
+  # When rounds left <= empty required lineup slots, restrict to those slots.
+  force_required_slots_endgame: true
+  # Owner ESPN preference (DRAFT_DAY.md): RB tilt, not RB rule — rounds 1-4,
+  # candidates within ~6 proj pts break toward RB; never pass a clearly
+  # superior elite WR. (Advisory for the agent-in-the-loop; not an engine flag.)

@@ -7,8 +7,8 @@ Proves, without a human and without live ESPN:
 - a disconnect (stale age) blocks submission until a fresh snapshot (red→green);
 - a deliberately corrupt event yields Blocked with state untouched, then the
   recovery path continues (red→green);
-- a forbidden-team script (alias roughrydas) is refused at Allowlist
-  construction;
+- a forbidden-team script (a sentinel alias injected into FORBIDDEN_ALIASES)
+  is refused at Allowlist construction;
 - observe→recommend latency stays under the 3000 ms budget for every pick.
 """
 
@@ -19,6 +19,7 @@ from pathlib import Path
 import pytest
 import yaml
 
+from fantasy_draft_assistant import safety
 from fantasy_draft_assistant.pipeline import assign_tiers, parse_players
 from fantasy_draft_assistant.replay import (
     BASE_MS,
@@ -173,10 +174,15 @@ class TestFullDraft:
 
 
 class TestForbiddenTeamScript:
-    @pytest.mark.parametrize("alias", ["roughrydas", "RoughRydas", " ROUGHRYDAS "])
+    @pytest.mark.parametrize(
+        "alias", ["forbidden-sentinel", "Forbidden-Sentinel", " FORBIDDEN-SENTINEL "]
+    )
     def test_refused_at_allowlist_construction(
-        self, tmp_path, board_rows, config, alias
+        self, tmp_path, board_rows, config, alias, monkeypatch
     ):
+        monkeypatch.setattr(
+            safety, "FORBIDDEN_ALIASES", frozenset({"forbidden-sentinel"})
+        )
         events = script_header(alias=alias)
         path = write_script(tmp_path, events)
         runner = ReplayRunner(config, board_rows)

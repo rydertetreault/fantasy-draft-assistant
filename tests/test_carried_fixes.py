@@ -2,14 +2,16 @@
 
 1. Negative state_age_ms fails closed (clock skew = unknown freshness).
 2. Boolean id fields are rejected by TeamIdentity completeness.
-3. Path-traversal aliases are rejected; RoughRydas allowlisting raises
-   PermissionError specifically (not just any denial).
+3. Path-traversal aliases are rejected; allowlisting a forbidden alias raises
+   PermissionError specifically (not just any denial). Tested via a sentinel
+   alias injected into FORBIDDEN_ALIASES (RoughRydas removed 2026-09-06).
 4. DraftState carries saved_at and league/season binding validated on load.
 """
 
 import pytest
 
 from fantasy_draft_assistant.models import DraftState
+from fantasy_draft_assistant import safety
 from fantasy_draft_assistant.safety import Allowlist, TeamIdentity, can_submit
 
 SYNAPS1 = TeamIdentity(alias="synaps1", league_id=305025860, team_id=2, season=2026)
@@ -69,17 +71,32 @@ class TestPathTraversalAlias:
             DraftState.load(tmp_path, alias)
 
 
-class TestRoughRydasPermissionError:
-    def test_allowlisting_roughrydas_raises_permission_error_specifically(self):
-        rough = TeamIdentity(alias="RoughRydas", league_id=1, team_id=1, season=2026)
-        with pytest.raises(PermissionError):
-            Allowlist([rough])
+SENTINEL = "forbidden-sentinel"
 
-    @pytest.mark.parametrize("alias", ["roughrydas", " RoughRydas ", "ROUGHRYDAS"])
-    def test_variants_also_raise_permission_error(self, alias):
-        rough = TeamIdentity(alias=alias, league_id=305025860, team_id=2, season=2026)
+
+@pytest.fixture
+def forbidden_sentinel(monkeypatch):
+    monkeypatch.setattr(safety, "FORBIDDEN_ALIASES", frozenset({SENTINEL}))
+    return SENTINEL
+
+
+class TestForbiddenAliasPermissionError:
+    def test_allowlisting_forbidden_alias_raises_permission_error_specifically(
+        self, forbidden_sentinel
+    ):
+        forbidden = TeamIdentity(
+            alias=forbidden_sentinel, league_id=1, team_id=1, season=2026
+        )
         with pytest.raises(PermissionError):
-            Allowlist([rough])
+            Allowlist([forbidden])
+
+    @pytest.mark.parametrize(
+        "alias", ["forbidden-sentinel", " Forbidden-Sentinel ", "FORBIDDEN-SENTINEL"]
+    )
+    def test_variants_also_raise_permission_error(self, forbidden_sentinel, alias):
+        forbidden = TeamIdentity(alias=alias, league_id=305025860, team_id=2, season=2026)
+        with pytest.raises(PermissionError):
+            Allowlist([forbidden])
 
 
 class TestDraftStateBinding:

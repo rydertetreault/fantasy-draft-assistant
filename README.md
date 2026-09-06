@@ -4,10 +4,10 @@ Live ESPN fantasy-football draft operator: observes the draft board, ranks
 available players from real ESPN projections/ADP, and recommends (or — with an
 explicit session-bound grant — submits) picks under the 90-second clock.
 
-**Safety first:** only the exact allowlisted teams **Synaps1** and **Synaps2**
-can ever be acted on. The team *RoughRydas* is permanently forbidden — the code
-refuses it at allowlist construction (see `TEAM_SAFETY.md`). Everything fails
-closed: stale state, unknown identity, missing confirmation → halt.
+**Safety first:** only the exact allowlisted teams **Synaps1**, **Synaps2** and
+**RoughRydas** (owner-authorized 2026-09-06; see `TEAM_SAFETY.md`) can ever be
+acted on — every other team is denied by default. Everything fails closed:
+stale state, unknown identity, missing confirmation → halt.
 
 ## Setup on a new device
 

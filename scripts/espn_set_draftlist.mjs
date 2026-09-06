@@ -4,7 +4,7 @@
 import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
 
-const ALLOWED = new Map([["305025860:2", "synaps1"], ["2144943745:4", "synaps2"]]);
+const ALLOWED = new Map([["305025860:2", "synaps1"], ["2144943745:4", "synaps2"], ["1851947:1", "roughrydas"]]); // roughrydas owner-authorized 2026-09-06
 const args = process.argv.slice(2);
 const file = args[0];
 const opt = (name, dflt) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : dflt; };

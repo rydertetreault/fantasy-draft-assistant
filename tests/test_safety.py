@@ -8,13 +8,16 @@ Contract under test (per docs/live-draft-operator.spec.md and TEAM_SAFETY.md):
 
 - Exact allowlist match required before any write action.
 - Default deny: any unknown team/league combination is rejected.
-- RoughRydas must NEVER pass, regardless of ids.
+- Any alias in FORBIDDEN_ALIASES must NEVER pass, regardless of ids (tested
+  via a sentinel alias injected with monkeypatch; the set is empty by default
+  since RoughRydas was removed 2026-09-06 on owner authorization).
 - Ambiguous/partial identity (missing ids) is rejected.
 - Write actions are blocked when state_age_ms > 3000 (stale state fails closed).
 """
 
 import pytest
 
+from fantasy_draft_assistant import safety
 from fantasy_draft_assistant.safety import Allowlist, TeamIdentity, can_submit
 
 # Immutable identifiers from TEAM_SAFETY.md / config.synaps1.yaml
@@ -104,10 +107,20 @@ class TestDefaultDeny:
 
 
 # ---------------------------------------------------------------------------
-# RoughRydas must NEVER pass
+# Forbidden aliases must NEVER pass (mechanism tested with a sentinel alias)
 # ---------------------------------------------------------------------------
 
-class TestRoughRydasProtection:
+SENTINEL = "forbidden-sentinel"
+
+
+@pytest.fixture
+def forbidden_sentinel(monkeypatch):
+    """Inject a sentinel into FORBIDDEN_ALIASES so the mechanism stays tested."""
+    monkeypatch.setattr(safety, "FORBIDDEN_ALIASES", frozenset({SENTINEL}))
+    return SENTINEL
+
+
+class TestForbiddenAliasProtection:
     @pytest.mark.parametrize(
         "league_id,team_id,season",
         [
@@ -117,35 +130,65 @@ class TestRoughRydasProtection:
             (0, 0, 0),
         ],
     )
-    def test_roughrydas_never_passes(self, allowlist, league_id, team_id, season):
-        rough = TeamIdentity(
-            alias="RoughRydas",
+    def test_forbidden_alias_never_passes(
+        self, allowlist, forbidden_sentinel, league_id, team_id, season
+    ):
+        forbidden = TeamIdentity(
+            alias=forbidden_sentinel,
             league_id=league_id,
             team_id=team_id,
             season=season,
         )
-        assert can_submit(rough, allowlist, state_age_ms=FRESH) is False
+        assert forbidden.is_forbidden
+        assert can_submit(forbidden, allowlist, state_age_ms=FRESH) is False
 
-    def test_roughrydas_case_variants_never_pass(self, allowlist):
-        for alias in ("roughrydas", "ROUGHRYDAS", "RoughRydas", " roughRydas "):
-            rough = TeamIdentity(
+    def test_forbidden_alias_case_variants_never_pass(self, allowlist, forbidden_sentinel):
+        for alias in (
+            "forbidden-sentinel",
+            "FORBIDDEN-SENTINEL",
+            "Forbidden-Sentinel",
+            " forbidden-Sentinel ",
+        ):
+            forbidden = TeamIdentity(
                 alias=alias,
                 league_id=SYNAPS1_LEAGUE_ID,
                 team_id=SYNAPS1_TEAM_ID,
                 season=SYNAPS1_SEASON,
             )
-            assert can_submit(rough, allowlist, state_age_ms=FRESH) is False, alias
+            assert forbidden.is_forbidden, alias
+            assert can_submit(forbidden, allowlist, state_age_ms=FRESH) is False, alias
 
-    def test_roughrydas_cannot_be_added_to_an_allowlist(self):
-        rough = TeamIdentity(
-            alias="RoughRydas", league_id=1, team_id=1, season=2026
+    def test_forbidden_alias_cannot_be_added_to_an_allowlist(self, forbidden_sentinel):
+        forbidden = TeamIdentity(
+            alias=forbidden_sentinel, league_id=1, team_id=1, season=2026
         )
         # Either construction refuses it, or the resulting guard still denies it.
         try:
-            poisoned = Allowlist([rough])
+            poisoned = Allowlist([forbidden])
         except (ValueError, PermissionError):
             return  # refusing construction is acceptable fail-closed behavior
-        assert can_submit(rough, poisoned, state_age_ms=FRESH) is False
+        assert can_submit(forbidden, poisoned, state_age_ms=FRESH) is False
+
+    def test_forbidden_set_is_empty_by_default(self):
+        # RoughRydas removed 2026-09-06 (owner authorization); nothing replaced it.
+        assert safety.FORBIDDEN_ALIASES == frozenset()
+
+
+class TestRoughRydasAuthorized:
+    """2026-09-06: the owner authorized drafting for RoughRydas.
+
+    It is no longer in FORBIDDEN_ALIASES, so a complete identity with that
+    alias behaves like any other team: allowlistable and submittable when fresh.
+    """
+
+    def test_roughrydas_can_be_allowlisted_and_submits_when_fresh(self):
+        rough = TeamIdentity(
+            alias="RoughRydas", league_id=305025860, team_id=7, season=2026
+        )
+        assert rough.is_forbidden is False
+        allowlist = Allowlist([rough])
+        assert rough in allowlist
+        assert can_submit(rough, allowlist, state_age_ms=FRESH) is True
 
 
 # ---------------------------------------------------------------------------

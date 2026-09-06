@@ -5,7 +5,7 @@ check and writes a timestamped report to ``data/<team>/preflight_report.json``:
 
 - config + board exist and parse; raw source / board staleness warning when
   older than ``--max-age-hours`` (default 12h — CP2 verdict, LOW).
-- identity is complete and exactly allowlisted; RoughRydas refusal
+- identity is complete and exactly allowlisted; default-deny self-test
   self-test (Allowlist construction MUST raise PermissionError).
 - observed draft-session id derived from ``data/raw/league_settings.json``
   and printed — grants must carry exactly this id (CP2 verdict, MEDIUM).
@@ -127,27 +127,32 @@ def run_preflight(
         except (PermissionError, ValueError) as exc:
             checks.append(Check("identity-allowlist", "fail", str(exc)))
 
-    # 3. RoughRydas refusal self-test: MUST raise at Allowlist construction.
-    forbidden = TeamIdentity(
-        alias="RoughRydas", league_id=305025860, team_id=1, season=2026
-    )
-    try:
-        Allowlist([forbidden])
-        checks.append(
-            Check(
-                "roughrydas-selftest",
-                "fail",
-                "CRITICAL: forbidden alias was accepted into an Allowlist",
-            )
+    # 3. Default-deny self-test: an unrelated, non-allowlisted identity MUST
+    #    be rejected by the allowlist we just built (fail-closed check).
+    if identity is not None:
+        stranger = TeamIdentity(
+            alias="not-our-team", league_id=1, team_id=99, season=identity.season
         )
-    except PermissionError:
-        checks.append(
-            Check(
-                "roughrydas-selftest",
-                "pass",
-                "Allowlist construction raised PermissionError for RoughRydas",
-            )
-        )
+        try:
+            probe = Allowlist([identity])
+            if stranger in probe or Allowlist([]).__contains__(identity):
+                checks.append(
+                    Check(
+                        "default-deny-selftest",
+                        "fail",
+                        "CRITICAL: a non-allowlisted identity passed the allowlist",
+                    )
+                )
+            else:
+                checks.append(
+                    Check(
+                        "default-deny-selftest",
+                        "pass",
+                        "non-allowlisted identity refused; empty allowlist refuses ours",
+                    )
+                )
+        except (PermissionError, ValueError) as exc:
+            checks.append(Check("default-deny-selftest", "fail", str(exc)))
 
     # 4. Board exists/loads + freshness of board and raw source (feedback 4).
     board_path = data_dir / alias / "board.csv"

@@ -24,7 +24,6 @@ const die = (code, msg) => { console.error(`REFUSED: ${msg}`); process.exit(code
 
 const TEAM = String(process.env.TEAM || "").trim().toLowerCase();
 if (!/^[a-z0-9][a-z0-9_-]*$/.test(TEAM)) die(2, "TEAM env var must be a safe alias slug");
-if (TEAM === "roughrydas") die(2, "RoughRydas is forbidden — never poll it");
 const LEAGUE_ID = String(process.env.LEAGUE_ID || "").trim();
 const POLL_MS = Math.max(500, parseInt(process.env.POLL_MS || "1000", 10) || 1000);
 const CDP_URL = process.env.BROWSER_CDP_URL || "http://localhost:9222";

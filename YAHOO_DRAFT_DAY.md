@@ -203,7 +203,7 @@ per-click `yahoo_actuate.mjs` wiring as the real-room path.
 - One submission max per turn; verify by roster count before anything else.
 - Single-device rule during any real draft: the room lives ONLY in the
   dedicated Chrome. (ESPN postmortem lesson — phones steal room sessions.)
-- RoughRydas remains forbidden everywhere, always.
+- RoughRydas: forbidden until 2026-09-06, then owner-authorized (ESPN only). See TEAM_SAFETY.md.
 
 ## Key files
 
