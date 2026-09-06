@@ -95,6 +95,54 @@ function trackDisappearance(visible) {
     .replace(/^\d+\s*/, "").replace(/\s+(qb|rb|wr|te|k|d\/st|dst)\s.*$/, "").trim()).filter((n) => n.length > 3);
 }
 
+// ---- LIST-SWITCH (2026-09-06, real-room recon): ESPN's position filter is a
+// <select class="dropdown__select"> with options All Pos./QB/RB/WR/TE/FLEX/D/ST/K.
+// The room list is on "My Rankings" so K/D/ST (tail of our list) are never in
+// the visible top-30 late -> chooser stalls (mock #3 pattern). On repeated
+// chooser failure we reset to All Pos., then switch to the missing K/D/ST.
+const boardPos = new Map();
+try {
+  for (const line of readFileSync(process.env.BOARD_CSV, "utf8").split("\n").slice(1)) {
+    const c = line.split(","); if (c.length > 2) boardPos.set(c[0], c[2].replace("D/ST", "DST"));
+  }
+} catch {}
+let curFilter = "All Pos.", chooserFails = 0;
+async function setPosFilter(label) {
+  if (label === curFilter) return;
+  const r = await page.evaluate((label) => {
+    const sel = [...document.querySelectorAll("select.dropdown__select")]
+      .find((s) => [...s.options].some((o) => o.text === "All Pos.") && !s.name.startsWith("fake-"));
+    if (!sel) return "no select";
+    const opt = [...sel.options].find((o) => o.text === label); if (!opt) return "no option " + label;
+    Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set.call(sel, opt.value);
+    sel.dispatchEvent(new Event("change", { bubbles: true }));
+    return "set " + label;
+  }, label).catch((e) => "err " + String(e).slice(0, 60));
+  log(`LIST-SWITCH -> ${label}: ${r}`);
+  if (r.startsWith("set")) curFilter = label;
+  await new Promise((r) => setTimeout(r, 900));
+}
+function missingRequired() {
+  const have = new Set(ourPicks.map((n) => boardPos.get(n) || (/D\/ST$/.test(n) ? "DST" : "")));
+  const out = []; if (!have.has("DST")) out.push("D/ST"); if (!have.has("K")) out.push("K"); return out;
+}
+
+async function onChooserFail(roundNo) {
+  chooserFails++;
+  // ~3 cycles (~1.5s) of nothing: make sure the list is unfiltered.
+  if (chooserFails === 4) await setPosFilter("All Pos.");
+  // still nothing: late in the draft, show the required slot we still lack.
+  if (chooserFails >= 8 && (chooserFails - 8) % 6 === 0) {
+    const need = missingRequired();
+    const roundsLeft = 16 - (roundNo || 0) + 1;
+    if (need.length && roundsLeft <= need.length + 1) {
+      const idx = Math.floor((chooserFails - 8) / 6) % need.length;
+      await setPosFilter(need[idx]);
+    } else if (chooserFails % 12 === 0) await setPosFilter("All Pos.");
+  }
+  await new Promise((r) => setTimeout(r, 400));
+}
+
 // ---- main loop ------------------------------------------------------------
 let lastPickArea = "", ourPicks = [], clickedThisTurn = false, done = false;
 let nextR = 0, nextP = 0, lastAutopickFix = 0; // our next turn, from ESPN's own announcement
@@ -151,8 +199,9 @@ while (!done) {
        "--exclude", ourPicks.join(","), "--roster", ourPicks.join(","), "--overall", String(overall), "--slot", String(slot),
        "--teams", String(TEAMS), "--league", String(leagueId), "--teamid", String(teamId)],
       { encoding: "utf8", timeout: 10000 }).trim().split("\n").pop());
-  } catch (e) { log(`chooser err: ${String(e.stderr || e).replace(/\s+/g, " ").slice(-200)}`); await new Promise((r) => setTimeout(r, 400)); continue; }
-  if (choice.error) { log(`chooser: ${choice.error}`); await new Promise((r) => setTimeout(r, 400)); continue; }
+  } catch (e) { log(`chooser err: ${String(e.stderr || e).replace(/\s+/g, " ").slice(-200)}`); await onChooserFail(nextR); continue; }
+  if (choice.error) { log(`chooser: ${choice.error}`); await onChooserFail(nextR); continue; }
+  chooserFails = 0;
 
   const t0 = Date.now();
   log(`OUR TURN (overall~${overall} slot~${slot}) clock=${s.clock} -> ${choice.playerName} (${choice.pos}) why=${JSON.stringify(choice.why || {})}`);
@@ -184,6 +233,7 @@ while (!done) {
       writeFileSync(D("our_picks.json"), JSON.stringify({ league: leagueId, picks: ourPicks }));
       if (!draftedLog.includes(choice.playerName.toLowerCase())) draftedLog.push(choice.playerName.toLowerCase());
       log(`VERIFIED our pick #${ourPicks.length}: ${choice.playerName} (${choice.pos}) | total ${Date.now() - t0}ms`);
+      chooserFails = 0; await setPosFilter("All Pos.");
     } else log(`UNVERIFIED: ${choice.playerName} — one click max, holding`);
   } catch (e) {
     // actuate refused (exit != 0) => no click happened; next cycle re-chooses
