@@ -18,7 +18,13 @@ from typing import Iterable, Iterator
 
 # The one team we must never touch. Comparison is done on a normalized alias
 # (lowercase, whitespace stripped) so case/spacing tricks cannot bypass it.
-FORBIDDEN_ALIASES: frozenset[str] = frozenset({"roughrydas"})
+# 2026-09-06: the protected team appears in league 1851947 ("The Tetreau
+# Invitational") spelled "Rough Rydahs" (team 1) — user confirmed it is the
+# same protected team, so that spelling (and its space-collapsed form) is
+# forbidden too.
+FORBIDDEN_ALIASES: frozenset[str] = frozenset(
+    {"roughrydas", "rough rydahs", "roughrydahs"}
+)
 
 #: Maximum acceptable draft-state age for a write action, in milliseconds.
 MAX_STATE_AGE_MS: int = 3_000
