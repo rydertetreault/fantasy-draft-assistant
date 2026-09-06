@@ -97,7 +97,7 @@ function trackDisappearance(visible) {
 
 // ---- main loop ------------------------------------------------------------
 let lastPickArea = "", ourPicks = [], clickedThisTurn = false, done = false;
-let nextR = 0, nextP = 0; // our next turn, from ESPN's own announcement
+let nextR = 0, nextP = 0, lastAutopickFix = 0; // our next turn, from ESPN's own announcement
 try {
   const saved = JSON.parse(readFileSync(D("our_picks.json"), "utf8"));
   if (saved && saved.league === leagueId && Array.isArray(saved.picks)) {
@@ -115,6 +115,20 @@ while (!done) {
   const ann = /Round (\d+), Pick (\d+)/i.exec(s.pickArea);
   if (ann) { nextR = parseInt(ann[1], 10); nextP = parseInt(ann[2], 10); }
 
+  // AUTOPICK RECOVERY (mock #3, 2026-09-06): a chooser stall for a full clock
+  // flips ESPN into autopick for ALL remaining rounds. Click DISABLE AUTOPICK
+  // (throttled) so the driver regains control for the next turn.
+  if (/disable autopick/i.test(s.pickArea) && Date.now() - lastAutopickFix > 5000) {
+    lastAutopickFix = Date.now();
+    if (typeof LIVE !== "undefined" && !LIVE) { log("AUTOPICK ON — DRY-RUN would click DISABLE AUTOPICK"); }
+    else {
+      try {
+        const btn = page.locator('button:has-text("Disable Autopick"), button:has-text("DISABLE AUTOPICK")').first();
+        if (await btn.count()) { await btn.click({ timeout: 2000 }); log("AUTOPICK ON — clicked DISABLE AUTOPICK"); }
+        else log("AUTOPICK ON — no disable button found");
+      } catch (e) { log(`AUTOPICK disable click failed: ${String(e).slice(0, 100)}`); }
+    }
+  }
   const onClock = /you are on the clock/i.test(s.pickArea);
   if (!onClock) { clickedThisTurn = false; await new Promise((r) => setTimeout(r, 400)); continue; }
   if (clickedThisTurn) { await new Promise((r) => setTimeout(r, 500)); continue; } // one click max: waiting on verify
@@ -178,3 +192,4 @@ while (!done) {
   await new Promise((r) => setTimeout(r, 400));
 }
 log("live driver exiting");
+process.exit(0);
