@@ -394,6 +394,22 @@ if choice is None:
         sys.exit(0)
     print(json.dumps({"error": "no visible candidate"})); sys.exit(1)
 
+# OWNER FORCE-PICK (live directive 2026-09-06): strategy.force_players =
+# [{name, from_round}] -> if visible, undrafted and round >= from_round, take
+# him over the engine's choice (never during an endgame required-slot gate).
+for _fp in (config["strategy"].get("force_players") or []):
+    _fn = str(_fp.get("name", "")).strip()
+    if (_fn in name2id and round_no >= int(_fp.get("from_round", 1)) and not _required_now
+            and _fn not in excludes and _fn.lower() not in drafted_names and is_visible(_fn)):
+        _row = players[players["player"] == _fn].iloc[0]
+        print(json.dumps({"forced": True, "teamTok": name2team.get(_fn, ""), "cityTok": name2city.get(_fn, ""),
+            "nickTok": name2nick.get(_fn, ""), "playerId": name2id[_fn], "playerName": _fn,
+            "leagueId": a.league, "teamId": a.teamid, "pos": str(_row["pos"]),
+            "why": {"forced_by_owner": True, "round": round_no, "vorp": 0, "survival": 0, "wait_loss": 0,
+                    "slot": "forced", "run_pressure": 0, "ctx_score": 0, "picks_known": len(picks),
+                    "my_roster_pos": [name2pos.get(n, "?") for n in my_roster]}}))
+        sys.exit(0)
+
 out_extra = {"wanted": wanted} if wanted else {}
 if _required_now:
     out_extra["required_now"] = _required_now

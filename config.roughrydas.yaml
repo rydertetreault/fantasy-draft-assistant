@@ -31,8 +31,10 @@ strategy:
   # ---- mock #8 + live draft 2026-08-30) per owner directive 2026-09-06.
   # ---- Per the two-profile rule this profile is independent; synaps1/2 stay
   # ---- frozen. Differences from Yahoo: full PPR, 16 rounds (7 BN), 90s/pick.
-  avoid_players:
-    - Josh Jacobs   # NFL commissioner's exempt list, indefinite (2026-08-30)
+  avoid_players: []   # Josh Jacobs removed by owner, live 2026-09-06 (see force_players)
+  # OWNER LIVE DIRECTIVE 2026-09-06 r9: "pick josh jacobs if he is still there after round 10"
+  force_players:
+    - {name: Josh Jacobs, from_round: 11}
   roster_need_weight: 8.0
   scarcity_weight: 6.0
   value_weight: 4.0

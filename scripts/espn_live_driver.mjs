@@ -190,6 +190,17 @@ while (!done) {
     overall = draftedLog.length + 1; // first-turn fallback (round 1: slot = pick)
     slot = ((o, n) => { const r = Math.floor((o - 1) / n), i = (o - 1) % n; return r % 2 === 0 ? i + 1 : n - i; })(overall, TEAMS);
   }
+  // OWNER FORCE-PICK peek (env FORCE_NAME/FORCE_POS/FORCE_FROM): the table
+  // virtualizes ~15 rows, so a deep-ranked target is never "visible" on All
+  // Pos. Flip to his position for one look; if he is not rendered, flip back.
+  if (process.env.FORCE_NAME && nextR >= parseInt(process.env.FORCE_FROM || "1", 10)
+      && !ourPicks.includes(process.env.FORCE_NAME) && !draftedLog.includes(process.env.FORCE_NAME.toLowerCase())
+      && !s.histText.toLowerCase().includes(process.env.FORCE_NAME.toLowerCase())) {
+    await setPosFilter(process.env.FORCE_POS || "RB");
+    const s3 = await page.evaluate(STATE).catch(() => null);
+    if (s3 && s3.visible.some((v) => v.includes(process.env.FORCE_NAME))) { s = s3; log(`FORCE target ${process.env.FORCE_NAME} is visible on ${curFilter}`); }
+    else { log(`FORCE target ${process.env.FORCE_NAME} not rendered on ${curFilter} — back to All Pos.`); await setPosFilter("All Pos."); const s4 = await page.evaluate(STATE).catch(() => null); if (s4) s = s4; }
+  }
   writeFileSync(D("hist.txt"), draftedLog.join("\n") + "\n" + s.histText);
   writeFileSync(D("visible.json"), JSON.stringify(s.visible));
   let choice;
