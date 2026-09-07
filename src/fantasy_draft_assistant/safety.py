@@ -21,8 +21,9 @@ from typing import Iterable, Iterator
 # Teams we must never touch. Comparison is done on a normalized alias
 # (lowercase, whitespace stripped) so case/spacing tricks cannot bypass it.
 # 2026-09-06: RoughRydas removed — the owner (Ryder) authorized drafting for
-# it directly in this session. The mechanism stays; the set is currently
-# empty. Protection for every other team is the default-deny allowlist.
+# it directly in this session (it is the owner's own team; ESPN display name
+# "Rough Rydahs", team 1 in league 1851947). The mechanism stays; the set is
+# currently empty. Protection for every other team is the default-deny allowlist.
 FORBIDDEN_ALIASES: frozenset[str] = frozenset()
 
 #: Maximum acceptable draft-state age for a write action, in milliseconds.

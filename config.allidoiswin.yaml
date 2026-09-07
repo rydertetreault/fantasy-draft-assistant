@@ -1,0 +1,42 @@
+# All i do is WIN (dad's ESPN team) — league configuration
+# Source: ESPN league_settings.json via authenticated read-only fetch, captured 2026-09-06.
+# Identity confirmed by Justin (relaying dad, the account owner) 2026-09-06.
+# NOTE: the protected team "Rough Rydahs" (team 1) is IN THIS LEAGUE — see
+# TEAM_SAFETY.md. We act ONLY for team 4.
+espn:
+  league_id: 1851947
+  team_id: 4
+  season_id: 2026
+  authorized_team: allidoiswin
+  read_only: true
+league:
+  teams: 10
+  scoring: ppr
+  draft_type: snake
+  draft_time: "2026-09-06T20:00:00-04:00"
+  seconds_per_pick: 60
+  roster_slots:
+    QB: 1
+    RB: 2
+    WR: 2
+    TE: 1
+    FLEX: 1
+    DST: 1
+    K: 1
+    BENCH: 7
+    IR: 1
+strategy:
+  # OWNER DIRECTIVE (2026-08-30): never draft these players. Absolute —
+  # skipped in every chooser pass including the emergency valve.
+  avoid_players:
+    - Josh Jacobs   # NFL commissioner's exempt list, indefinite (2026-08-30)
+  roster_need_weight: 8.0
+  scarcity_weight: 6.0
+  value_weight: 4.0
+  bye_penalty_weight: 1.5
+  # Same endgame shape as the Yahoo clean sweep: DST second-to-last round,
+  # K last round (16 drafted rounds here). No other preset round rules —
+  # QB/TE timing emerges from live math (user directive).
+  wait_until_round:
+    DST: 15
+    K: 16

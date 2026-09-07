@@ -14,7 +14,8 @@
 import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
 
-const ALLOWED_ALIASES = new Set(["synaps1", "synaps2", "roughrydas"]); // roughrydas: owner-authorized 2026-09-06
+// roughrydas: owner (Ryder) authorized 2026-09-06. allidoiswin: dad's team, authorized 2026-09-06.
+const ALLOWED_ALIASES = new Set(["synaps1", "synaps2", "roughrydas", "allidoiswin"]);
 // Real league ids. In --mock mode these are FORBIDDEN everywhere (payload,
 // grant, page URL) — mock rehearsals can never touch a real league room.
 const REAL_LEAGUE_IDS = [305025860, 2144943745, 1851947];
