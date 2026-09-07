@@ -1,0 +1,29 @@
+18:36:20 waiting for ESPN login (fetch 200)...
+league_settings HTTP 401
+players HTTP 401
+league_settings HTTP 401
+players HTTP 401
+league_settings HTTP 401
+players HTTP 401
+league_settings HTTP 401
+players HTTP 401
+league_settings HTTP 401
+players HTTP 401
+league_settings HTTP 401
+players HTTP 401
+league_settings HTTP 401
+players HTTP 401
+league_settings HTTP 401
+players HTTP 401
+league_settings: 73755 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/league_settings.json
+players: 2812548 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/players.json
+league_settings: 73755 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/league_settings.json
+players: 2812548 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/players.json
+league_settings: 73755 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/league_settings.json
+players: 2812548 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/players.json
+league_settings: 73755 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/league_settings.json
+players: 2812548 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/players.json
+league_settings: 73755 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/league_settings.json
+players: 2812548 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/players.json
+league_settings: 73755 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/league_settings.json
+players: 2812548 bytes -> /home/ryder/SoftwareProjects/fantasy-draft-assistant/data/raw/players.json
